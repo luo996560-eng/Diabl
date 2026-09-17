@@ -3662,7 +3662,7 @@ function render(){
     var eq=S.equip[eqS];
     if(eq&&eq.isMasterWeapon){
       var wc=eq.isDivine?'#fbbf24':TIERS[eq.tier].c;
-      mwl='<div class="stat" style="grid-column:span 2">🗡️ 師門武器 <b style="color:'+wc+'">'+eq.name+' Lv.'+eq.level+'</b>'+(eq.level<10?'<div style="font-size:10px;color:#8a7654;margin-top:2px">EXP '+eq.exp+' / '+eq.expNext+'</div>':'<div style="font-size:10px;color:#fbbf24;margin-top:2px">✦ 已達神器 ✦</div>')+'</div>';
+      mwl='<div class="stat" style="grid-column:span 2;cursor:pointer;text-decoration:underline" onclick="showEquipDetail(\''+eqS+'\')" title="點擊查看詳情">🗡️ 師門武器 <b style="color:'+wc+'">'+eq.name+' Lv.'+eq.level+'</b>'+(eq.level<10?'<div style="font-size:10px;color:#8a7654;margin-top:2px">EXP '+eq.exp+' / '+eq.expNext+'</div>':'<div style="font-size:10px;color:#fbbf24;margin-top:2px">✦ 已達神器 ✦</div>')+(eq.divineSpecial?'<div style="font-size:10px;color:#fbbf24;margin-top:2px">✦ '+eq.divineSpecial.icon+' '+eq.divineSpecial.name+'（點擊詳情）</div>':'')+'</div>';
       break;
     }
   }
@@ -3675,8 +3675,8 @@ function render(){
   if(S.hasAuctionTicket)tk='<div class="stat" style="grid-column:span 2;text-align:center"><span class="skillTag ticket-glow" style="color:#fbbf24;border-color:#fbbf24">🎫 拍賣行入場券</span></div>';
   else if((S.auctionFragments||0)>0)tk='<div class="stat">🎫 碎片 <b>'+(S.auctionFragments||0)+'/100</b></div>';
   var db=[];
-  for(var dS in S.equip){var dE=S.equip[dS];if(dE&&dE.isDivine&&dE.divineSpecial)db.push('<span style="color:#fbbf24;text-shadow:0 0 6px #fbbf24">🗡 '+dE.baseName+'</span>');}
-  S.skills.forEach(function(dSk){if(dSk.isDivine&&dSk.divineSpecial)db.push('<span style="color:#fbbf24;text-shadow:0 0 6px #fbbf24">📜 '+dSk.baseName+'</span>');});
+  for(var dS in S.equip){var dE=S.equip[dS];if(dE&&dE.divineSpecial)db.push('<span style="color:#fbbf24;text-shadow:0 0 6px #fbbf24;cursor:pointer;text-decoration:underline" onclick="showEquipDetail(\''+dS+'\')">🗡 '+(dE.baseName||dE.name)+'</span>');}
+  S.skills.forEach(function(dSk,dSi){if(dSk.divineSpecial)db.push('<span style="color:#fbbf24;text-shadow:0 0 6px #fbbf24;cursor:pointer;text-decoration:underline" onclick="showSkillDetail('+dSi+')">📜 '+(dSk.baseName||dSk.name)+'</span>');});
   var dl=db.length?'<div class="stat" style="grid-column:span 2;text-align:center">'+db.join('　')+'</div>':'';
   el.innerHTML=
     '<div class="stat">俠名 <b>'+S.playerName+'（'+S.playerGender+'）</b></div>'+
@@ -3775,7 +3775,7 @@ function renderEquip(el){
       var tc=e.isDivine?'#fbbf24':TIERS[e.tier].c;
       var di='';
       if(e.divineSpecial)di='<div class="at" style="color:#fbbf24;font-size:9px;margin-top:2px">✦ '+e.divineSpecial.icon+' '+e.divineSpecial.name+'</div>';
-      h+='<div class="item'+cl+'" style="border-color:'+tc+'" onclick="unequip(\''+slot+'\')"><div class="lb">'+slot+(e.fromMaster?' ◆':'')+(e.setId?' ◆'+e.setName:'')+'</div><div class="nm" style="color:'+tc+'">'+e.name+ex+'</div><div class="at">'+e.main.name+'+'+e.main.val+'</div>'+(e.isMasterWeapon&&e.level<10?'<div class="at" style="color:#fbbf24">EXP '+e.exp+'/'+e.expNext+'</div>':'')+di+'</div>';
+      h+='<div class="item'+cl+'" style="border-color:'+tc+';cursor:pointer" onclick="showEquipDetail(\''+slot+'\')"><div class="lb">'+slot+(e.fromMaster?' ◆':'')+(e.setId?' ◆'+e.setName:'')+'</div><div class="nm" style="color:'+tc+'">'+e.name+ex+'</div><div class="at">'+e.main.name+'+'+e.main.val+'</div>'+(e.isMasterWeapon&&e.level<10?'<div class="at" style="color:#fbbf24">EXP '+e.exp+'/'+e.expNext+'</div>':'')+di+'<div class="at" style="color:#8a7654;font-size:9px;margin-top:2px">點擊查看詳情</div></div>';
     }else h+='<div class="slot"><div class="lb">'+slot+'</div><div style="color:#5a4630">空</div></div>';
   }
   h+='</div><button class="main" onclick="switchTab(\'main\')">返回</button>';el.innerHTML=h;
@@ -3795,14 +3795,15 @@ function renderSkill(el){
     if(sk.isDivine)cl+=' divine-skill';
     else if(sk.isMasterSkill)cl+=' master-weapon';
     var tc=sk.isDivine?'#fbbf24':TIERS[sk.tier].c;
-    h+='<div class="'+cl+'" style="border-color:'+tc+'">';
+    h+='<div class="'+cl+'" style="border-color:'+tc+';cursor:pointer" onclick="showSkillDetail('+i+')">';
     h+='<div class="nm" style="color:'+tc+'">'+sk.name+(sk.isMasterSkill?' Lv.'+sk.level:'')+'</div>';
     h+='<div class="at">['+sk.stype+'] '+sk.main.name+'+'+sk.main.val+'</div>';
     h+='<div class="at">'+sk.tier+(sk.fromMaster?' ◆師門':'')+'</div>';
     if(sk.isMasterSkill&&sk.level<10)h+='<div class="at" style="color:#fbbf24">EXP '+sk.exp+'/'+sk.expNext+'</div>';
     else if(sk.isDivine)h+='<div class="at" style="color:#fbbf24">✦ 已達神功境界 ✦</div>';
-    if(sk.divineSpecial)h+='<div class="at" style="color:#fbbf24;font-size:9px;margin-top:2px">✦ '+sk.divineSpecial.icon+' '+sk.divineSpecial.name+'：'+sk.divineSpecial.desc+'</div>';
-    if(!sk.fromMaster)h+='<button class="sellBtn" onclick="sellSkill('+i+')">💰 賣 '+moneyGain(TIERS[sk.tier].mult*200)+'兩</button>';
+    if(sk.divineSpecial)h+='<div class="at" style="color:#fbbf24;font-size:9px;margin-top:2px">✦ '+sk.divineSpecial.icon+' '+sk.divineSpecial.name+'</div>';
+    h+='<div class="at" style="color:#8a7654;font-size:9px;margin-top:2px">點擊查看詳情</div>';
+    if(!sk.fromMaster)h+='<button class="sellBtn" onclick="event.stopPropagation();sellSkill('+i+')">💰 賣 '+moneyGain(TIERS[sk.tier].mult*200)+'兩</button>';
     else h+='<div class="at" style="color:#8a7654;text-align:center;margin-top:4px">師門功法・不可販售</div>';
     h+='</div>';
   });
@@ -3823,6 +3824,73 @@ function equipItem(i){
   if(old)S.bagEquip.push(old);
   S.log.push('裝備了'+it.name+'。');
   checkAchievements();render();renderEvent();saveGame();
+}
+function formatDivineDesc(item){
+  if(!item||!item.divineSpecial)return '';
+  var sp=item.divineSpecial;
+  var scale=typeof getDivineScale==='function'?getDivineScale(item):1;
+  var pct=Math.round(scale*100);
+  var h='<div style="background:linear-gradient(135deg,#3a2a14,#2a1f10);border:1px solid #fbbf24;border-radius:8px;padding:10px;margin:8px 0">';
+  h+='<div style="color:#fbbf24;font-weight:bold;font-size:14px">✦ '+sp.icon+' '+sp.name+' ✦</div>';
+  h+='<div style="color:#e6d5a8;font-size:12px;margin-top:6px;line-height:1.5">'+sp.desc+'</div>';
+  h+='<div style="color:#c9b58a;font-size:11px;margin-top:8px">目前威力：<b style="color:#fbbf24">'+pct+'%</b>';
+  if(pct<100)h+='　（Lv.'+(item.level||1)+'，滿級 Lv.10 為 100%）';
+  else h+='　（已全功率）';
+  h+='</div></div>';
+  return h;
+}
+function showEquipDetail(slot){
+  var e=S.equip[slot];if(!e)return;
+  var el=document.getElementById('event');
+  var tc=e.isDivine?'#fbbf24':(TIERS[e.tier]?TIERS[e.tier].c:'#c9b58a');
+  var h='<h2 style="color:'+tc+'">'+e.name+(e.isMasterWeapon?' Lv.'+e.level:'')+'</h2>';
+  h+='<div style="background:#2d2117;border-radius:8px;padding:12px;margin:8px 0;border:1px solid '+tc+'">';
+  h+='<div class="at">部位：'+slot+(e.fromMaster?'　◆ 師門所授':'')+(e.setId?'　◆ 套裝：'+e.setName:'')+'</div>';
+  h+='<div class="at">品階：<span style="color:'+tc+'">'+(e.isDivine?'神器':e.tier)+'</span></div>';
+  h+='<div class="at" style="margin-top:6px">主屬性：<b style="color:#f0d48a">'+e.main.name+' +'+e.main.val+'</b></div>';
+  if(e.subs&&e.subs.length){
+    h+='<div class="at" style="margin-top:4px">副屬性：</div>';
+    e.subs.forEach(function(s){
+      h+='<div class="at" style="padding-left:8px">'+(s._divine?'✦ ':'')+s.name+' +'+s.val+(s._divine?' <span style="color:#fbbf24;font-size:10px">(神話)</span>':'')+'</div>';
+    });
+  }
+  if(e.isMasterWeapon){
+    h+='<div class="at" style="margin-top:8px;color:#fbbf24">成長等級：Lv.'+e.level+(e.level<10?'　EXP '+e.exp+'/'+e.expNext:'　✦ 已滿級')+'</div>';
+  }
+  h+='</div>';
+  if(e.divineSpecial)h+=formatDivineDesc(e);
+  else if(e.isMasterWeapon)h+='<div style="color:#8a7654;font-size:12px">尚無神級特效資料</div>';
+  if(e.fromMaster)h+='<div style="color:#8a7654;font-size:11px;margin:8px 0">師門所授武器無法卸下或替換</div>';
+  else h+='<button class="option" onclick="unequip(\''+slot+'\')">卸下裝備</button>';
+  h+='<button class="main" onclick="switchTab(\'equip\')">返回裝備</button>';
+  el.innerHTML=h;
+  TAB='equip';
+}
+function showSkillDetail(i){
+  var sk=S.skills[i];if(!sk)return;
+  var el=document.getElementById('event');
+  var tc=sk.isDivine?'#fbbf24':(TIERS[sk.tier]?TIERS[sk.tier].c:'#c9b58a');
+  var h='<h2 style="color:'+tc+'">'+sk.name+(sk.isMasterSkill?' Lv.'+sk.level:'')+'</h2>';
+  h+='<div style="background:#2d2117;border-radius:8px;padding:12px;margin:8px 0;border:1px solid '+tc+'">';
+  h+='<div class="at">類型：'+sk.stype+'</div>';
+  h+='<div class="at">品階：<span style="color:'+tc+'">'+(sk.isDivine?'神功':sk.tier)+'</span>'+(sk.fromMaster?'　◆ 師門':'')+'</div>';
+  h+='<div class="at" style="margin-top:6px">主屬性：<b style="color:#f0d48a">'+sk.main.name+' +'+sk.main.val+'</b></div>';
+  if(sk.subs&&sk.subs.length){
+    h+='<div class="at" style="margin-top:4px">副屬性：</div>';
+    sk.subs.forEach(function(s){
+      h+='<div class="at" style="padding-left:8px">'+(s._divine?'✦ ':'')+s.name+' +'+s.val+(s._divine?' <span style="color:#fbbf24;font-size:10px">(神話)</span>':'')+'</div>';
+    });
+  }
+  if(sk.isMasterSkill){
+    h+='<div class="at" style="margin-top:8px;color:#fbbf24">成長等級：Lv.'+sk.level+(sk.level<10?'　EXP '+sk.exp+'/'+sk.expNext:'　✦ 已滿級')+'</div>';
+  }
+  h+='</div>';
+  if(sk.divineSpecial)h+=formatDivineDesc(sk);
+  if(sk.fromMaster)h+='<div style="color:#8a7654;font-size:11px;margin:8px 0">師門功法不可販售</div>';
+  else h+='<button class="option" onclick="sellSkill('+i+')">💰 賣出</button>';
+  h+='<button class="main" onclick="switchTab(\'skill\')">返回功法</button>';
+  el.innerHTML=h;
+  TAB='skill';
 }
 function unequip(slot){
   var it=S.equip[slot];if(!it)return;
@@ -4108,11 +4176,18 @@ function renderMaster(el){
     S.master.skills.forEach(function(sk){
       var tc=sk.isDivine?'#fbbf24':TIERS[sk.tier].c;
       var lb=sk.name+(sk.isMasterSkill?' Lv.'+sk.level:'');
-      h+='<span class="skillTag'+(sk.isDivine?' divine-skill':'')+'" style="border-color:'+tc+';color:'+tc+'">'+lb+'</span>';
+      var idx=-1;
+      for(var si=0;si<S.skills.length;si++){if(S.skills[si].id===sk.id||(S.skills[si].baseName&&S.skills[si].baseName===sk.baseName)||S.skills[si].name===sk.name){idx=si;break;}}
+      if(idx<0)idx=S.skills.indexOf(sk);
+      var click=idx>=0?'onclick="showSkillDetail('+idx+')" style="border-color:'+tc+';color:'+tc+';cursor:pointer" title="點擊查看詳情"':'style="border-color:'+tc+';color:'+tc+'"';
+      h+='<span class="skillTag'+(sk.isDivine?' divine-skill':'')+'" '+click+'>'+lb+(sk.divineSpecial?' ✦':'')+'</span>';
     });
+    if(S.master.skills.some(function(sk){return sk.isMasterSkill||sk.divineSpecial;})){
+      h+='<div style="font-size:10px;color:#8a7654;margin-top:4px">點擊師門功法可查看神級特效與屬性</div>';
+    }
     if(S.master.weapon){
       var w=S.master.weapon,wc=w.isDivine?'#fbbf24':TIERS[w.tier].c;
-      h+='<div style="margin-top:6px"><span class="skillTag'+(w.isDivine?' divine-weapon':' master-weapon')+'" style="border-color:'+wc+';color:'+wc+'">'+w.name+' Lv.'+w.level+'（'+w.main.name+'+'+w.main.val+'）'+(w.level<10?'　EXP '+w.exp+'/'+w.expNext:'')+'</span></div>';
+      h+='<div style="margin-top:6px;cursor:pointer" onclick="showEquipDetail(\''+w.slot+'\')" title="點擊查看詳情"><span class="skillTag'+(w.isDivine?' divine-weapon':' master-weapon')+'" style="border-color:'+wc+';color:'+wc+'">'+w.name+' Lv.'+w.level+'（'+w.main.name+'+'+w.main.val+'）'+(w.level<10?'　EXP '+w.exp+'/'+w.expNext:'')+(w.divineSpecial?'　✦'+w.divineSpecial.name:'')+'</span><div style="font-size:10px;color:#8a7654;margin-top:2px">點擊查看神級特效與屬性</div></div>';
     }
     h+='</div></div>';
     h+='<button class="option" style="margin-top:12px;border-color:#8a3030;color:#e8a0a0" onclick="exileMaster()">⚔ 叛離師門</button>';
