@@ -3658,14 +3658,6 @@ function render(){
     if(abCh>0)chh+=' <span style="color:#ef4444;font-size:10px">🔥'+abCh+'</span>';
   }
   var mwl='';
-  for(var eqS in S.equip){
-    var eq=S.equip[eqS];
-    if(eq&&eq.isMasterWeapon){
-      var wc=eq.isDivine?'#fbbf24':TIERS[eq.tier].c;
-      mwl='<div class="stat" style="grid-column:span 2;cursor:pointer;text-decoration:underline" onclick="showEquipDetail(\''+eqS+'\')" title="點擊查看詳情">🗡️ 師門武器 <b style="color:'+wc+'">'+eq.name+' Lv.'+eq.level+'</b>'+(eq.level<10?'<div style="font-size:10px;color:#8a7654;margin-top:2px">EXP '+eq.exp+' / '+eq.expNext+'</div>':'<div style="font-size:10px;color:#fbbf24;margin-top:2px">✦ 已達神器 ✦</div>')+(eq.divineSpecial?'<div style="font-size:10px;color:#fbbf24;margin-top:2px">✦ '+eq.divineSpecial.icon+' '+eq.divineSpecial.name+'（點擊詳情）</div>':'')+'</div>';
-      break;
-    }
-  }
   var sl='';
   var cts=getEquippedSetCounts();
   var sps=[];
@@ -3674,10 +3666,7 @@ function render(){
   var tk='';
   if(S.hasAuctionTicket)tk='<div class="stat" style="grid-column:span 2;text-align:center"><span class="skillTag ticket-glow" style="color:#fbbf24;border-color:#fbbf24">🎫 拍賣行入場券</span></div>';
   else if((S.auctionFragments||0)>0)tk='<div class="stat">🎫 碎片 <b>'+(S.auctionFragments||0)+'/100</b></div>';
-  var db=[];
-  for(var dS in S.equip){var dE=S.equip[dS];if(dE&&dE.divineSpecial)db.push('<span style="color:#fbbf24;text-shadow:0 0 6px #fbbf24;cursor:pointer;text-decoration:underline" onclick="showEquipDetail(\''+dS+'\')">🗡 '+(dE.baseName||dE.name)+'</span>');}
-  S.skills.forEach(function(dSk,dSi){if(dSk.divineSpecial)db.push('<span style="color:#fbbf24;text-shadow:0 0 6px #fbbf24;cursor:pointer;text-decoration:underline" onclick="showSkillDetail('+dSi+')">📜 '+(dSk.baseName||dSk.name)+'</span>');});
-  var dl=db.length?'<div class="stat" style="grid-column:span 2;text-align:center">'+db.join('　')+'</div>':'';
+  var dl='';
   el.innerHTML=
     '<div class="stat">俠名 <b>'+S.playerName+'（'+S.playerGender+'）</b></div>'+
     '<div class="stat">年齡 <b>'+S.age+'歲'+(S.month+1)+'月</b></div>'+
@@ -3692,7 +3681,7 @@ function render(){
     '<div class="stat">銀兩 <b>'+S.money+'</b></div>'+
     '<div class="stat">名聲 <b>'+S.fame+'</b></div>'+
     '<div class="stat" style="grid-column:span 2">正邪 <b style="color:'+al.color+'">'+al.name+'（'+av+'）</b><div class="alignbar">'+ab+'</div></div>'+
-    tl+mwl+sl+tk+dl+
+    tl+sl+tk+
     '<div class="stat">積分 <b>'+TOTAL_SCORE+'</b></div>'+
     '<div class="stat">成就 <b>'+ac+'/'+ACHIEVEMENTS.length+'</b></div>'+
     '<div class="stat">師門 <b>'+mh+'</b></div>'+
