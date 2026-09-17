@@ -226,6 +226,8 @@ var CHANGELOG_ITEMS=[
   {cls:'green',t:'💰 v22.3 銀兩永不為負',d:'・所有銀兩扣除後強制 ≥ 0。<br>・新增 clampMoney / spendMoney 保護。<br>・事件與戰鬥中不再出現負銀兩。'},
   {cls:'blue',t:'⚔ v22.3 低齡戰鬥平衡',d:'・14 歲前敵人強度大幅降低。<br>・18 歲前再適度削弱。<br>・記名弟子師門任務額外減傷。'},
   {cls:'red',t:'🕯 v22.3 重傷倖存',d:'・18 歲前戰鬥失敗改為重傷，不會直接結束人生。<br>・血量保留、壓力上升、少量銀兩損失後繼續江湖路。'},
+  {cls:'blue',t:'⚔ v22.3 事件戰鬥接軌',d:'・選擇「一戰／迎戰／挑戰／制止／相助」等戰鬥向選項時，會進入真實戰鬥畫面。<br>・沿用現有戰鬥系統，勝敗結算與重傷規則一致。'},
+  {cls:'green',t:'⚔ v22.3 神器神功成長重做',d:'・神話師門武器／神品功法一開始就有神級特效（等級縮放）。<br>・每次升級主屬性與神話副屬性都會實質加成。<br>・滿級全功率並突破為【神器】／【神功】。'},
   {cls:'purple',t:'☠ v22.3 邪道選項擴充',d:'・市集、街巷等事件新增邪惡選項（偷、搶、威脅、聯手）。<br>・邪道選擇獎勵略高於正道，但固定增加魔性。<br>・一心向魔的玩家不再只能靠懸賞走邪路。<br>・已涵蓋日常、市集、荒野、客棧、門派、江湖等幾乎所有一般事件。'},
   {cls:'',t:'📢 傳言說明',d:'此傳言每次開啟遊戲時分頁顯示，每頁三則，點擊可翻頁。'}
 ];
@@ -1206,7 +1208,7 @@ var DAILY_EVENTS=[
 ['趁亂搶刀就跑',function(s){if(s.martial>15||chance(0.4)){s.demonic+=4;return '你一把搶過刀劍便走。魔性 +4<br>'+grantEquip(1,'主手');}s.hp-=15;s.demonic+=2;return '鐵匠反應快，你被打傷逃跑。氣血 -15　魔性 +2';}],
 ['威脅他低價賣你',function(s){if(s.martial>22){s.demonic+=3;s.money-=10;return '鐵匠被迫半價賣刀。魔性 +3<br>'+grantEquip(1,'主手');}s.demonic+=1;return '鐵匠不為所動，你只好離開。魔性 +1';}]]},
 {id:'mk_bully',r:'encounter',age:[12,80],t:'街上惡少正在欺負老實人。',o:[
-['上前制止',function(s){if(s.martial>20){s.righteous+=5;s.fame+=3;return '你打跑惡少。俠氣 +5　名聲 +3';}s.hp-=15;return '你寡不敵眾。氣血 -15';}],
+['上前制止',function(s){s.righteous+=2;return triggerBattle(pick(['街頭惡少','地痞流氓']),'event');}],
 ['呼喊官府',function(s){s.righteous+=2;return '官差趕來。俠氣 +2';}],
 ['袖手旁觀',function(s){s.demonic+=2;return '你冷眼旁觀。魔性 +2';}],
 ['加入惡少一起欺負',function(s){s.demonic+=4;s.money+=10+rnd(15);return '你與惡少聯手，從老實人身上搜刮銀兩。魔性 +4　銀兩 +10~25';}],
@@ -1244,13 +1246,13 @@ var DAILY_EVENTS=[
 ],
 'wild':[
 {id:'wd_bandit',r:'crisis',age:[12,80],t:'山道上，一群山賊擋住你的去路。',o:[
-['與他們一戰',function(s){if(s.martial>s.age*1.5){s.fame+=5;return '你擊退山賊。名聲 +5<br>'+grantMoney(1);}s.hp-=20+rnd(20);s.money=Math.max(0,s.money-30);return '你寡不敵眾。';}],
+['與他們一戰',function(s){return triggerBattle(pick(['山賊頭目','山賊','綠林悍匪']),'event');}],
 ['交出買路財（-30兩）',function(s){if(s.money<30)return '你身上沒錢。';s.money-=30;s.stress+=5;return '你破財消災。壓力 +5';}],
 ['繞路逃走',function(s){s.stress+=3;return '你抄小路逃走。壓力 +3';}],
 ['假意加入，再反手搶他們',function(s){if(s.martial>25||chance(0.45)){s.demonic+=6;s.money+=50+rnd(40);return '你假意歸順，夜裡反手洗劫山賊。魔性 +6　銀兩 +50~90';}s.hp-=25;s.demonic+=3;return '山賊識破你的意圖，你被打傷逃脫。氣血 -25　魔性 +3';}],
 ['主動提出一起劫道',function(s){s.demonic+=5;s.money+=35+rnd(30);s.fame=Math.max(0,s.fame-3);return '你與山賊達成協議，分得一份贓銀。魔性 +5　銀兩 +35~65　名聲 -3';}]]},
 {id:'wd_wolf',r:'crisis',age:[12,80],t:'荒野中，一群野狼將你圍住。',o:[
-['拔劍迎戰',function(s){if(s.martial>25){s.martial+=3;s.fame+=2;return '你殺退狼群。武力 +3　名聲 +2';}s.hp-=25;return '你被狼群咬傷。氣血 -25';}],
+['拔劍迎戰',function(s){return triggerBattle(pick(['野狼','狼群頭狼','餓狼']),'event');}],
 ['點燃火把驅趕',function(s){if(s.wisdom>10){s.wisdom+=2;return '你用火把嚇退狼群。悟性 +2';}s.hp-=15;return '火把被吹滅。氣血 -15';}],
 ['爬上樹躲避',function(s){s.calm-=2;s.stress+=5;return '你在樹上躲了一夜。靜 -2　壓力 +5';}],
 ['把同伴推出去餵狼',function(s){s.demonic+=6;s.hp=Math.min(getTotalMaxHp(),s.hp+20);return '你把同伴推出去，自己逃生。魔性 +6　氣血回復';}],
@@ -1274,7 +1276,7 @@ var DAILY_EVENTS=[
 ['搜走傷者財物後離開',function(s){s.demonic+=5;s.money+=20+rnd(25);return '你搜走傷者財物便走。魔性 +5　銀兩 +20~45';}],
 ['補上一刀滅口',function(s){s.demonic+=6;s.money+=15+rnd(20);s.stress+=5;return '你補刀滅口並搜身。魔性 +6　銀兩 +15~35　壓力 +5';}]]},
 {id:'wd_snake',r:'crisis',age:[10,80],t:'一條毒蛇突然從草叢竄出。',o:[
-['一劍斬殺',function(s){if(s.martial>15){s.martial+=2;return '你乾淨俐落斬殺毒蛇。武力 +2';}s.hp-=20;return '你被咬傷。氣血 -20';}],
+['一劍斬殺',function(s){return triggerBattle('毒蛇','event');}],
 ['閃身避開',function(s){if(s.fortune>12){s.fortune+=2;return '你靈巧閃避。福緣 +2';}s.hp-=15;return '你避之不及。氣血 -15';}],
 ['慢慢後退',function(s){s.calm+=1;return '你緩緩後退。靜 +1';}],
 ['把毒蛇扔向路人',function(s){s.demonic+=4;s.stress-=3;return '你把毒蛇扔向過路人。魔性 +4　壓力 -3';}],
@@ -1330,7 +1332,7 @@ var DAILY_EVENTS=[
 ['偷隔壁房客的銀兩',function(s){s.demonic+=4;s.money+=20+rnd(30);return '你潛入隔壁房偷走銀兩。魔性 +4　銀兩 +20~50';}],
 ['在酒裡下藥',function(s){s.demonic+=5;s.money+=15+rnd(25);return '你下藥迷昏旅客再搜身。魔性 +5　銀兩 +15~40';}]]},
 {id:'in_brawl',r:'crisis',age:[14,80],t:'客棧裡兩桌酒客打了起來。',o:[
-['出手制止',function(s){if(s.martial>25){s.righteous+=3;s.fame+=3;return '你分開眾人。俠氣 +3　名聲 +3';}s.hp-=15;return '你被誤傷。氣血 -15';}],
+['出手制止',function(s){return triggerBattle(pick(['醉酒武夫','鬧事酒客']),'event');}],
 ['躲到一旁',function(s){s.wisdom+=1;return '你躲過一劫。悟性 +1';}],
 ['趁亂離開',function(s){s.calm+=1;return '你悄然退走。靜 +1';}],
 ['趁亂偷走銀兩',function(s){s.demonic+=4;s.money+=25+rnd(30);return '你趁亂摸走銀兩。魔性 +4　銀兩 +25~55';}],
@@ -1360,7 +1362,7 @@ var DAILY_EVENTS=[
 ['訛詐舊債',function(s){s.demonic+=4;s.money+=25+rnd(35);return '你硬說他欠舊債。魔性 +4　銀兩 +25~60';}],
 ['灌醉後搜身',function(s){s.demonic+=5;s.money+=30+rnd(40);return '你灌醉舊友後搜走銀兩。魔性 +5　銀兩 +30~70';}]]},
 {id:'in_robbery',r:'crisis',age:[14,80],t:'深夜，一群盜賊闖入客棧搶劫。',o:[
-['挺身而出',function(s){if(s.martial>35){s.fame+=5;s.righteous+=3;return '你擊退盜賊。名聲 +5　俠氣 +3';}s.hp-=20;s.money=Math.max(0,s.money-30);return '你被盜賊打傷。';}],
+['挺身而出',function(s){return triggerBattle(pick(['盜賊','劫匪','蒙面盜']),'event');}],
 ['保護自己',function(s){s.hp-=5;s.money=Math.max(0,s.money-20);return '你損失一些財物。';}],
 ['暗中報官',function(s){if(s.wisdom>15){s.righteous+=2;return '官差趕來。俠氣 +2';}s.money=Math.max(0,s.money-30);return '官差來遲。';}],
 ['加入盜賊一起搶',function(s){s.demonic+=6;s.money+=50+rnd(50);return '你加入盜賊一起洗劫客棧。魔性 +6　銀兩 +50~100';}],
@@ -1410,7 +1412,7 @@ var DAILY_EVENTS=[
 ['混進去偷門派令牌',function(s){s.demonic+=4;s.money+=20+rnd(25);return '你偷走令牌轉賣。魔性 +4　銀兩 +20~45';}],
 ['搗亂招收現場',function(s){s.demonic+=3;s.stress-=2;return '你故意搗亂招收。魔性 +3　壓力 -2';}]]},
 {id:'sc_challenge',r:'encounter',age:[16,80],t:'一位門派弟子當街挑戰路人。',o:[
-['接受挑戰',function(s){if(s.martial>30){s.fame+=5;s.martial+=2;return '你擊敗對手。名聲 +5　武力 +2';}s.hp-=15;return '你不敵對手。氣血 -15';}],
+['接受挑戰',function(s){return triggerBattle(pick(['門派弟子','過路高手','挑戰者']),'event');}],
 ['婉拒',function(s){s.calm+=1;return '你婉拒挑戰。靜 +1';}],
 ['與他切磋',function(s){s.martial+=2;return '你們切磋一番。武力 +2';}],
 ['接受挑戰再下毒手',function(s){s.demonic+=5;s.fame+=2;return '你表面應戰，暗中下毒手取勝。魔性 +5　名聲 +2';}],
@@ -1422,19 +1424,19 @@ var DAILY_EVENTS=[
 ['搜走他的財物後離開',function(s){s.demonic+=5;s.money+=20+rnd(25);return '你搜走傷者財物便走。魔性 +5　銀兩 +20~45';}],
 ['補刀滅口',function(s){s.demonic+=6;s.stress+=5;return '你補刀滅口。魔性 +6　壓力 +5';}]]},
 {id:'sc_duel',r:'crisis',age:[16,80],t:'一位門派高手上門尋仇。',o:[
-['迎戰',function(s){if(s.martial>50){s.fame+=8;s.martial+=3;return '你擊敗對手。名聲 +8　武力 +3';}s.hp-=25;return '你不敵對手。氣血 -25';}],
+['迎戰',function(s){return triggerBattle(pick(['尋仇高手','門派高手','仇家']),'event');}],
 ['解釋誤會',function(s){if(s.wisdom>20){s.righteous+=3;return '你解釋清楚。俠氣 +3';}s.hp-=10;return '對方不聽解釋。氣血 -10';}],
 ['逃走',function(s){s.stress+=15;return '你被迫逃走。壓力 +15';}],
 ['假裝解釋再偷襲',function(s){s.demonic+=5;s.fame+=3;return '你假裝解釋，趁機偷襲得手。魔性 +5　名聲 +3';}],
 ['買通旁人陷害他',function(s){s.demonic+=4;s.money-=20;s.fame+=2;return '你買通旁人陷害對方。魔性 +4　名聲 +2';}]]},
 {id:'sc_tournament',r:'rare',age:[18,80],t:'武林大會正在舉行。',o:[
-['參加大會',function(s){if(s.martial>60){s.fame+=20;return '你在武林大會上大放異彩！名聲 +20<br>'+grantMoney(2);}s.fame+=5;s.martial+=3;return '你在會上嶄露頭角。名聲 +5　武力 +3';}],
+['參加大會',function(s){return triggerBattle(pick(['武林大會對手','成名弟子','年輕高手']),'event');}],
 ['觀摩學習',function(s){s.martial+=3;s.wisdom+=2;return '你觀摩高手對決。武力 +3　悟性 +2';}],
 ['不參加',function(s){return '你只是路過。';}],
 ['比賽中作弊下毒',function(s){s.demonic+=5;s.fame+=5;s.martial+=2;return '你暗中作弊取勝。魔性 +5　名聲 +5　武力 +2';}],
 ['賽後搶對手兵器',function(s){s.demonic+=4;return '你賽後搶走對手兵器。魔性 +4<br>'+grantEquip(1,'主手');}]]},
 {id:'sc_rescue_maiden',r:'encounter',age:[16,80],t:'一位門派女弟子被歹人糾纏。',o:[
-['出手相助',function(s){if(s.martial>25){s.righteous+=5;s.fame+=3;return '你趕走歹人。俠氣 +5　名聲 +3';}s.hp-=15;return '你不敵歹人。氣血 -15';}],
+['出手相助',function(s){s.righteous+=2;return triggerBattle(pick(['糾纏歹人','地痞','惡霸']),'event');}],
 ['呼叫旁人',function(s){s.righteous+=2;return '眾人合力趕走歹人。俠氣 +2';}],
 ['離開',function(s){s.demonic+=2;return '你不願惹麻煩。魔性 +2';}],
 ['趕走歹人後勒索她',function(s){s.demonic+=5;s.money+=25+rnd(30);return '你趕走歹人後反過來勒索。魔性 +5　銀兩 +25~55';}],
@@ -1460,13 +1462,13 @@ var DAILY_EVENTS=[
 ],
 'jianghu':[
 {id:'jh_bandit_chief',r:'crisis',age:[16,80],t:'江湖傳聞有一名大盜正在附近出沒。',o:[
-['主動追捕',function(s){if(s.martial>45){s.fame+=10;return '你擒獲大盜。名聲 +10<br>'+grantMoney(2);}s.hp-=25;return '你不敵大盜。氣血 -25';}],
+['主動追捕',function(s){return triggerBattle(pick(['大盜','江洋大盜','匪首']),'event');}],
 ['協助官府',function(s){s.righteous+=3;s.fame+=3;return '你協助官府擒賊。俠氣 +3　名聲 +3';}],
 ['不參與',function(s){return '你不參與此事。';}],
 ['主動加入大盜',function(s){s.demonic+=5;s.money+=40+rnd(40);s.fame=Math.max(0,s.fame-3);return '你加入大盜一夥。魔性 +5　銀兩 +40~80　名聲 -3';}],
 ['假意追捕再分贓',function(s){s.demonic+=4;s.money+=35+rnd(35);return '你假意追捕，實則分贓。魔性 +4　銀兩 +35~70';}]]},
 {id:'jh_duel',r:'encounter',age:[16,80],t:'一位江湖高手向你挑戰。',o:[
-['接受挑戰',function(s){if(s.martial>40){s.fame+=5;s.martial+=3;return '你擊敗對手。名聲 +5　武力 +3';}s.hp-=15;return '你不敵對手。氣血 -15';}],
+['接受挑戰',function(s){return triggerBattle(pick(['江湖高手','成名豪傑','挑戰者']),'event');}],
 ['切磋交流',function(s){s.martial+=2;s.wisdom+=1;return '你們切磋一番。武力 +2　悟性 +1';}],
 ['婉拒',function(s){s.calm+=1;return '你婉拒挑戰。靜 +1';}],
 ['接受挑戰再下毒',function(s){s.demonic+=5;s.fame+=3;s.martial+=2;return '你暗中下毒取勝。魔性 +5　名聲 +3　武力 +2';}],
@@ -1508,7 +1510,7 @@ var DAILY_EVENTS=[
 ['灌醉他再搜身',function(s){s.demonic+=4;s.money+=20+rnd(30);return '你灌醉後搜走財物。魔性 +4　銀兩 +20~50';}],
 ['騙取他的武學',function(s){s.demonic+=3;s.martial+=2;s.wisdom+=2;return '你騙取他口中的武學要點。魔性 +3　武力 +2　悟性 +2';}]]},
 {id:'jh_hero_save',r:'crisis',age:[14,80],t:'一位俠士被人圍攻。',o:[
-['出手相助',function(s){if(s.martial>30){s.righteous+=8;s.fame+=5;return '你與俠士合力擊退敵人。俠氣 +8　名聲 +5';}s.hp-=20;return '你奮力救援，身受重傷。';}],
+['出手相助',function(s){s.righteous+=3;return triggerBattle(pick(['圍攻者','魔教爪牙','黑衣人']),'event');}],
 ['呼喊援軍',function(s){s.righteous+=3;return '援軍趕到。俠氣 +3';}],
 ['旁觀',function(s){s.demonic+=3;return '你選擇旁觀。魔性 +3';}],
 ['假裝相助再黑吃黑',function(s){s.demonic+=5;s.money+=35+rnd(40);return '你假意相助，反搶雙方。魔性 +5　銀兩 +35~75';}],
@@ -1999,24 +2001,77 @@ function afterRevengeChild(){
 }
 
 /* ========== 師門武器與功法成長 ========== */
+/* 神器/神功：特效一開始就有（依等級縮放），滿級全功率；每次升級真正加成屬性 */
+function getDivineScale(item){
+  if(!item)return 0;
+  if(item.isDivine||(item.level||0)>=10)return 1;
+  var lv=item.level||1;
+  return Math.max(0.3, Math.min(1, lv/10));
+}
+function scaleDivineEffect(eff, scale){
+  if(!eff)return null;
+  var o={};for(var k in eff)o[k]=eff[k];
+  o._scale=scale;
+  if(typeof o.chance==='number')o.chance=Math.min(1, o.chance*scale);
+  if(typeof o.heal==='number')o.heal=o.heal*scale;
+  if(typeof o.value==='number')o.value=o.value*scale;
+  if(typeof o.mult==='number')o.mult=1+(o.mult-1)*scale;
+  if(typeof o.reduce==='number')o.reduce=o.reduce*scale;
+  if(typeof o.threshold==='number')o.threshold=o.threshold+(1-o.threshold)*(1-scale)*0.3;
+  return o;
+}
+function applyDivineBonusSubs(item, tpl, targetLevel){
+  if(!tpl||!tpl.bonusSubs)return;
+  if(!item._divineSubKeys)item._divineSubKeys={};
+  tpl.bonusSubs.forEach(function(s){
+    var full=s.val;
+    var want=Math.max(1, Math.floor(full*(targetLevel/10)));
+    var key=s.key;
+    if(item._divineSubKeys[key]===undefined){
+      item.subs.push({name:s.name,key:key,val:want,_divine:true});
+      item._divineSubKeys[key]=want;
+    }else{
+      var prev=item._divineSubKeys[key];
+      var delta=want-prev;
+      if(delta>0){
+        for(var i=0;i<item.subs.length;i++){
+          if(item.subs[i].key===key&&item.subs[i]._divine){item.subs[i].val+=delta;break;}
+        }
+        item._divineSubKeys[key]=want;
+      }
+    }
+  });
+}
+function attachDivineSeed(item, isWeapon){
+  var tpl=isWeapon?DIVINE_MASTER_WEAPONS[item.baseName]:DIVINE_MASTER_SKILLS[item.baseName];
+  if(!tpl)return;
+  if(tpl.special)item.divineSpecial=tpl.special;
+  applyDivineBonusSubs(item, tpl, item.level||1);
+}
 function gainWeaponExp(weapon,amount){
   if(!weapon||!weapon.isMasterWeapon||weapon.level>=10)return false;
   weapon.exp=(weapon.exp||0)+amount;
   var up=false;
   while(weapon.level<10&&weapon.exp>=weapon.expNext){
     weapon.exp-=weapon.expNext;weapon.level++;weapon.expNext=Math.floor(weapon.expNext*1.55);
-    weapon.main.val+=2+Math.floor(weapon.level/2);
-    if(weapon.level%2===0&&weapon.subs.length<5){var a=pick(MAIN_ATTRS);weapon.subs.push({name:a.name,key:a.key,val:2+Math.floor(weapon.level*0.8)});}
+    // 主屬性隨等級實質成長
+    weapon.main.val+=3+Math.floor(weapon.level*0.8);
+    if(weapon.level%2===0&&weapon.subs.length<6){
+      var a=pick(MAIN_ATTRS);weapon.subs.push({name:a.name,key:a.key,val:2+Math.floor(weapon.level*0.9)});
+    }
     var tiers=['凡品','良品','上品','絕品','神品'],ti=tiers.indexOf(weapon.tier);
     if(weapon.level%3===0&&ti<4)weapon.tier=tiers[ti+1];
-    up=true;S.log.push('【師門武器】'+weapon.name+' 成長至 Lv.'+weapon.level+'！');
+    // 神話加成隨等級推進
+    var tpl=DIVINE_MASTER_WEAPONS[weapon.baseName];
+    if(tpl){applyDivineBonusSubs(weapon,tpl,weapon.level);if(!weapon.divineSpecial&&tpl.special)weapon.divineSpecial=tpl.special;}
+    up=true;S.log.push('【師門武器】'+weapon.name+' 成長至 Lv.'+weapon.level+'！主屬性 +'+(3+Math.floor(weapon.level*0.8)));
   }
   if(weapon.level>=10&&!weapon.isDivine){
-    weapon.isDivine=true;weapon.tier='神品';weapon.name='【神器】'+weapon.baseName;weapon.main.val+=30;
-    var tpl=DIVINE_MASTER_WEAPONS[weapon.baseName];
-    if(tpl){if(tpl.bonusSubs)tpl.bonusSubs.forEach(function(s){weapon.subs.push(s);});weapon.divineSpecial=tpl.special;}
+    weapon.isDivine=true;weapon.tier='神品';weapon.name='【神器】'+weapon.baseName;weapon.main.val+=25;
+    var tpl2=DIVINE_MASTER_WEAPONS[weapon.baseName];
+    if(tpl2){applyDivineBonusSubs(weapon,tpl2,10);weapon.divineSpecial=tpl2.special;}
     S.log.push('✦ 師門武器突破，成為傳說神器！ ✦');
-    if(weapon.divineSpecial)S.log.push('✦ 領悟：【'+weapon.divineSpecial.name+'】'+weapon.divineSpecial.desc);
+    if(weapon.divineSpecial)S.log.push('✦ 神器全功率：【'+weapon.divineSpecial.name+'】'+weapon.divineSpecial.desc);
     toast('✦ 神器認主！'+weapon.baseName+' 已成神兵 ✦',3500);
     unlockAchievement('weapon_max');
   }
@@ -2028,16 +2083,20 @@ function gainSkillExp(skill,amount){
   var up=false;
   while(skill.level<10&&skill.exp>=skill.expNext){
     skill.exp-=skill.expNext;skill.level++;skill.expNext=Math.floor(skill.expNext*1.55);
-    skill.main.val+=2+Math.floor(skill.level/2);
-    if(skill.level%2===0&&skill.subs.length<5){var a=pick(MAIN_ATTRS);skill.subs.push({name:a.name,key:a.key,val:2+Math.floor(skill.level*0.8)});}
-    up=true;S.log.push('【師門功法】'+skill.name+' 成長至 Lv.'+skill.level+'！');
+    skill.main.val+=3+Math.floor(skill.level*0.8);
+    if(skill.level%2===0&&skill.subs.length<6){
+      var a=pick(MAIN_ATTRS);skill.subs.push({name:a.name,key:a.key,val:2+Math.floor(skill.level*0.9)});
+    }
+    var tpl=DIVINE_MASTER_SKILLS[skill.baseName];
+    if(tpl){applyDivineBonusSubs(skill,tpl,skill.level);if(!skill.divineSpecial&&tpl.special)skill.divineSpecial=tpl.special;}
+    up=true;S.log.push('【師門功法】'+skill.name+' 成長至 Lv.'+skill.level+'！主屬性 +'+(3+Math.floor(skill.level*0.8)));
   }
   if(skill.level>=10&&!skill.isDivine){
-    skill.isDivine=true;skill.tier='神品';skill.name='【神功】'+skill.baseName;skill.main.val+=30;
-    var tpl=DIVINE_MASTER_SKILLS[skill.baseName];
-    if(tpl){if(tpl.bonusSubs)tpl.bonusSubs.forEach(function(s){skill.subs.push(s);});skill.divineSpecial=tpl.special;}
+    skill.isDivine=true;skill.tier='神品';skill.name='【神功】'+skill.baseName;skill.main.val+=25;
+    var tpl2=DIVINE_MASTER_SKILLS[skill.baseName];
+    if(tpl2){applyDivineBonusSubs(skill,tpl2,10);skill.divineSpecial=tpl2.special;}
     S.log.push('✦ 師門功法突破，成為傳說神功！ ✦');
-    if(skill.divineSpecial)S.log.push('✦ 領悟：【'+skill.divineSpecial.name+'】'+skill.divineSpecial.desc);
+    if(skill.divineSpecial)S.log.push('✦ 神功全功率：【'+skill.divineSpecial.name+'】'+skill.divineSpecial.desc);
     toast('✦ 神功大成！'+skill.baseName+' 已成絕學 ✦',3500);
     unlockAchievement('skill_max');
   }
@@ -2045,13 +2104,18 @@ function gainSkillExp(skill,amount){
 }
 function makeMasterSkill(tpl){
   var sk={id:'msk'+Date.now()+rnd(99999),type:'skill',stype:tpl.stype,tier:tpl.tier,name:tpl.name,main:{name:getAttrName(tpl.key),key:tpl.key,val:tpl.val},subs:[],fromMaster:true};
-  if(tpl.tier==='神品'){sk.isMasterSkill=true;sk.level=1;sk.exp=0;sk.expNext=120;sk.baseName=tpl.name;sk.isDivine=false;}
+  if(tpl.tier==='神品'){
+    sk.isMasterSkill=true;sk.level=1;sk.exp=0;sk.expNext=120;sk.baseName=tpl.name;sk.isDivine=false;
+    attachDivineSeed(sk,false);
+  }
   return sk;
 }
 function makeMasterWeapon(m){
   if(!m.weapon)return null;
   var w=m.weapon;
-  return {id:'mw'+Date.now()+rnd(99999),type:'equip',slot:w.slot,tier:w.tier,name:w.name,main:{name:getAttrName(w.traitKey),key:w.traitKey,val:w.traitVal},subs:[],fromMaster:true,isMasterWeapon:true,masterName:m.name,level:1,exp:0,expNext:100,baseName:w.name,baseTier:w.tier,isDivine:false};
+  var eq={id:'mw'+Date.now()+rnd(99999),type:'equip',slot:w.slot,tier:w.tier,name:w.name,main:{name:getAttrName(w.traitKey),key:w.traitKey,val:w.traitVal},subs:[],fromMaster:true,isMasterWeapon:true,masterName:m.name,level:1,exp:0,expNext:100,baseName:w.name,baseTier:w.tier,isDivine:false};
+  if(DIVINE_MASTER_WEAPONS[eq.baseName])attachDivineSeed(eq,true);
+  return eq;
 }
 
 /* ========== 存檔 ========== */
@@ -2267,15 +2331,15 @@ function loadGame(){
   });
   for(var ds in S.equip){
     var deq=S.equip[ds];
-    if(deq&&deq.isDivine&&!deq.divineSpecial){
-      var tpl=DIVINE_MASTER_WEAPONS[deq.baseName];
-      if(tpl){if(tpl.bonusSubs)tpl.bonusSubs.forEach(function(s){deq.subs.push(s);});deq.divineSpecial=tpl.special;}
+    if(deq&&deq.isMasterWeapon){
+      if(!deq.divineSpecial){var _tplW=DIVINE_MASTER_WEAPONS[deq.baseName];if(_tplW&&_tplW.special)deq.divineSpecial=_tplW.special;}
+      if(typeof applyDivineBonusSubs==='function'&&DIVINE_MASTER_WEAPONS[deq.baseName])applyDivineBonusSubs(deq,DIVINE_MASTER_WEAPONS[deq.baseName],deq.isDivine?10:(deq.level||1));
     }
   }
   S.skills.forEach(function(dsk){
-    if(dsk.isDivine&&!dsk.divineSpecial){
-      var tpl=DIVINE_MASTER_SKILLS[dsk.baseName];
-      if(tpl){if(tpl.bonusSubs)tpl.bonusSubs.forEach(function(s){dsk.subs.push(s);});dsk.divineSpecial=tpl.special;}
+    if(dsk.isMasterSkill){
+      if(!dsk.divineSpecial){var _tplS=DIVINE_MASTER_SKILLS[dsk.baseName];if(_tplS&&_tplS.special)dsk.divineSpecial=_tplS.special;}
+      if(typeof applyDivineBonusSubs==='function'&&DIVINE_MASTER_SKILLS[dsk.baseName])applyDivineBonusSubs(dsk,DIVINE_MASTER_SKILLS[dsk.baseName],dsk.isDivine?10:(dsk.level||1));
     }
   });
   (d.auctionList||[]).forEach(function(a){if(a.playerBid===undefined)a.playerBid=0;if(a.bidder===undefined)a.bidder=null;if(a.sold===undefined)a.sold=false;});
@@ -2493,7 +2557,7 @@ function generateEnemySkills(enemyName){
 function calcEnemyStrength(basePower,source){
   var pAtk=totalAtk()+totalDef(),pHP=getTotalMaxHp();
   var pf=1.0;
-  if(source==='normal')pf=0.7;else if(source==='bounty')pf=1.1;
+  if(source==='normal'||source==='event')pf=0.7;else if(source==='bounty')pf=1.1;
   else if(source==='master')pf=1.2;else if(source==='hunt')pf=1.6;
   else if(source==='abandoned_revenge')pf=1.3;
   // 低齡與低級弟子大幅降低難度，避免10歲必死
@@ -2548,8 +2612,19 @@ function startBattle(name,hp,atk,def,source){
   atk=Math.max(1,Math.floor(atk*(1-_eAd)));
   def=Math.max(1,Math.floor(def*(1-_eDd)));
   var _dE=[];
-  for(var _s in S.equip){var _e=S.equip[_s];if(_e&&_e.divineSpecial)_dE.push(_e.divineSpecial);}
-  S.skills.forEach(function(_sk){if(_sk.divineSpecial)_dE.push(_sk.divineSpecial);});
+  for(var _s in S.equip){
+    var _e=S.equip[_s];
+    if(_e&&_e.divineSpecial){
+      var _sc=typeof getDivineScale==='function'?getDivineScale(_e):1;
+      _dE.push(typeof scaleDivineEffect==='function'?scaleDivineEffect(_e.divineSpecial,_sc):_e.divineSpecial);
+    }
+  }
+  S.skills.forEach(function(_sk){
+    if(_sk.divineSpecial){
+      var _sc2=typeof getDivineScale==='function'?getDivineScale(_sk):1;
+      _dE.push(typeof scaleDivineEffect==='function'?scaleDivineEffect(_sk.divineSpecial,_sc2):_sk.divineSpecial);
+    }
+  });
   BATTLE={
     divineEffects:_dE,divineState:{},source:source||'normal',
     isMasterTask:(source==='master'),
@@ -3769,9 +3844,14 @@ function useItem(i){
 function sellEquip(i){var it=S.bagEquip[i];if(!it)return;if(it.fromMaster){toast('師門裝備不能賣');return;}var p=moneyGain(TIERS[it.tier].val);S.money+=p;S.bagEquip.splice(i,1);S.log.push('賣出 '+it.name+'，獲得 '+p+' 兩。');checkAchievements();render();renderEvent();saveGame();}
 function sellItem(i){var it=S.bagItem[i];if(!it)return;if(it.main.key==='mat'){toast('神秘材料不能賣');return;}var p=moneyGain(Math.floor(TIERS[it.tier].val*0.8));S.money+=p;S.bagItem.splice(i,1);S.log.push('賣出 '+it.name+'，獲得 '+p+' 兩。');checkAchievements();render();renderEvent();saveGame();}
 function sellSkill(i){var sk=S.skills[i];if(!sk)return;if(sk.fromMaster){toast('師門功法不能賣');return;}var p=moneyGain(TIERS[sk.tier].mult*200);S.money+=p;S.skills.splice(i,1);S.log.push('賣出 '+sk.name+'，獲得 '+p+' 兩。');checkAchievements();render();renderEvent();saveGame();}
+function triggerBattle(enemyName, source){
+  S._pendingBattle={name:enemyName||pick(['山賊','惡霸','江洋大盜','武林敗類']),source:source||'event'};
+  return '⚔ 你拔出兵器，決意一戰！';
+}
 function choose(i){
   var ev=S.currentEvent;var opt=(ev.options||ev.opts)[i];var result;
   var before={martial:S.martial,inner:S.inner,wisdom:S.wisdom,fortune:S.fortune,calm:S.calm,maxHp:S.maxHp,money:S.money,fame:S.fame,hp:S.hp,righteous:S.righteous,demonic:S.demonic,stress:S.stress};
+  S._pendingBattle=null;
   try{
     if(opt.stat){
       var sks=opt.stat==='power'?['martial','inner']:[opt.stat];
@@ -3786,6 +3866,12 @@ function choose(i){
       result=ok?opt.win():opt.lose();
     }else result=opt.f?opt.f(S):'你做出了選擇。';
   }catch(err){result='（事件因故中斷）';S.log.push('事件執行錯誤：'+(err.message||err));}
+  if(S._pendingBattle){
+    var pb=S._pendingBattle;S._pendingBattle=null;S.pendingResult=null;
+    clampMoney();checkAchievements();saveGame();
+    startBattle(pb.name,null,null,null,pb.source||'event');
+    return;
+  }
   var deltas=[];
   function dl(label,cur,bef){var d=cur-bef;if(d===0)return;deltas.push(label+(d>0?' +':' ')+d);}
   dl('武力',S.martial,before.martial);dl('內力',S.inner,before.inner);dl('悟性',S.wisdom,before.wisdom);
@@ -4286,7 +4372,7 @@ var WIKI_DATA={
 '神器與神功':[
 {q:'師門武器如何成長？',a:'每次戰鬥勝利 +30~80 + 年齡/3 經驗，滿了自動升級，最多 10 級。'},
 {q:'師門功法如何成長？',a:'關門弟子獲得的神品功法可成長。每次戰鬥勝利 +20~50 + 年齡/4 經驗。'},
-{q:'滿級後有什麼特別？',a:'武器突破為「神器」，名稱加【神器】前綴，主屬性 +30，附贈專屬效果（金色光暈）。<br>功法突破為「神功」，名稱加【神功】前綴，主屬性 +30，附贈專屬效果。<br>例如真武劍 → 太極護體（每回合 30% 回血 4%）。'},
+{q:'滿級後有什麼特別？',a:'神話師門武器／神品功法：一開始就有專屬神級特效（依等級縮放，Lv.1 約 30% 威力，滿級 100%）。<br>每次升級主屬性與神話副屬性都會成長。<br>Lv.10 突破為【神器】／【神功】，特效全功率並額外主屬性大增。'},
 {q:'六位師父都有武器嗎？',a:'都有。<br>正道：張三丰（真武劍）、獨孤求敗（玄鐵重劍）、掃地僧（掃帚）。<br>邪道：歐陽鋒（蛇杖）、東方不敗（繡花針）、丁春秋（毒鼎）。'}
 ],
 '狀態系統':[
