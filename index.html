@@ -226,6 +226,8 @@ var CHANGELOG_ITEMS=[
   {cls:'green',t:'💰 v22.3 銀兩永不為負',d:'・所有銀兩扣除後強制 ≥ 0。<br>・新增 clampMoney / spendMoney 保護。<br>・事件與戰鬥中不再出現負銀兩。'},
   {cls:'blue',t:'⚔ v22.3 低齡戰鬥平衡',d:'・14 歲前敵人強度大幅降低。<br>・18 歲前再適度削弱。<br>・記名弟子師門任務額外減傷。'},
   {cls:'red',t:'🕯 v22.3 重傷倖存',d:'・18 歲前戰鬥失敗改為重傷，不會直接結束人生。<br>・血量保留、壓力上升、少量銀兩損失後繼續江湖路。'},
+  {cls:'green',t:'🔧 v22.3 自動賣出與追殺',d:'・自動賣出改為統一入口，勾選後立即清空背包中對應品階。<br>・棄子／叛師追殺改為每半年必至（100%）。'},
+  {cls:'red',t:'🔥 v22.3 棄子與晚年',d:'・棄子資質天賦升至神品，50%覺醒血仇天命（成長×3、神話師門90%）。<br>・棄後生活經歷寫入日誌。<br>・60歲敵力×2，90歲再×2。<br>・神品套裝不限部位。'},
   {cls:'blue',t:'⚔ v22.3 事件戰鬥接軌',d:'・選擇「一戰／迎戰／挑戰／制止／相助」等戰鬥向選項時，會進入真實戰鬥畫面。<br>・沿用現有戰鬥系統，勝敗結算與重傷規則一致。'},
   {cls:'green',t:'⚔ v22.3 神器神功成長重做',d:'・神話師門武器／神品功法一開始就有神級特效（等級縮放）。<br>・每次升級主屬性與神話副屬性都會實質加成。<br>・滿級全功率並突破為【神器】／【神功】。'},
   {cls:'purple',t:'☠ v22.3 邪道選項擴充',d:'・市集、街巷等事件新增邪惡選項（偷、搶、威脅、聯手）。<br>・邪道選擇獎勵略高於正道，但固定增加魔性。<br>・一心向魔的玩家不再只能靠懸賞走邪路。<br>・已涵蓋日常、市集、荒野、客棧、門派、江湖等幾乎所有一般事件。'},
@@ -641,8 +643,8 @@ function getSetBonus(){
 }
 function getSetSpecialValue(type){var b=getSetBonus(),v=0;b.specials.forEach(function(sp){if(sp.special.type===type)v+=sp.special.value;});return v;}
 function applySetToEquip(eq){
+  // 僅最高階（神品）可成套裝；部位不限，凡能裝備者皆可
   if(!eq||eq.tier!=='神品')return eq;
-  if(SET_SLOTS.indexOf(eq.slot)<0)return eq;
   if(!chance(0.8))return eq;
   var sid=pick(Object.keys(EQUIPMENT_SETS)),set=EQUIPMENT_SETS[sid];
   eq.setId=sid;eq.setName=set.name;eq.isSetPiece=true;
@@ -852,12 +854,44 @@ function rewardTier(scale){
   if(scale===1){if(r<0.4)return '良品';if(r<0.8)return '上品';if(r<0.97)return '絕品';return '神品';}
   if(r<0.3)return '上品';if(r<0.75)return '絕品';return '神品';
 }
+function shouldAutoSellEquip(eq){
+  ensureAutoSettings();
+  return !!(eq&&!eq.fromMaster&&!eq.isMasterWeapon&&S.autoSellTiers&&S.autoSellTiers[eq.tier]);
+}
+function addToBagEquip(eq){
+  if(!eq)return {sold:false,msg:''};
+  if(shouldAutoSellEquip(eq)){
+    var p=moneyGain(TIERS[eq.tier]?TIERS[eq.tier].val:10);
+    S.money+=p;
+    return {sold:true,price:p,msg:'獲得裝備「'+eq.name+'」→ 自動賣出 <b>'+p+'</b> 兩'};
+  }
+  if(S.bagEquip.length>=20){
+    var fb=TIERS[eq.tier]?TIERS[eq.tier].val:10;
+    S.money+=fb;
+    return {sold:true,price:fb,msg:'獲得裝備「'+eq.name+'」（背包已滿，折算 '+fb+' 兩）'};
+  }
+  S.bagEquip.push(eq);
+  return {sold:false,msg:'獲得裝備「<b style="color:'+(TIERS[eq.tier]?TIERS[eq.tier].c:'#c9b58a')+'">'+eq.name+'</b>」（'+eq.tier+'・'+eq.main.name+'+'+eq.main.val+'）'};
+}
+function processAutoSellBag(){
+  ensureAutoSettings();
+  if(!S.bagEquip||!S.bagEquip.length)return 0;
+  var sold=0,gain=0,keep=[];
+  S.bagEquip.forEach(function(eq){
+    if(shouldAutoSellEquip(eq)){
+      var p=moneyGain(TIERS[eq.tier]?TIERS[eq.tier].val:10);
+      S.money+=p;gain+=p;sold++;
+    }else keep.push(eq);
+  });
+  S.bagEquip=keep;
+  if(sold>0){toast('自動賣出 '+sold+' 件裝備，獲 '+gain+' 兩',2500);S.log.push('【自動賣出】'+sold+' 件裝備 → '+gain+' 兩');}
+  return sold;
+}
 function grantEquip(scale,slot){
   var tier=rewardTier(scale);slot=slot||pick(Object.keys(SLOT_DEF));
   var eq=genEquip(slot,tier);if(tier==='神品')eq=applySetToEquip(eq);
-  if(S.bagEquip.length>=20){var fb=TIERS[tier].val;S.money+=fb;return '獲得裝備「'+eq.name+'」（背包已滿，折算 '+fb+' 兩）';}
-  S.bagEquip.push(eq);
-  return '獲得裝備「<b style="color:'+TIERS[tier].c+'">'+eq.name+'</b>」（'+eq.tier+'・'+eq.main.name+'+'+eq.main.val+'）';
+  var r=addToBagEquip(eq);
+  return r.msg;
 }
 function grantSkill(scale){
   var tier=rewardTier(scale),sk=genSkill(tier);
@@ -868,6 +902,12 @@ function grantSkill(scale){
 function grantItem(scale){
   var tier=rewardTier(scale),it=genItem(tier);
   if(S.bagItem.length>=30){var fb=TIERS[tier].val;S.money+=fb;return '獲得道具「'+it.name+'」（背包已滿，折算 '+fb+' 兩）';}
+  if(S.autoUseItem&&it.main&&it.main.key!=='mat'&&it.main.key!=='evo'){
+    // 自動使用（不處理進化道具與神秘材料，避免誤用）
+    if(it.main.key==='hp'){var b=S.hp;S.hp=Math.min(getTotalMaxHp(),S.hp+it.main.val);return '獲得並使用「'+it.name+'」，恢復 '+(S.hp-b)+' 血';}
+    if(it.main.key==='maxHp'){S.maxHp+=it.main.val;S.hp+=it.main.val;return '獲得並使用「'+it.name+'」，血量上限+'+it.main.val;}
+    if(it.main.key&&S[it.main.key]!==undefined){S[it.main.key]=(S[it.main.key]||0)+it.main.val;return '獲得並使用「'+it.name+'」';}
+  }
   S.bagItem.push(it);
   return '獲得道具「<b style="color:'+TIERS[tier].c+'">'+it.name+'</b>」（'+it.tier+'）';
 }
@@ -1885,7 +1925,7 @@ function genChild(s){
 }
 function deedText(d){
   if(!d)return '事蹟';
-  var m={challenge:'挑戰 '+d.target,sect:'拜入 '+d.sect,grudge:'與 '+d.enemy+' 結怨',fortune:'奇遇：殘卷',travel:'遊歷 '+d.place,heroic:'行俠仗義',fame:'武林大會嶄露頭角',disciple:'收徒傳藝',marriage:'成家立業',abandoned:'被父母棄養'};
+  var m={challenge:'挑戰 '+d.target,sect:'拜入 '+d.sect,grudge:'與 '+d.enemy+' 結怨',fortune:'奇遇：殘卷',travel:'遊歷 '+d.place,heroic:'行俠仗義',fame:'武林大會嶄露頭角',disciple:'收徒傳藝',marriage:'成家立業',abandoned:'被父母棄養',revenge_talent:'覺醒血仇天命',master_gear:'獲授師門神兵功法'};
   return m[d.type]||'事蹟';
 }
 function generateChildEvent(c,age){
@@ -1932,9 +1972,45 @@ function childMonthlyGrowth(){
     if(age<3)return;
     if(c.abandoned){
       if(age>60&&chance(0.02)){c.alive=false;c.deathMonth=S.totalMonths;c.deathReason='壽終正寢';return;}
-      c.martial+=1+rnd(2);c.inner+=1+rnd(2);c.fame+=rnd(2);c.maxHp+=5;
-      if(c.abandonedSide==='邪道')c.demonic+=1+rnd(2);else c.righteous+=1+rnd(2);
-      c.revengePower=(c.revengePower||0)+1+rnd(2);
+      var mult=(c.revengeTalent&&c.revengeTalent.id==='blood_revenge')?3:1;
+      // 棄子成長更快
+      c.martial+= (2+rnd(3))*mult;
+      c.inner+= (2+rnd(3))*mult;
+      c.wisdom+= (1+rnd(2))*mult;
+      c.fame+= (1+rnd(3))*mult;
+      c.maxHp+= (8+rnd(8))*mult;
+      if(c.abandonedSide==='邪道')c.demonic+=(2+rnd(3))*mult;else c.righteous+=(2+rnd(3))*mult;
+      c.revengePower=(c.revengePower||0)+(2+rnd(3))*mult;
+      // 詳細棄後生活經歷（較高機率寫入）
+      if(chance(0.55)){
+        var stories=[];
+        if(!c.sect||c.sect.indexOf('復仇')>=0){
+          // 拜師機率：血仇天命 90%，否則 25%
+          var masterChance=c.revengeTalent?0.9:0.25;
+          if(!c.hasMaster&&age>=10&&chance(masterChance*0.15)){
+            var masters=c.abandonedSide==='邪道'?['歐陽鋒','東方不敗','丁春秋']:['張三丰','獨孤求敗','掃地僧'];
+            var mn=pick(masters);
+            c.hasMaster=true;c.masterName=mn;c.sect=mn+'門下';
+            stories.push({text:'拜入神話宗師【'+mn+'】門下，得其真傳。',tag:'拜師',deed:{type:'sect',sect:mn}});
+            c.martial+=10*mult;c.inner+=10*mult;
+            if(c.revengeTalent||chance(0.6)){
+              stories.push({text:'獲授師門神兵與神功殘篇，日夜苦練。',tag:'神兵',deed:{type:'master_gear'}});
+              c.martial+=5*mult;c.inner+=5*mult;c.hasMasterGear=true;
+            }
+          }
+        }
+        if(age>=12&&chance(0.2))stories.push({text:'流落'+pick(['黑市','山寨','古寺','邊關','魔教外圍','鏢局廢墟'])+'，靠'+pick(['偷生','替人辦事','比武賺銀','採藥','護衛商隊'])+'維生。',tag:'流浪'});
+        if(age>=14&&chance(0.18))stories.push({text:'夜深人靜時默念父母之名，仇恨更深。復仇之意 +'+ (2*mult)+'。',tag:'仇恨'});
+        if(age>=16&&chance(0.12))stories.push({text:'在'+pick(['竹林','絕壁','古洞','冰原'])+'閉關苦修三月，功力大進。',tag:'閉關'});
+        if(age>=18&&chance(0.1))stories.push({text:'擊敗'+pick(['同門師兄','山賊頭目','官府捕快','魔教弟子'])+'，在'+c.abandonedSide+'中漸有名號。',tag:'成名'});
+        if(c.hasMaster&&chance(0.12))stories.push({text:'師父傳授殺招，囑其「有朝一日，不必手軟」。',tag:'師訓'});
+        if(stories.length){
+          var st=pick(stories);
+          c.log.push({age:age,text:st.text,tag:st.tag||'棄後'});
+          if(c.log.length>80)c.log.shift();
+          if(st.deed){var d=JSON.parse(JSON.stringify(st.deed));d.age=age;c.deeds.push(d);if(c.deeds.length>12)c.deeds.shift();}
+        }
+      }
       return;
     }
     if(age>60&&chance(0.02)){c.alive=false;c.deathMonth=S.totalMonths;c.deathReason='壽終正寢';return;}
@@ -1948,32 +2024,43 @@ function abandonChild(idx){
   if(!S.childrenList||!S.childrenList[idx])return;
   var c=S.childrenList[idx];if(!c.alive||c.abandoned)return;
   var pa=getAlignmentValue(),ns=pa>=0?'邪道':'正道';
-  confirmBox('💔 棄養子女','確定要棄養 '+c.name+' 嗎？\n\n資質與天賦提升，加入'+ns+'並展開復仇。',function(){
-    var ai=TIER_ORDER.indexOf(c.aptitude);
-    c.aptitude=TIER_ORDER[Math.min(TIER_ORDER.length-1,ai+2)];
-    var ti=TIER_ORDER.indexOf(c.talent.tier);
-    var nt=TIER_ORDER[Math.min(TIER_ORDER.length-1,ti+2)];
-    var tp=pick(TALENTS[nt]);
-    c.talent={tier:nt,name:tp.name,d:tp.d,ability:tp.ability||''};
+  confirmBox('💔 棄養子女','確定要棄養 '+c.name+' 嗎？\n\n資質與天賦升至最高，並可能覺醒【血仇天命】，加入'+ns+'展開復仇。',function(){
+    // 資質、天賦直接升至最高（神品）
+    c.aptitude='神品';
+    var tp=pick(TALENTS['神品']||TALENTS['絕品']||TALENTS[TIER_ORDER[TIER_ORDER.length-1]]);
+    c.talent={tier:'神品',name:tp.name,d:tp.d,ability:tp.ability||''};
+    // 50% 覺醒復仇專屬天賦
+    c.revengeTalent=null;
+    if(chance(0.5)){
+      c.revengeTalent={id:'blood_revenge',name:'血仇天命',icon:'🔥',desc:'成長經歷獎勵×3；拜入神話師門機率90%；可習師門神兵與神功。'};
+    }
     if(pa>=0){c.abandonedSide='邪道';c.sect='邪道復仇者';c.demonic+=30;c.righteous=0;}
     else{c.abandonedSide='正道';c.sect='正道制裁者';c.righteous+=30;c.demonic=0;}
-    c.abandoned=true;c.abandonedMonth=S.totalMonths;c.revengePower=5;
-    c.masterName=c.abandonedSide+'宗師';c.martial+=5;c.inner+=5;
+    c.abandoned=true;c.abandonedMonth=S.totalMonths;c.revengePower=8;
+    c.masterName='';c.martial+=8;c.inner+=8;c.wisdom+=5;c.fame+=5;
     var age=Math.floor((S.totalMonths-c.bornMonth)/12);
-    c.log.push({age:age,text:'被父母棄養，投身'+ns+'報復。',tag:'棄養'});
+    c.log.push({age:age,text:'被父母棄養，憤而投身'+ns+'，誓言復仇。資質與天賦突破至神品。',tag:'棄養'});
+    if(c.revengeTalent)c.log.push({age:age,text:'在仇恨中覺醒【血仇天命】：成長三倍、易得神話師門青睞。',tag:'血仇天命'});
     c.deeds.push({type:'abandoned',age:age,side:ns});
-    toast('💔 '+c.name+' 將在 16 歲後展開復仇',3000);
+    if(c.revengeTalent)c.deeds.push({type:'revenge_talent',age:age});
+    toast(c.revengeTalent?'🔥 '+c.name+' 覺醒血仇天命，將復仇而歸':'💔 '+c.name+' 將在 16 歲後展開復仇',3500);
     render();renderEvent();saveGame();
   });
 }
 function checkAbandonedChildRevenge(){
   if(!S.childrenList||!S.childrenList.length)return false;
-  var el2=S.childrenList.filter(function(c){if(!c.alive||!c.abandoned)return false;return Math.floor((S.totalMonths-c.bornMonth)/12)>=16;});
+  // 16歲後，每半年（6個月）必復仇一次
+  var el2=S.childrenList.filter(function(c){
+    if(!c.alive||!c.abandoned)return false;
+    if(Math.floor((S.totalMonths-c.bornMonth)/12)<16)return false;
+    var last=c.lastRevengeMonth||c.abandonedMonth||c.bornMonth||0;
+    return (S.totalMonths-last)>=6;
+  });
   if(el2.length===0)return false;
-  var tg=el2.filter(function(c){return chance(0.3);});
-  if(tg.length===0)return false;
+  var tg=el2;
   tg.sort(function(a,b){return (b.revengePower||0)-(a.revengePower||0);});
   var av=tg[0],age=Math.floor((S.totalMonths-av.bornMonth)/12);
+  av.lastRevengeMonth=S.totalMonths;
   av.revengePower=(av.revengePower||0)+2+rnd(2);
   var t2=S.childrenList.filter(function(c){return c.alive&&!c.abandoned&&c!==av;});
   var target='player';
@@ -1991,7 +2078,10 @@ function checkAbandonedChildRevenge(){
   }
   S.log.push('【復仇】'+av.name+' 前來偷襲你！');
   var pow=(av.revengePower||5)+(av.martial+av.inner)*2+age*3;
-  startBattle(av.name+'（棄子復仇）',Math.max(50,Math.floor(pow*2)),Math.max(10,Math.floor(pow*0.5)),Math.max(5,Math.floor(pow*0.2)),'abandoned_revenge');
+  if(av.revengeTalent&&av.revengeTalent.id==='blood_revenge')pow=Math.floor(pow*1.5);
+  if(av.hasMasterGear)pow=Math.floor(pow*1.2);
+  var title=av.name+'（棄子復仇'+(av.revengeTalent?'・血仇天命':'')+'）';
+  startBattle(title,Math.max(50,Math.floor(pow*2)),Math.max(10,Math.floor(pow*0.5)),Math.max(5,Math.floor(pow*0.2)),'abandoned_revenge');
   BATTLE.avengerRef=av;BATTLE.avengerAge=age;
   return true;
 }
@@ -2141,7 +2231,7 @@ function buildSaveObject(){
     achievements:S.achievements||{},achieveStats:S.achieveStats||{},
     TOTAL_SCORE:TOTAL_SCORE,_statsInherited:S._statsInherited||false,
     hasAuctionTicket:S.hasAuctionTicket||false,auctionFragments:S.auctionFragments||0,
-    companionPity:S._companionPity||0,specialStreak:S._specialStreak||0,
+    companionPity:S._companionPity||0,specialStreak:S._specialStreak||0,autoSellTiers:S.autoSellTiers||null,autoUseItem:!!S.autoUseItem,autoPlay:false,autoPreferAlign:S.autoPreferAlign||'none',autoPreferBattle:!!S.autoPreferBattle,
     saveTime:Date.now()
   };
 }
@@ -2240,7 +2330,7 @@ function loadGame(){
     childrenList:d.childrenList||[],confidantes:d.confidantes||[],
     inheritedFrom:d.inheritedFrom||null,inheritedDeeds:d.inheritedDeeds||[],
     flags:d.flags||{},seen:d.seen||[],log:d.log||[],
-    gameOver:false,currentEvent:null,pendingResult:null,next:d.next||null,deathReason:'',
+    gameOver:false,currentEvent:null,pendingResult:null,autoSellTiers:{'凡品':false,'良品':false,'上品':false,'絕品':false,'神品':false},autoUseItem:false,autoPlay:false,autoPreferAlign:'none',autoPreferBattle:false,next:d.next||null,deathReason:'',
     equip:d.equip||de,bagEquip:d.bagEquip||[],bagItem:d.bagItem||[],skills:d.skills||[],
     bountyActive:d.bountyActive||[],riddleHistory:d.riddleHistory||[],riddleCorrect:d.riddleCorrect||0,
     master:d.master||null,exiledFrom:d.exiledFrom||null,master0Name:d.master0Name||null,
@@ -2322,6 +2412,16 @@ function loadGame(){
     if(c.hp===undefined)c.hp=c.maxHp;
     if(c.abandoned===undefined)c.abandoned=false;
     if(c.revengePower===undefined)c.revengePower=0;
+    if(c.lastRevengeMonth===undefined)c.lastRevengeMonth=0;
+  ensureAutoSettings();
+  if(d.autoSellTiers)S.autoSellTiers=d.autoSellTiers;
+  if(d.autoUseItem!==undefined)S.autoUseItem=!!d.autoUseItem;
+  S.autoPlay=false;
+  if(d.autoPreferAlign)S.autoPreferAlign=d.autoPreferAlign;
+  if(d.autoPreferBattle!==undefined)S.autoPreferBattle=!!d.autoPreferBattle;
+    if(c.revengeTalent===undefined)c.revengeTalent=null;
+    if(c.hasMaster===undefined)c.hasMaster=!!c.masterName;
+    if(c.hasMasterGear===undefined)c.hasMasterGear=false;
   });
   S.children=S.childrenList.filter(function(c){return c.alive;}).length;
   S.skills.forEach(function(sk){
@@ -2451,11 +2551,11 @@ function checkMasterPromotion(){
 }
 function checkMasterHunt(){
   if(!S.exiledFrom||S.huntCount>=10)return;
-  if(S.totalMonths-S.lastHunt<36+rnd(24))return;
-  if(!chance(0.5))return;
+  // 叛師後每半年（6個月）必追殺一次
+  if(S.totalMonths-S.lastHunt<6)return;
   S.lastHunt=S.totalMonths;S.huntCount++;
   var m=findMaster(S.master0Name);if(!m)return;
-  S.log.push('【追殺】'+m.name+'派出的追兵來了！');
+  S.log.push('【追殺】'+m.name+'派出的追兵來了！（半年一至）');
   startBattle(m.name+'（追殺者）',null,null,null,'hunt');
 }
 function checkMasterTask(){
@@ -2563,8 +2663,11 @@ function calcEnemyStrength(basePower,source){
   // 低齡與低級弟子大幅降低難度，避免10歲必死
   if(S&&S.age<14)pf*=0.35;
   else if(S&&S.age<18)pf*=0.55;
+  // 晚年敵力急升：60歲後翻倍，90歲再翻倍
+  if(S&&S.age>=90)pf*=4;
+  else if(S&&S.age>=60)pf*=2;
   if(source==='master'&&S&&S.master){
-    if(S.master.rank===0)pf*=0.6; // 記名更弱
+    if(S.master.rank===0)pf*=0.6;
     else if(S.master.rank===1)pf*=0.85;
   }
   var tot=pAtk*2+pHP,et=tot*pf;
@@ -2640,6 +2743,7 @@ function startBattle(name,hp,atk,def,source){
   };
   document.getElementById('tabsBar').style.display='none';
   renderBattle();
+  try{tryAutoStartBattle();}catch(e){}
 }
 function pickPlayerSkill(){
   var b=BATTLE;
@@ -2834,13 +2938,13 @@ function battleTurn(){
     b.log.push({who:'system',skill:'💫 氣運之子·完全閃避！ 💫'});
     if(b.player.dodgeCount>=3)unlockAchievement('dodge_3');
     renderBattle();
-    if(b.auto&&!b.done)setTimeout(battleTurn,900);
+    if(b.auto&&!b.done)setTimeout(battleTurn,typeof autoDelay==='function'?autoDelay():900);
     return;
   }
   if(b.enemySlowChance>0&&chance(b.enemySlowChance)){
     b.log.push({who:'system',skill:'🍀 天命壓制：敵人無法出手！ 🍀'});
     renderBattle();
-    if(b.auto&&!b.done)setTimeout(battleTurn,900);
+    if(b.auto&&!b.done)setTimeout(battleTurn,typeof autoDelay==='function'?autoDelay():900);
     return;
   }
   tickStatuses(b.enemy,b.log);
@@ -2848,7 +2952,7 @@ function battleTurn(){
   if(hasStatus(b.enemy,'paralyze')){
     b.log.push({who:'system',skill:'⚡ 敵人被麻痺，無法出手！'});
     renderBattle();
-    if(b.auto&&!b.done)setTimeout(battleTurn,700);
+    if(b.auto&&!b.done)setTimeout(battleTurn,typeof autoDelay==='function'?autoDelay():700);
     return;
   }
   var target=pickEnemyTarget(b);
@@ -2860,7 +2964,7 @@ function battleTurn(){
     b.divineEffects.forEach(function(eff){
       if(eff.type==='dodge'&&!dodged&&chance(eff.chance)){dodged=true;b.log.push({who:'system',skill:'✦ 極速身法：完全閃避！ ✦'});}
     });
-    if(dodged){renderBattle();if(b.auto&&!b.done)setTimeout(battleTurn,900);return;}
+    if(dodged){renderBattle();if(b.auto&&!b.done)setTimeout(battleTurn,typeof autoDelay==='function'?autoDelay():900);return;}
     if(b.partner&&b.partner.hp>0&&b.partner.destinyTalent&&b.partner.destinyTalent.id==='ptd_guard'){
       var bl=Math.floor(dmg*0.3);dmg=Math.max(1,dmg-bl);
       b.log.push({who:'system',skill:'🛡 '+b.partner.name+' 心心相印：為你抵擋 '+bl+' 點傷害'});
@@ -2933,7 +3037,7 @@ function battleTurn(){
   }
   if(checkTotalWipe(b)){endBattle(false);return;}
   renderBattle();
-  if(b.auto&&!b.done)setTimeout(battleTurn,700);
+  if(b.auto&&!b.done)setTimeout(battleTurn,typeof autoDelay==='function'?autoDelay():700);
 }
 function killPartner(reason,age){
   if(!S||!S.partner||S.partnerDead)return;
@@ -2967,7 +3071,7 @@ function endBattle(win){
       }
     }
     S.pets.forEach(function(p){p.kills++;});
-    if(chance(.4)){var lt=genEquip(pick(Object.keys(SLOT_DEF)));if(S.bagEquip.length<20)S.bagEquip.push(lt);b.loot=lt;}
+    if(chance(.4)){var lt=genEquip(pick(Object.keys(SLOT_DEF)));var lr=addToBagEquip(lt);if(!lr.sold)b.loot=lt;else b.lootSold=lr.price;}
     if(chance(.35)){var ed=pick(EVO_ITEMS);if(S.pets.length>0){var pp=pick(S.pets);pp.evoItems[ed]=(pp.evoItems[ed]||0)+1;}b.evoDrop=ed;}
     for(var s in S.equip){
       var eq=S.equip[s];
@@ -3280,7 +3384,7 @@ function nextMonth(skipSpecial){
 function checkSpecialEvents(){
   if(S.partner&&!S.partnerDead&&S.partner.stage!=='夫妻'&&S.partner.stage!=='亡故'&&chance(0.25)){
     S.currentEvent=convertEvent(pick(PARTNER_EVENTS));
-    S.pendingResult=null;S._isSpecialEvent=true;
+    S.pendingResult=null;S._isSpecialEvent=true;if(S.autoPlay){clearAutoPlay();}
     TAB='main';renderEvent();render();
     return true;
   }
@@ -3296,21 +3400,21 @@ function checkSpecialEvents(){
     var chosen=pick(must);
     if(chosen.once)S.seen.push(chosen.id);
     S.currentEvent=convertEvent(chosen);
-    S.pendingResult=null;S._isSpecialEvent=true;
+    S.pendingResult=null;S._isSpecialEvent=true;if(S.autoPlay){clearAutoPlay();}
     TAB='main';renderEvent();render();
     return true;
   }
   if(!S.partner&&spPool.some(function(e){return e.id==='ml';})){
-    if(chance(0.15)){S.currentEvent=convertEvent(spPool.filter(function(e){return e.id==='ml';})[0]);S.pendingResult=null;S._isSpecialEvent=true;TAB='main';renderEvent();render();return true;}
+    if(chance(0.15)){S.currentEvent=convertEvent(spPool.filter(function(e){return e.id==='ml';})[0]);S.pendingResult=null;S._isSpecialEvent=true;if(S.autoPlay){clearAutoPlay();}TAB='main';renderEvent();render();return true;}
   }
   if(S.pets.length<5&&spPool.some(function(e){return e.id==='pf';})){
-    if(chance(0.15)){S.currentEvent=convertEvent(spPool.filter(function(e){return e.id==='pf';})[0]);S.pendingResult=null;S._isSpecialEvent=true;TAB='main';renderEvent();render();return true;}
+    if(chance(0.15)){S.currentEvent=convertEvent(spPool.filter(function(e){return e.id==='pf';})[0]);S.pendingResult=null;S._isSpecialEvent=true;if(S.autoPlay){clearAutoPlay();}TAB='main';renderEvent();render();return true;}
   }
   if(!S.master&&!S.sect&&S.age>=14&&S.age<=30&&spPool.some(function(e){return e.id==='sr';})){
-    if(chance(0.05)){S.currentEvent=convertEvent(spPool.filter(function(e){return e.id==='sr';})[0]);S.pendingResult=null;S._isSpecialEvent=true;TAB='main';renderEvent();render();return true;}
+    if(chance(0.05)){S.currentEvent=convertEvent(spPool.filter(function(e){return e.id==='sr';})[0]);S.pendingResult=null;S._isSpecialEvent=true;if(S.autoPlay){clearAutoPlay();}TAB='main';renderEvent();render();return true;}
   }
   if(!S.sect&&S.age>=18&&S.demonic>=15&&spPool.some(function(e){return e.id==='dm';})){
-    if(chance(0.08)){S.currentEvent=convertEvent(spPool.filter(function(e){return e.id==='dm';})[0]);S.pendingResult=null;S._isSpecialEvent=true;TAB='main';renderEvent();render();return true;}
+    if(chance(0.08)){S.currentEvent=convertEvent(spPool.filter(function(e){return e.id==='dm';})[0]);S.pendingResult=null;S._isSpecialEvent=true;if(S.autoPlay){clearAutoPlay();}TAB='main';renderEvent();render();return true;}
   }
   var fList=(SCENE_EVENTS['fate']||[]).filter(function(e){
     if(e.once&&hasSeen(e.id))return false;
@@ -3322,7 +3426,7 @@ function checkSpecialEvents(){
     var ch=pick(fList);
     if(ch.once)S.seen.push(ch.id);
     S.currentEvent=convertEvent(ch);
-    S.pendingResult=null;S._isSpecialEvent=true;
+    S.pendingResult=null;S._isSpecialEvent=true;if(S.autoPlay){clearAutoPlay();}
     TAB='main';renderEvent();render();
     return true;
   }
@@ -3516,7 +3620,7 @@ function placeBid(i){
 function confirmAuctionWin(i){
   var a=AUCTION_LIST[i];if(!a||a.bidder!=='player'||a.sold)return;
   a.sold=true;a.playerBid=0;
-  if(a.itemType==='equip'){if(S.bagEquip.length<20)S.bagEquip.push(a.item);else{S.money+=a.currentBid;}}
+  if(a.itemType==='equip'){addToBagEquip(a.item);}
   else if(a.itemType==='skill'){if(S.skills.length<30)S.skills.push(a.item);else{S.money+=a.currentBid;}}
   else{
     if(a.name==='攻擊強化符')S.martial+=5;
@@ -3609,7 +3713,7 @@ function grantRiddleReward(count){
   else if(type===1){var at=[{name:'武力',key:'martial'},{name:'內力',key:'inner'},{name:'悟性',key:'wisdom'},{name:'福緣',key:'fortune'},{name:'靜',key:'calm'}];var a=pick(at);var v=Math.max(1,Math.floor((1+rnd(3))*mult));S[a.key]+=v;result='✨ '+a.name+' <b>+'+v+'</b>';}
   else if(type===2){var it=genItem(tier);if(S.bagItem.length<30){S.bagItem.push(it);result='🎁 獲得道具「<b>'+it.name+'</b>」';}else{S.money+=TIERS[tier].val;result='🎁 背包已滿，折為 <b>'+TIERS[tier].val+'</b> 兩';}}
   else if(type===3){var sk=genSkill(tier);if(S.skills.length<30){S.skills.push(sk);result='📜 習得功法「<b>'+sk.name+'</b>」';}else{S.money+=TIERS[tier].val*2;result='📜 功法已滿，折為 <b>'+(TIERS[tier].val*2)+'</b> 兩';}}
-  else{var slot=pick(Object.keys(SLOT_DEF));var eq=genEquip(slot,tier);if(S.bagEquip.length<20){S.bagEquip.push(eq);result='⚔️ 獲得裝備「<b>'+eq.name+'</b>」';}else{S.money+=TIERS[tier].val;result='⚔️ 背包已滿，折為 <b>'+TIERS[tier].val+'</b> 兩';}}
+  else{var slot=pick(Object.keys(SLOT_DEF));var eq=genEquip(slot,tier);var rr=addToBagEquip(eq);result=rr.sold?('⚔️ '+rr.msg):('⚔️ 獲得裝備「<b>'+eq.name+'</b>」');}
   return {result:result,tier:tier};
 }
 
@@ -3669,7 +3773,7 @@ function render(){
   var dl='';
   el.innerHTML=
     '<div class="stat">俠名 <b>'+S.playerName+'（'+S.playerGender+'）</b></div>'+
-    '<div class="stat">年齡 <b>'+S.age+'歲'+(S.month+1)+'月</b></div>'+
+    '<div class="stat" style="grid-column:span 2">年齡 <b>'+S.age+'歲'+(S.month+1)+'月</b> '+autoPlayStatusHTML()+'</div>'+
     '<div class="stat">血量 <b>'+Math.max(0,S.hp)+'/'+tmh+'</b><div class="hpbar"><div style="width:'+clamp(S.hp/tmh*100,0,100)+'%"></div></div></div>'+
     '<div class="stat">武力 <b>'+S.martial+(bonus.martial?' +'+bonus.martial:'')+'</b></div>'+
     '<div class="stat">綜合攻擊 <b style="color:#fbbf24">'+totalAtk()+'</b></div>'+
@@ -3770,7 +3874,19 @@ function renderEquip(el){
   h+='</div><button class="main" onclick="switchTab(\'main\')">返回</button>';el.innerHTML=h;
 }
 function renderBag(el){
-  var h='<h2>背包</h2><div style="color:#c9b58a;font-size:12px">裝備 '+S.bagEquip.length+'/20　道具 '+S.bagItem.length+'/30</div><h3 style="color:#e6b85c;font-size:13px;margin:6px 0">裝備</h3><div class="grid">';
+  ensureAutoSettings();
+  var h='<h2>背包</h2><div style="color:#c9b58a;font-size:12px">裝備 '+S.bagEquip.length+'/20　道具 '+S.bagItem.length+'/30</div>';
+  h+='<div style="background:#2d2117;border:1px solid #5a4630;border-radius:8px;padding:8px;margin:6px 0;font-size:12px">';
+  h+='<div style="color:#e6b85c;font-weight:bold;margin-bottom:4px">💰 裝備自動賣出（進入背包即變銀兩）</div>';
+  var tiers=['凡品','良品','上品','絕品','神品'];
+  tiers.forEach(function(t){
+    var on=!!(S.autoSellTiers&&S.autoSellTiers[t]);
+    h+='<label style="display:inline-block;margin:2px 6px 2px 0;cursor:pointer;color:'+TIERS[t].c+'"><input type="checkbox" '+(on?'checked':'')+' onchange="toggleAutoSell(\''+t+'\',this.checked)"> '+t+'</label>';
+  });
+  h+='<div style="color:#e6b85c;font-weight:bold;margin:8px 0 4px">⚡ 道具自動使用（進入背包即使用）</div>';
+  h+='<label style="cursor:pointer;color:#c9b58a"><input type="checkbox" '+(S.autoUseItem?'checked':'')+' onchange="toggleAutoUseItem(this.checked)"> 啟用自動使用（進化道具／神秘材料除外）</label>';
+  h+='</div>';
+  h+='<h3 style="color:#e6b85c;font-size:13px;margin:6px 0">裝備</h3><div class="grid">';
   S.bagEquip.forEach(function(e,i){h+='<div class="item" style="border-color:'+TIERS[e.tier].c+'" onclick="equipItem('+i+')"><div class="nm" style="color:'+TIERS[e.tier].c+'">'+e.name+'</div><div class="at">['+e.slot+'] '+e.main.name+'+'+e.main.val+'</div><div class="at">'+e.tier+(e.setId?' ◆'+e.setName:'')+'</div><button class="sellBtn" onclick="event.stopPropagation();sellEquip('+i+')">💰 賣 '+moneyGain(TIERS[e.tier].val)+'兩</button></div>';});
   h+='</div><h3 style="color:#e6b85c;font-size:13px;margin:6px 0">道具</h3><div class="grid">';
   S.bagItem.forEach(function(it,i){var st=it.main.name+(it.main.val?'+'+it.main.val:'');h+='<div class="item" style="border-color:'+TIERS[it.tier].c+'" onclick="useItem('+i+')"><div class="nm" style="color:'+TIERS[it.tier].c+'">'+it.name+'</div><div class="at">'+st+'</div><div class="at">'+it.tier+'</div><button class="sellBtn" onclick="event.stopPropagation();sellItem('+i+')">💰 賣 '+moneyGain(Math.floor(TIERS[it.tier].val*0.8))+'兩</button></div>';});
@@ -3905,6 +4021,150 @@ function triggerBattle(enemyName, source){
   S._pendingBattle={name:enemyName||pick(['山賊','惡霸','江洋大盜','武林敗類']),source:source||'event'};
   return '⚔ 你拔出兵器，決意一戰！';
 }
+
+/* ========== 自動化系統 ========== */
+var _autoTimer=null;
+function ensureAutoSettings(){
+  if(!S)return;
+  if(!S.autoSellTiers)S.autoSellTiers={'凡品':false,'良品':false,'上品':false,'絕品':false,'神品':false};
+  if(S.autoUseItem===undefined)S.autoUseItem=false;
+  if(S.autoPlay===undefined)S.autoPlay=false;
+  if(S.autoPreferAlign===undefined)S.autoPreferAlign='none';
+  if(S.autoPreferBattle===undefined)S.autoPreferBattle=false;
+}
+function canEnableAutoPlay(){
+  return !!(S&&S.pets&&S.pets.length>=5&&S.partner&&!S.partnerDead&&S.partner.stage==='夫妻');
+}
+function toggleAutoSell(tier,on){
+  ensureAutoSettings();S.autoSellTiers[tier]=!!on;
+  if(on)processAutoSellBag();
+  render();renderEvent();saveGame();
+}
+function toggleAutoUseItem(on){
+  ensureAutoSettings();S.autoUseItem=!!on;saveGame();
+}
+function toggleAutoPlay(){
+  ensureAutoSettings();
+  if(!S.autoPlay){
+    if(!canEnableAutoPlay()){toast('需寵物滿員（5/5）且伴侶為夫妻才可開啟自動');return;}
+    S.autoPlay=true;toast('▶ 自動選擇已開啟（3倍速）',2500);
+    scheduleAutoPlay();
+  }else{
+    S.autoPlay=false;clearAutoPlay();toast('⏹ 自動選擇已關閉',2000);
+  }
+  render();renderEvent();saveGame();
+}
+function setAutoPreferAlign(v){ensureAutoSettings();S.autoPreferAlign=v;saveGame();render();renderEvent();}
+function setAutoPreferBattle(on){ensureAutoSettings();S.autoPreferBattle=!!on;saveGame();render();renderEvent();}
+
+function autoPlayStatusHTML(){
+  ensureAutoSettings();
+  var can=canEnableAutoPlay();
+  var h='<button type="button" onclick="event.stopPropagation();toggleAutoPlay()" style="margin-left:4px;padding:2px 6px;font-size:10px;border-radius:4px;border:1px solid '+(S.autoPlay?'#4ade80':'#8a7654')+';background:'+(S.autoPlay?'#1a3a1a':'#2d2117')+';color:'+(S.autoPlay?'#4ade80':'#c9b58a')+';cursor:pointer">'+(S.autoPlay?'▶自動中':'自動')+'</button>';
+  if(S.autoPlay){
+    h+=' <select onchange="setAutoPreferAlign(this.value)" style="font-size:10px;background:#2d2117;color:#c9b58a;border:1px solid #5a4630;border-radius:3px;padding:1px">';
+    h+='<option value="none"'+(S.autoPreferAlign==='none'?' selected':'')+'>陣營不限</option>';
+    h+='<option value="righteous"'+(S.autoPreferAlign==='righteous'?' selected':'')+'>偏正道</option>';
+    h+='<option value="demonic"'+(S.autoPreferAlign==='demonic'?' selected':'')+'>偏邪道</option>';
+    h+='</select>';
+    h+=' <label style="font-size:10px;color:#c9b58a"><input type="checkbox" '+(S.autoPreferBattle?'checked':'')+' onchange="setAutoPreferBattle(this.checked)"> 優先戰鬥</label>';
+  }else if(!can){
+    h+='<span style="font-size:9px;color:#8a7654">（需滿寵+夫妻）</span>';
+  }
+  return h;
+}
+
+function clearAutoPlay(){
+  if(_autoTimer){clearTimeout(_autoTimer);_autoTimer=null;}
+}
+function autoDelay(){return S&&S.autoPlay?280:900;}
+function scheduleAutoPlay(){
+  clearAutoPlay();
+  if(!S||!S.autoPlay||S.gameOver)return;
+  if(!canEnableAutoPlay()){S.autoPlay=false;toast('條件不足，自動已關閉');return;}
+  _autoTimer=setTimeout(function(){try{runAutoPlayStep();}catch(e){S.autoPlay=false;clearAutoPlay();toast('自動已停止（安全）');}},autoDelay());
+}
+function isBattleOptionText(t){
+  return /一戰|迎戰|接受挑戰|出手制止|出手相助|挺身而出|主動追捕|拔劍迎戰|與他們一戰|參加大會|一劍斬殺|決鬥|動手|硬拚|開戰/.test(t||'');
+}
+function isRighteousOptionText(t){
+  return /施捨|扶|救|勸|報官|掩埋|放她自由|相助|制止|正道|俠|清掃|參拜|請教|幫他|帶他|給他|幫忙|行俠/.test(t||'');
+}
+function isEvilOptionText(t){
+  return /搶|偷|威脅|踢|騙|訛詐|搜刮|灌醉|下毒|補刀|黑吃|砸毀|強買|聯手|假意|恐嚇|滅口|辱罵|霸佔|白拿|白吃|不給錢|加入惡|加入大盜|墮入/.test(t||'');
+}
+function scoreAutoOption(opt){
+  var t=opt.t||opt.text||'';
+  var score=0;
+  var align=S.autoPreferAlign||'none';
+  var wantBattle=!!S.autoPreferBattle;
+  var isB=isBattleOptionText(t);
+  var isR=isRighteousOptionText(t);
+  var isE=isEvilOptionText(t);
+  // 優先順序：先對齊陣營，再戰鬥（若兩者都勾）
+  if(align==='righteous'){
+    if(isR)score+=100;
+    if(isE)score-=50;
+  }else if(align==='demonic'){
+    if(isE)score+=100;
+    if(isR)score-=50;
+  }
+  if(wantBattle){
+    if(isB)score+=80;
+  }
+  // 微調：避免純離開／婉拒過高
+  if(/婉拒|離開|不感興趣|視而不見|默默|繼續趕路|過而不問/.test(t))score-=5;
+  score+=Math.random()*3;
+  return score;
+}
+function runAutoPlayStep(){
+  if(!S||!S.autoPlay||S.gameOver)return;
+  if(!canEnableAutoPlay()){S.autoPlay=false;return;}
+  // 戰鬥中：確保自動打
+  if(typeof BATTLE!=='undefined'&&BATTLE&&!BATTLE.done){
+    if(!BATTLE.auto){BATTLE.auto=true;try{battleTurn();}catch(e){}}
+    scheduleAutoPlay();return;
+  }
+  // 特殊事件：暫停自動，需手動
+  if(S._isSpecialEvent){
+    toast('⏸ 特殊事件，自動已暫停',2000);
+    return;
+  }
+  // 待繼續
+  if(S.pendingResult){
+    try{afterChoice();}catch(e){}
+    scheduleAutoPlay();return;
+  }
+  // 事件選項
+  var ev=S.currentEvent;
+  if(ev&&(ev.options||ev.opts)&&TAB==='main'){
+    var opts=ev.options||ev.opts;
+    if(opts.length){
+      var best=0,bestScore=-1e9;
+      for(var i=0;i<opts.length;i++){
+        var sc=scoreAutoOption(opts[i]);
+        if(sc>bestScore){bestScore=sc;best=i;}
+      }
+      try{choose(best);}catch(e){S.autoPlay=false;return;}
+      scheduleAutoPlay();return;
+    }
+  }
+  // 無事則推進月份
+  if(TAB==='main'&&!S.pendingResult&&!BATTLE){
+    try{nextMonth();}catch(e){}
+    scheduleAutoPlay();
+  }
+}
+function tryAutoStartBattle(){
+  // 追殺／自動模式：開戰即自動
+  if(typeof BATTLE==='undefined'||!BATTLE||BATTLE.done)return;
+  var force=BATTLE.isHunt||(S&&S.autoPlay);
+  if(force&&!BATTLE.auto){
+    BATTLE.auto=true;
+    setTimeout(function(){try{if(BATTLE&&!BATTLE.done)battleTurn();}catch(e){}},autoDelay());
+  }
+}
+
 function choose(i){
   var ev=S.currentEvent;var opt=(ev.options||ev.opts)[i];var result;
   var before={martial:S.martial,inner:S.inner,wisdom:S.wisdom,fortune:S.fortune,calm:S.calm,maxHp:S.maxHp,money:S.money,fame:S.fame,hp:S.hp,righteous:S.righteous,demonic:S.demonic,stress:S.stress};
@@ -3937,25 +4197,29 @@ function choose(i){
   dl('魔性',S.demonic,before.demonic);dl('壓力',S.stress,before.stress);
   if(deltas.length>0)result+=' <span style="color:#fbbf24;font-weight:bold">【'+deltas.join('　')+'】</span>';
   clampMoney();S.pendingResult=result;checkAchievements();render();renderEvent();saveGame();
+  if(S.autoPlay)scheduleAutoPlay();
 }
 function afterChoice(){
   clampMoney();
   S.pendingResult=null;
   var wasSpecial=S._isSpecialEvent;S._isSpecialEvent=false;
   checkBountyCompletion();
-  if(checkAbandonedChildRevenge())return;
+  if(checkAbandonedChildRevenge()){if(S.autoPlay)scheduleAutoPlay();return;}
   if(wasSpecial){
     S._specialStreak=(S._specialStreak||0)+1;
     if(S._specialStreak>=3){S._specialStreak=0;nextMonth(true);}
     else nextMonth();
+    if(S.autoPlay)scheduleAutoPlay();
     return;
   }
   S._specialStreak=0;
   if(chance(.15)&&S.age>=14){
     startBattle(pick(['山賊','惡霸','江洋大盜','魔教爪牙','武林敗類','野狼','黑熊']),null,null,null,'normal');
+    if(S.autoPlay)scheduleAutoPlay();
     return;
   }
   nextMonth();
+  if(S.autoPlay)scheduleAutoPlay();
 }
 
 /* ========== 伴侶/紅顏/寵物/子女 UI ========== */
@@ -4130,7 +4394,13 @@ function showChild(idx){
   h+='<div class="pp">'+c.gender+'　'+age+'歲　資質：<span style="color:'+TIERS[c.aptitude].c+'">'+c.aptitude+'</span></div>';
   h+='<div style="color:#c084fc;font-size:13px;margin-top:4px">天賦：<b>'+c.talent.name+'</b>（'+c.talent.tier+'）— '+c.talent.d+'</div>';
   h+='<div style="color:#60a5fa;font-size:12px;margin-top:6px">拜入：<b>'+(c.sect||'無')+'</b></div>';
-  if(c.abandoned)h+='<div style="color:#ef4444;font-size:12px;margin-top:4px;padding:6px;background:#2a1212;border-radius:4px">🔥 被棄養　陣營：'+c.abandonedSide+'　復仇力：'+(c.revengePower||0)+'</div>';
+  if(c.abandoned){
+    h+='<div style="color:#ef4444;font-size:12px;margin-top:4px;padding:6px;background:#2a1212;border-radius:4px">🔥 被棄養　陣營：'+c.abandonedSide+'　復仇力：'+(c.revengePower||0);
+    if(c.masterName)h+='　師門：'+c.masterName;
+    if(c.hasMasterGear)h+='　⚔ 持有師門神兵功法';
+    h+='</div>';
+    if(c.revengeTalent)h+='<div style="color:#fbbf24;font-size:12px;margin-top:4px;padding:6px;background:#2a1f10;border:1px solid #fbbf24;border-radius:4px">🔥 '+c.revengeTalent.name+'：'+c.revengeTalent.desc+'</div>';
+  }
   h+='<div style="color:#c9b58a;font-size:12px;margin-top:6px">武力 <b>'+c.martial+'</b>　內力 <b>'+c.inner+'</b>　悟性 <b>'+c.wisdom+'</b>　福緣 <b>'+c.fortune+'</b>　靜 <b>'+c.calm+'</b></div>';
   h+='<div style="color:#c9b58a;font-size:12px">名聲 <b>'+c.fame+'</b>　俠氣 <b>'+c.righteous+'</b>　魔性 <b>'+c.demonic+'</b></div></div>';
   h+='<h3 style="color:#e6b85c;font-size:14px;margin-top:10px">成長經歷</h3>';
@@ -4468,7 +4738,7 @@ var WIKI_DATA={
 '子女系統':[
 {q:'如何生育子女？',a:'與伴侶結為夫妻後，每月有機會觸發「生子」事件（最多 6 位）。'},
 {q:'子女的「事蹟」是什麼？',a:'子女的挑戰門派、結怨、遊歷等事件會記錄成事蹟，成為下一代繼承時的「宿命事件」。'},
-{q:'棄養子女會怎樣？',a:'資質與天賦提升 2 品階，加入與玩家相反的陣營，16 歲後展開復仇。'}
+{q:'棄養子女會怎樣？',a:'資質與天賦直接升至神品；50% 覺醒【血仇天命】（成長獎勵×3、神話師門機率90%、可習師門神兵功法）。棄後生活寫入日誌，16 歲後展開復仇。'}
 ],
 '存檔與備份':[
 {q:'遊戲如何自動存檔？',a:'推進月份、完成戰鬥、進行重要操作時自動存檔到瀏覽器 localStorage。'},
