@@ -2814,7 +2814,7 @@ function battleTurn(){
         b.partner.hp=Math.min(b.partner.maxHp,b.partner.hp+ha);
         var ph=b.player.hp-pB2,ph2=b.partner.hp-pB3;
         if(ph>0||ph2>0){
-          b.log.push({who:'system',skill:'💞 夫妻功法：傷害 '+cd+' → 轉化生命（你 +'+ph+'　'+b.partner.name+' +'+ph2+'）'});
+          b.log.push({who:'system',skill:'💞 夫妻功法（被動）：本回合功法傷害合計 '+cd+' → 轉化生命（你 +'+ph+'　'+b.partner.name+' +'+ph2+'）'});
           b.coupleHealedLastTurn=1;
         }
       }
@@ -4018,7 +4018,7 @@ function showPartner(){
     else if(p.stage==='相戀')h+='<div style="color:#c084fc;font-size:12px;margin-top:8px">💕 相戀階段伴侶會助戰</div>';
     else if(p.stage==='夫妻')h+='<div style="color:#ff6b9d;font-size:12px;margin-top:8px">⚔ 夫妻階段伴侶全力參戰！</div>';
     h+='</div>';
-    if(p.stage==='夫妻')h+='<div class="coupleSkillCard"><div class="ct">💞 夫妻功法</div><div class="cd">夫妻同時在場戰鬥時，傷害總值 50%（天命為 80%）轉化為雙方生命。</div></div>';
+    if(p.stage==='夫妻')h+='<div class="coupleSkillCard"><div class="ct">💞 夫妻功法（固定被動・100%觸發）</div><div class="cd">戰鬥中，你與伴侶（妻子／夫君）使用任意功法造成的傷害，全部計入夫妻功法。<br>每回合結束時，以傷害總值的 50%（天命「情比金堅」為 80%）轉化為雙方生命回復。<br>只要雙方都在場且有造成傷害，必定觸發。</div></div>';
   }
   h+='<div class="partnerSection"><div class="label">◆ 身材</div><div class="body">'+p.body+'</div></div>';
   h+='<div class="partnerSection"><div class="label">◆ 樣貌</div><div class="body">'+p.appearance+'</div></div>';
@@ -4430,7 +4430,8 @@ var WIKI_DATA={
 {q:'寵物資質有什麼用？',a:'資質影響三件事：<br>1. 戰鬥攻擊/血量加成（凡品×1.0，神品×3.0）<br>2. 成長速度（凡品 1，神品 5）<br>3. 神品資質寵物天生擁有「獸魂天命」'},
 {q:'伴侶資質有什麼用？',a:'資質影響：<br>1. 戰鬥 atk（凡品×1.0，神品×3.0）<br>2. HP 上限（凡品 100，神品 300）<br>3. 神品資質伴侶天生擁有「伴侶天命」'},
 {q:'什麼是獸魂天命？',a:'神品寵物專屬天賦，5 選 1：<br>⚡ 狂暴獸魂<br>💚 生生不息<br>💨 靈動身法<br>🦷 碎甲獠牙<br>🛡 獸魂護主'},
-{q:'什麼是伴侶天命？',a:'神品伴侶專屬天賦，5 選 1：<br>💞 情比金堅<br>🛡 心心相印<br>🎵 琴瑟和鳴<br>⚔ 生死相依<br>🍀 氣運同源'},
+{q:'什麼是夫妻功法？',a:'結為夫妻後的固定被動（100%觸發）。戰鬥中你與伴侶使用任意功法造成的傷害都會累計，回合結束時按比例轉化為雙方回血（預設 50%，情比金堅 80%）。'},
+{q:'什麼是伴侶天命？',a:'神品伴侶專屬天賦，5 選 1：<br>💞 情比金堅（夫妻功法轉化率 50%→80%）<br>🛡 心心相印<br>🎵 琴瑟和鳴<br>⚔ 生死相依<br>🍀 氣運同源'},
 {q:'如何獲得神品資質？',a:'相遇/收養事件中約 5% 機率，且每 20 次必出 1 次神品（保底）。'}
 ],
 '神器與神功':[
