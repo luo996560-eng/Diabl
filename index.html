@@ -226,6 +226,7 @@ var CHANGELOG_ITEMS=[
   {cls:'green',t:'💰 v22.3 銀兩永不為負',d:'・所有銀兩扣除後強制 ≥ 0。<br>・新增 clampMoney / spendMoney 保護。<br>・事件與戰鬥中不再出現負銀兩。'},
   {cls:'blue',t:'⚔ v22.3 低齡戰鬥平衡',d:'・14 歲前敵人強度大幅降低。<br>・18 歲前再適度削弱。<br>・記名弟子師門任務額外減傷。'},
   {cls:'red',t:'🕯 v22.3 重傷倖存',d:'・18 歲前戰鬥失敗改為重傷，不會直接結束人生。<br>・血量保留、壓力上升、少量銀兩損失後繼續江湖路。'},
+  {cls:'purple',t:'☠ v22.3 邪道選項擴充',d:'・市集、街巷等事件新增邪惡選項（偷、搶、威脅、聯手）。<br>・邪道選擇獎勵略高於正道，但固定增加魔性。<br>・一心向魔的玩家不再只能靠懸賞走邪路。'},
   {cls:'',t:'📢 傳言說明',d:'此傳言每次開啟遊戲時分頁顯示，每頁三則，點擊可翻頁。'}
 ];
 function showChangelog(){
@@ -1068,11 +1069,15 @@ var DAILY_EVENTS=[
 {id:'mk_thief',r:'daily',age:[10,80],t:'你在市集發現一個小偷正在摸你的錢袋。',o:[
 ['當場抓住他',function(s){if(s.martial>15){s.fame+=3;return '你一把抓住小偷。名聲 +3<br>'+grantMoney(0);}s.money-=20+rnd(20);return '小偷身手矯健，你撲了個空。銀兩損失。';}],
 ['假裝沒發現',function(s){s.money-=20+rnd(30);s.wisdom+=1;return '你裝作不知道。悟性 +1　銀兩損失。';}],
-['偷偷跟蹤他',function(s){if(chance(0.5)){s.wisdom+=2;return '你尾隨到小偷巢穴，取回財物。悟性 +2<br>'+grantMoney(1);}s.hp-=5;s.stress+=5;return '你跟蹤被發現，被打了一頓。';}]]},
+['偷偷跟蹤他',function(s){if(chance(0.5)){s.wisdom+=2;return '你尾隨到小偷巢穴，取回財物。悟性 +2<br>'+grantMoney(1);}s.hp-=5;s.stress+=5;return '你跟蹤被發現，被打了一頓。';}],
+['反過來搶他身上的贓物',function(s){s.demonic+=4;s.money+=25+rnd(30);return '你一把抓住他，反搜走他身上所有贓物。魔性 +4　銀兩 +25~55';}],
+['與他聯手行竊',function(s){s.demonic+=5;s.money+=40+rnd(40);s.stress+=5;return '你與小偷達成默契，一起在市集得手。魔性 +5　銀兩 +40~80　壓力 +5';}]]},
 {id:'mk_beggar',r:'daily',age:[10,80],t:'一位衣衫襤褸的老乞丐向你伸手乞討。',o:[
 ['施捨幾兩',function(s){if(s.money<5)return '你身上沒錢。';s.money-=5;s.righteous+=3;s.fortune+=1;return '乞丐向你合十道謝。俠氣 +3　福緣 +1';}],
 ['問他江湖事',function(s){if(chance(0.2)){s.martial+=3;s.wisdom+=2;return '乞丐原是隱世高手，指點你一二。武力 +3　悟性 +2';}s.wisdom+=1;return '乞丐與你閒聊幾句。悟性 +1';}],
-['冷眼離開',function(s){s.demonic+=1;return '你頭也不回。魔性 +1';}]]},
+['冷眼離開',function(s){s.demonic+=1;return '你頭也不回。魔性 +1';}],
+['搶走他討來的錢',function(s){s.demonic+=4;s.money+=8+rnd(15);s.stress+=3;return '你一把搶過他碗裡的碎銀。魔性 +4　銀兩 +8~23　壓力 +3';}],
+['一腳踢開他',function(s){s.demonic+=3;s.fame=Math.max(0,s.fame-1);return '你一腳將他踢開，路人側目。魔性 +3　名聲 -1';}]]},
 {id:'mk_perf',r:'daily',age:[10,80],t:'街頭一位賣藝人正在表演吞劍。',o:[
 ['打賞幾兩',function(s){if(s.money<3)return '你身上沒錢。';s.money-=3;s.righteous+=2;s.fame+=1;return '賣藝人向你致謝。俠氣 +2　名聲 +1';}],
 ['觀察他的手法',function(s){s.wisdom+=2;return '你看穿了他的門道。悟性 +2';}],
@@ -1080,7 +1085,9 @@ var DAILY_EVENTS=[
 {id:'mk_tailor',r:'daily',age:[10,80],t:'布莊掌櫃拉住你，推薦他新進的布料。',o:[
 ['買一匹布（-20兩）',function(s){if(s.money<20)return '銀兩不足。';s.money-=20;s.calm+=3;return '你買了一匹好布。靜 +3';}],
 ['問他江湖消息',function(s){s.wisdom+=1;return '掌櫃告訴你最近的動向。悟性 +1';}],
-['婉拒離去',function(s){return '你禮貌回絕。';}]]},
+['婉拒離去',function(s){return '你禮貌回絕。';}],
+['趁亂偷走一匹布',function(s){s.demonic+=3;s.money+=15+rnd(20);s.stress+=5;return '你趁掌櫃招呼別的客人，悄悄捲走一匹布賣掉。魔性 +3　銀兩 +15~35　壓力 +5';}],
+['威脅掌櫃白拿',function(s){if(s.martial>25){s.demonic+=5;s.money+=40+rnd(30);s.fame=Math.max(0,s.fame-2);return '你眼神一凜，掌櫃嚇得連連點頭，白送你布料與碎銀。魔性 +5　銀兩 +40~70　名聲 -2';}s.hp-=10;s.demonic+=2;return '掌櫃喊來伙计，你被打跑。氣血 -10　魔性 +2';}]]},
 {id:'mk_escort',r:'encounter',age:[14,80],t:'一位客商正在招募保鏢。',o:[
 ['接下這份差事',function(s){if(s.martial>20){s.fame+=2;return '你護送商隊安全抵達。名聲 +2<br>'+grantMoney(1);}s.hp-=10;return '路上遇匪，你受了傷。氣血 -10';}],
 ['問他薪資',function(s){s.wisdom+=1;return '客商給你十兩打發。悟性 +1<br>'+grantMoney(0);}],
@@ -1088,7 +1095,9 @@ var DAILY_EVENTS=[
 {id:'mk_doctor',r:'daily',age:[10,80],t:'藥鋪郎中見你氣色不佳。',o:[
 ['求診（-15兩）',function(s){if(s.money<15)return '銀兩不足。';s.money-=15;return '郎中為你診治。'+grantHp(1);}],
 ['婉拒',function(s){return '你說自己無恙。';}],
-['問他醫術',function(s){return '郎中傳你養生知識。'+grantAttr(1,1);}]]},
+['問他醫術',function(s){return '郎中傳你養生知識。'+grantAttr(1,1);}],
+['搶走珍貴藥材',function(s){s.demonic+=4;s.money+=20+rnd(25);return '你趁亂搶走幾味珍貴藥材轉賣。魔性 +4　銀兩 +20~45';}],
+['威脅他免費醫治',function(s){if(s.martial>18){s.demonic+=3;return '郎中戰戰兢兢為你診治。魔性 +3<br>'+grantHp(1);}s.demonic+=1;return '郎中拒絕，你只好離開。魔性 +1';}]]},
 {id:'mk_gamble',r:'encounter',age:[16,80],t:'路過一間賭坊。',o:[
 ['進去賭一把',function(s){if(chance(0.4))return '你手氣不錯。'+grantMoney(1);s.money=Math.max(0,s.money-30-rnd(50));return '你輸了一些。';}],
 ['在門口觀察',function(s){s.wisdom+=1;return '你觀察賭徒百態。悟性 +1';}],
@@ -1096,19 +1105,27 @@ var DAILY_EVENTS=[
 {id:'mk_lostchild',r:'encounter',age:[10,80],t:'一個小孩在街角哭泣。',o:[
 ['帶他找家人',function(s){s.righteous+=5;s.fame+=2;return '家人感激不盡。俠氣 +5　名聲 +2';}],
 ['給他點吃的',function(s){if(s.money<5)return '銀兩不足。';s.money-=5;s.righteous+=3;return '小孩吃飽了。俠氣 +3';}],
-['視而不見',function(s){s.demonic+=2;return '你搖搖頭離開。魔性 +2';}]]},
+['視而不見',function(s){s.demonic+=2;return '你搖搖頭離開。魔性 +2';}],
+['騙他身上的玉佩',function(s){s.demonic+=4;s.money+=15+rnd(20);return '你騙他玉佩是「護身符」，輕易到手轉賣。魔性 +4　銀兩 +15~35';}],
+['恐嚇他不許哭',function(s){s.demonic+=3;s.stress-=2;return '小孩嚇得不敢再哭。魔性 +3　壓力 -2';}]]},
 {id:'mk_slave',r:'crisis',age:[14,80],t:'一個少女跪在街頭，賣身葬父。',o:[
 ['買下並放她自由（-50兩）',function(s){if(s.money<50)return '銀兩不足。';s.money-=50;s.righteous+=10;s.fame+=5;return '少女叩謝而去。俠氣 +10　名聲 +5';}],
 ['給她一些銀兩',function(s){if(s.money<10)return '銀兩不足。';s.money-=10;s.righteous+=4;return '少女連連道謝。俠氣 +4';}],
-['離開',function(s){s.demonic+=1;return '你無能為力。魔性 +1';}]]},
+['離開',function(s){s.demonic+=1;return '你無能為力。魔性 +1';}],
+['低價強買她為奴',function(s){if(s.money<20)return '銀兩不足。';s.money-=20;s.demonic+=6;s.money+=10;return '你壓價強買，將她帶走。魔性 +6　銀兩淨損約 10';}],
+['趁亂搶走她身上的銀兩',function(s){s.demonic+=5;s.money+=25+rnd(20);s.stress+=8;return '你一把搶過她賣身的銀兩便走。魔性 +5　銀兩 +25~45　壓力 +8';}]]},
 {id:'mk_swordsmith',r:'daily',age:[10,80],t:'一位鐵匠在舖子前吆喝，展示他新打的刀劍。',o:[
 ['買一把（-40兩）',function(s){if(s.money<40)return '銀兩不足。';s.money-=40;return '你買下一把趁手的兵器。'+grantEquip(1,'主手');}],
 ['與他切磋',function(s){s.martial+=1+rnd(3);return '鐵匠與你切磋一番。武力提升。';}],
-['只是看看',function(s){s.wisdom+=1;return '你欣賞一番便離開。悟性 +1';}]]},
+['只是看看',function(s){s.wisdom+=1;return '你欣賞一番便離開。悟性 +1';}],
+['趁亂搶刀就跑',function(s){if(s.martial>15||chance(0.4)){s.demonic+=4;return '你一把搶過刀劍便走。魔性 +4<br>'+grantEquip(1,'主手');}s.hp-=15;s.demonic+=2;return '鐵匠反應快，你被打傷逃跑。氣血 -15　魔性 +2';}],
+['威脅他低價賣你',function(s){if(s.martial>22){s.demonic+=3;s.money-=10;return '鐵匠被迫半價賣刀。魔性 +3<br>'+grantEquip(1,'主手');}s.demonic+=1;return '鐵匠不為所動，你只好離開。魔性 +1';}]]},
 {id:'mk_bully',r:'encounter',age:[12,80],t:'街上惡少正在欺負老實人。',o:[
 ['上前制止',function(s){if(s.martial>20){s.righteous+=5;s.fame+=3;return '你打跑惡少。俠氣 +5　名聲 +3';}s.hp-=15;return '你寡不敵眾。氣血 -15';}],
 ['呼喊官府',function(s){s.righteous+=2;return '官差趕來。俠氣 +2';}],
-['袖手旁觀',function(s){s.demonic+=2;return '你冷眼旁觀。魔性 +2';}]]},
+['袖手旁觀',function(s){s.demonic+=2;return '你冷眼旁觀。魔性 +2';}],
+['加入惡少一起欺負',function(s){s.demonic+=4;s.money+=10+rnd(15);return '你與惡少聯手，從老實人身上搜刮銀兩。魔性 +4　銀兩 +10~25';}],
+['反過來勒索雙方',function(s){if(s.martial>18){s.demonic+=5;s.money+=30+rnd(25);return '你震懾雙方，逼他們交保護費。魔性 +5　銀兩 +30~55';}s.hp-=12;s.demonic+=2;return '雙方聯手反抗，你吃了虧。氣血 -12　魔性 +2';}]]},
 {id:'mk_storyteller',r:'daily',age:[10,80],t:'茶館裡說書人講述江湖往事。',o:[
 ['仔細聆聽',function(s){s.wisdom+=2;s.martial+=1;return '你領悟一些道理。悟性 +2　武力 +1';}],
 ['打賞他（-5兩）',function(s){if(s.money<5)return '銀兩不足。';s.money-=5;s.fame+=1;return '說書人向你致意。名聲 +1';}],
@@ -1134,7 +1151,9 @@ var DAILY_EVENTS=[
 {id:'wd_bandit',r:'crisis',age:[12,80],t:'山道上，一群山賊擋住你的去路。',o:[
 ['與他們一戰',function(s){if(s.martial>s.age*1.5){s.fame+=5;return '你擊退山賊。名聲 +5<br>'+grantMoney(1);}s.hp-=20+rnd(20);s.money=Math.max(0,s.money-30);return '你寡不敵眾。';}],
 ['交出買路財（-30兩）',function(s){if(s.money<30)return '你身上沒錢。';s.money-=30;s.stress+=5;return '你破財消災。壓力 +5';}],
-['用智取',function(s){if(s.wisdom>20){s.fame+=3;s.wisdom+=2;return '你三言兩語唬住山賊。名聲 +3　悟性 +2';}s.hp-=15;return '你的計謀被識破。氣血 -15';}]]},
+['繞路逃走',function(s){s.stress+=3;return '你抄小路逃走。壓力 +3';}],
+['假意加入，再反手搶他們',function(s){if(s.martial>25||chance(0.45)){s.demonic+=6;s.money+=50+rnd(40);return '你假意歸順，夜裡反手洗劫山賊。魔性 +6　銀兩 +50~90';}s.hp-=25;s.demonic+=3;return '山賊識破你的意圖，你被打傷逃脫。氣血 -25　魔性 +3';}],
+['主動提出一起劫道',function(s){s.demonic+=5;s.money+=35+rnd(30);s.fame=Math.max(0,s.fame-3);return '你與山賊達成協議，分得一份贓銀。魔性 +5　銀兩 +35~65　名聲 -3';}]]},
 {id:'wd_wolf',r:'crisis',age:[12,80],t:'荒野中，一群野狼將你圍住。',o:[
 ['拔劍迎戰',function(s){if(s.martial>25){s.martial+=3;s.fame+=2;return '你殺退狼群。武力 +3　名聲 +2';}s.hp-=25;return '你被狼群咬傷。氣血 -25';}],
 ['點燃火把驅趕',function(s){if(s.wisdom>10){s.wisdom+=2;return '你用火把嚇退狼群。悟性 +2';}s.hp-=15;return '火把被吹滅。氣血 -15';}],
@@ -2936,7 +2955,17 @@ function nextMonth(skipSpecial){
   S.month++;S.totalMonths++;
   if(S.month>=12){S.month=0;S.age++;}
   if(S.regen>0)S.hp=Math.min(getTotalMaxHp(),S.hp+S.regen);
-  if(S.hp<=0){endGame('傷重不治');return;}
+  if(S.hp<=0){
+    if(S.age<18){
+      S.hp=Math.max(1,Math.floor(getTotalMaxHp()*0.1));
+      S.stress=Math.min(100,(S.stress||0)+20);
+      S.log.push('【重傷】你傷勢過重，卻奇蹟般撐了過來。');
+      toast('重傷倖存，未至隕落',2500);
+      clampMoney();
+    }else{
+      endGame('傷重不治');return;
+    }
+  }
   if(S.age>=100){endGame('壽終正寢');return;}
   S.stress+=1;if(S.calm>30)S.stress-=1;
   if(S.stress>=100){S.hp-=20;S.stress=50;}
