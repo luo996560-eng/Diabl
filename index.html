@@ -269,6 +269,25 @@ button.ghost{background:#fff;color:var(--muted);border:1px solid var(--line-dk);
 .auto-sec-t{font-size:13px;font-weight:700;color:var(--crimson);margin-bottom:8px}
 .auto-chk{display:block;font-size:13px;margin:6px 0;color:var(--ink);cursor:pointer}
 .auto-chk input{margin-right:6px;vertical-align:middle}
+
+/* 戰鬥介面優化 */
+.battleScreen{background:linear-gradient(180deg,#faf6f0,#f0e8dc);border:1px solid var(--line-dk);border-radius:14px;padding:14px;box-shadow:0 4px 16px rgba(40,30,20,.08)}
+.battleHeader{text-align:center;font-weight:700;font-size:15px;color:var(--crimson);margin-bottom:12px;letter-spacing:1px}
+.battleChar{background:#fff;border:1px solid var(--line-dk);border-radius:12px;padding:10px 12px;margin-bottom:10px}
+.battleChar .charName{font-weight:700;font-size:14px;margin-bottom:6px;color:var(--ink)}
+.battleChar.enemy .charName{color:#9b2226}
+.battleChar.player .charName{color:#1d4e89}
+.charHpBar{height:10px;background:#e8e0d4;border-radius:6px;overflow:hidden;margin:4px 0}
+.charHpBar>div{height:100%;background:linear-gradient(90deg,#16a34a,#4ade80);border-radius:6px;transition:width .25s}
+.battleChar.enemy .charHpBar>div{background:linear-gradient(90deg,#b91c1c,#ef4444)}
+.charHpText{font-size:11px;color:var(--muted)}
+.battleLog{background:#fffdf9;border:1px solid var(--line);border-radius:10px;padding:8px 10px;max-height:160px;overflow-y:auto;font-size:12px;line-height:1.55;margin:10px 0}
+.battleEntry{padding:2px 0;border-bottom:1px dashed #eee}
+.battleEntry.sysentry{color:var(--gold);font-weight:600}
+.battleEntry.divine{color:#7c3aed;font-weight:700}
+.battleBtns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}
+.battleBtns .main,.battleBtns .ghost{width:auto;min-width:100px;margin:0}
+
 </style>
 </head>
 <body>
@@ -356,13 +375,14 @@ var _saveTimer=null;
 function scheduleSave(){if(_saveTimer)return;if(!S||S.gameOver)return;_saveTimer=setTimeout(function(){_saveTimer=null;if(S&&!S.gameOver)saveGame();},600);}
 
 /* ========== 江湖謠言（更新公告） ========== */
-var CHANGELOG_VERSION='v24.0';
+var CHANGELOG_VERSION='v25.1';
 var CHANGELOG_PAGE=0;
 var CHANGELOG_PER_PAGE=3;
 var CHANGELOG_ITEMS=[
-  {cls:'purple',t:'✨ v24.0 時空武林改版',d:'・遊戲正式更名為「時空武林」。<br>・介面改為紙質書卷風格與三欄佈局。<br>・事件選項標籤、開局分步、武學境界進度。<br>・時空之塔完整保留並美化。'},
-  {cls:'green',t:'⚡ 自動歷練強化',d:'・特殊事件亦可自動抉擇，不再強制暫停。<br>・優先級：花費銀兩 ＞ 戰鬥；正邪為可選偏好。<br>・修正自動戰鬥卡在重複開戰的死迴圈。'},
-  {cls:'blue',t:'🎒 背包自動化',d:'・自動賣出改為輕量 chip 勾選。<br>・自動使用道具真正生效（藥品／屬性丹入手即用）。'},
+  {cls:'gold',t:'✨ v25.1 重置／繼承／塔天賦',d:'・徹底重置含塔天賦與塔進度。<br>・塔天賦改獨立頁選擇，不再混入開局列表。<br>・結算：半積分繼承本世 50% 屬性（可累加）。<br>・神品子女永不死亡；升級經驗再提升。'},
+  {cls:'purple',t:'✨ v25.0 自動與養成大改',d:'・自動設定整合背包清理、功法／裝備賣出、自動使用丹藥、評分換裝。<br>・寵物／伴侶依「資質」篩選；紅顏滿員淘汰最低資質。<br>・自動進化、求婚、扶正、拍賣（僅套裝）、懸賞依正邪接取。<br>・戰鬥結束後自動返回主線事件。'},
+  {cls:'green',t:'⚔ 成長加速',d:'・所有神品功法／武器／裝備皆可升級。<br>・戰鬥經驗大幅提升，更快滿級突破。<br>・拍賣行只出產套裝神品。'},
+  {cls:'blue',t:'💞 伴侶與子女',d:'・伴侶、子女不再因年齡自然死亡（僅戰鬥相關）。<br>・寵物神品資質機率提高並保底。'},
   {cls:'red',t:'🕰 時空之塔',d:'・每 10 層壽命+10、塔內實力×2。<br>・塔天賦來生可選；戰績碼可跨裝置比較。'}
 ];
 function showChangelog(){
@@ -784,13 +804,15 @@ function tierRank(t){return TIER_ORDER.indexOf(t);}
 function tierColor(tier){if(!tier)return '#7a6a52';if(String(tier).indexOf('塔')===0||String(tier).indexOf('塔·')>=0)return '#60a5fa';return (TIERS[tier]&&TIERS[tier].c)||'#7a6a52';}
 function rollTier(){var total=0,list=[];for(var t in TIERS){total+=TIERS[t].w;list.push(t);}var r=Math.random()*total;for(var i=0;i<list.length;i++){r-=TIERS[list[i]].w;if(r<=0)return list[i];}return '凡品';}
 function rollTierForCompanion(){
+  // 寵物／伴侶：神品約 15% + 12 次保底
   if(!S._companionPity)S._companionPity=0;
   S._companionPity++;
-  if(S._companionPity>=20){S._companionPity=0;return '神品';}
-  var t=rollTier();
-  if(t==='神品'){S._companionPity=0;return '神品';}
-  if(chance(0.03)){S._companionPity=0;return '神品';}
-  return t;
+  if(S._companionPity>=12){S._companionPity=0;return '神品';}
+  if(chance(0.15)){S._companionPity=0;return '神品';}
+  if(chance(0.20))return '絕品';
+  if(chance(0.30))return '上品';
+  if(chance(0.40))return '良品';
+  return '凡品';
 }
 var MASTERS=[
   /* —— 原有六位 —— */
@@ -2358,6 +2380,17 @@ function applyChildEvent(c,ev){
   if(c.log.length>80)c.log.shift();
   if(ev.deed){var d=JSON.parse(JSON.stringify(ev.deed));d.age=age;c.deeds.push(d);if(c.deeds.length>12)c.deeds.shift();}
 }
+function canChildDie(c){
+  if(c&&(c.aptitude==='神品'||c.tier==='神品'))return false;
+  return true;
+}
+function killChild(c,reason){
+  if(!c||!canChildDie(c))return false;
+  c.alive=false;
+  if(typeof S!=='undefined'&&S)c.deathMonth=S.totalMonths;
+  c.deathReason=reason||'不詳';
+  return true;
+}
 function childMonthlyGrowth(){
   if(!S.childrenList||!S.childrenList.length)return;
   S.childrenList.forEach(function(c){
@@ -2365,7 +2398,7 @@ function childMonthlyGrowth(){
     var age=Math.floor((S.totalMonths-c.bornMonth)/12);
     if(age<3)return;
     if(c.abandoned){
-      if(age>60&&chance(0.02)){c.alive=false;c.deathMonth=S.totalMonths;c.deathReason='壽終正寢';return;}
+      if(age>60&&chance(0.02)){if(!killChild(c,'壽終正寢'))return;return;}
       var mult=(c.revengeTalent&&c.revengeTalent.id==='blood_revenge')?3:1;
       // 棄子成長更快
       c.martial+= (2+rnd(3))*mult;
@@ -2407,8 +2440,8 @@ function childMonthlyGrowth(){
       }
       return;
     }
-    if(age>60&&chance(0.02)){c.alive=false;c.deathMonth=S.totalMonths;c.deathReason='壽終正寢';return;}
-    if(age>5&&age<65&&chance(0.004)){c.alive=false;c.deathMonth=S.totalMonths;c.deathReason='江湖遇險';return;}
+    if(age>60&&chance(0.02)){if(!killChild(c,'壽終正寢'))return;return;}
+    if(age>5&&age<65&&chance(0.004)){if(!killChild(c,'江湖遇險'))return;return;}
     if(!chance(0.4))return;
     var ev=generateChildEvent(c,age);applyChildEvent(c,ev);
   });
@@ -3903,8 +3936,7 @@ function checkPartnerDeath(){
   if(!S.partner||S.partnerDead)return;
   var p=S.partner;
   if(p.hp<=0){killPartner('為你擋下致命一擊');return;}
-  if(S.age>=70&&chance(0.015)){killPartner('年邁體衰，安詳離世');return;}
-  if(p.hp<100)p.hp=Math.min(100,p.hp+2);
+    if(p.hp<100)p.hp=Math.min(100,p.hp+2);
 }
 function partnerMonthlyGrowth(){
   if(!S.partner||S.partnerDead)return;
@@ -4026,7 +4058,7 @@ function nextMonth(skipSpecial){
   if(checkMasterTask()){render();renderEvent();return;}
   if(tryMasterEncounter()){TAB='main';if(S.destinyEncounterPending)renderDestinyEncounter();else renderMasterEncounter();render();return;}if(typeof tryDestinyFollowUp==='function'&&tryDestinyFollowUp()){TAB='main';renderDestinyFollowUp();render();return;}
   checkAchievements();
-  try{runAutoMonthlyTasks();}catch(_m){}
+  try{runAutoMonthlyTasks();ensureConfidanteSlotForAuto();}catch(_m){}
   var ev=pickEvent();S.currentEvent=ev;S.pendingResult=null;S._isSpecialEvent=false;
   TAB='main';renderEvent();render();
 }
@@ -4200,23 +4232,33 @@ function renderMission(el){
 
 /* ========== 拍賣 ========== */
 function refreshAuctions(){
+  // 拍賣行只出產套裝神品裝備
   AUCTION_LIST=[];
-  var c=4+rnd(3),allSlots=Object.keys(SLOT_DEF);
+  var c=5+rnd(2),allSlots=Object.keys(SLOT_DEF);
+  var setIds=Object.keys(EQUIPMENT_SETS||{});
   for(var i=0;i<c;i++){
-    var roll=Math.random();
-    if(roll<0.45){
-      var slot=pick(allSlots);var eq=genEquip(slot,'神品');eq=applySetToEquip(eq);
-      var base=TIERS[eq.tier].val*8;var price=Math.floor(base*(0.7+Math.random()*0.6));
-      AUCTION_LIST.push({id:'a'+Date.now()+rnd(99999),itemType:'equip',item:eq,name:eq.name,desc:'['+eq.slot+'] '+eq.main.name+'+'+eq.main.val+(eq.setId?' ◆'+eq.setName+'套裝':''),tier:eq.tier,base:base,currentBid:price,sold:false,playerBid:0,bidder:null});
-    }else if(roll<0.75){
-      var sk=genSkill('神品');var b2=TIERS[sk.tier].val*8;var p2=Math.floor(b2*(0.7+Math.random()*0.6));
-      AUCTION_LIST.push({id:'a'+Date.now()+rnd(99999),itemType:'skill',item:sk,name:sk.name,desc:'['+sk.stype+'] '+sk.main.name+'+'+sk.main.val,tier:sk.tier,base:b2,currentBid:p2,sold:false,playerBid:0,bidder:null});
+    var slot=pick(allSlots);
+    var eq=genEquip(slot,'神品');
+    // 強制套裝
+    if(setIds.length){
+      var sid=pick(setIds),set=EQUIPMENT_SETS[sid];
+      eq.setId=sid;eq.setName=set.name;eq.isSetPiece=true;
+      eq.baseName=eq.baseName||eq.name;
+      eq.name='【'+set.name+'】'+(eq.baseName||eq.name);
+      eq.canLevel=true;eq.level=eq.level||1;eq.exp=eq.exp||0;eq.expNext=eq.expNext||90;
     }else{
-      var sp=pick(AUCTION_SPECIALS);var p3=Math.floor(sp.base*(0.8+Math.random()*0.6));
-      AUCTION_LIST.push({id:'a'+Date.now()+rnd(99999),itemType:'special',item:sp,name:sp.name,desc:sp.desc,tier:'神品',base:sp.base,currentBid:p3,sold:false,playerBid:0,bidder:null});
+      eq=applySetToEquip(eq);
     }
+    var base=TIERS['神品'].val*10;
+    var price=Math.floor(base*(0.8+Math.random()*0.5));
+    AUCTION_LIST.push({
+      id:'a'+Date.now()+rnd(99999),itemType:'equip',item:eq,equip:eq,
+      name:eq.name,desc:'['+eq.slot+'] '+eq.main.name+'+'+eq.main.val+(eq.setId?' ◆'+eq.setName+'套裝':''),
+      tier:'神品',base:base,currentBid:price,price:price,sold:false,playerBid:0,bidder:null
+    });
   }
 }
+
 function renderAuction(el){
   if(!S.hasAuctionTicket){
     var h='<h2>🏛️ 拍賣行</h2>';
@@ -5252,15 +5294,33 @@ function openAutoSettingsPanel(){
     '<label class="auto-chk"><input type="checkbox" id="asPInt"'+(S.autoPartnerInteract!==false?' checked':'')+'> 自動伴侶互動</label>'+
     '<label class="auto-chk"><input type="checkbox" id="asPropose"'+(S.autoPropose!==false?' checked':'')+'> 情意≥80 自動求婚</label>'+
     '<label class="auto-chk"><input type="checkbox" id="asPromote"'+(S.autoPromoteConfidante!==false?' checked':'')+'> 伴侶死後自動扶正紅顏</label></div>'+
-    '<div class="auto-sec"><div class="auto-sec-t">背包／裝備</div>'+
-    '<label class="auto-chk"><input type="checkbox" id="asBagClean"'+(S.autoBagClean?' checked':'')+'> 依「自動賣出」清理背包</label>'+
-    '<label class="auto-chk"><input type="checkbox" id="asEquip"'+(S.autoEquipBest!==false?' checked':'')+'> 自動穿更高評分裝備</label>'+
-    '<p style="font-size:11px;color:var(--muted);margin:0">評分＝品階×屬性＋等級＋套裝／神器加成；不替換師門武器</p></div>'+
+    '<div class="auto-sec"><div class="auto-sec-t">背包清理／裝備／功法</div>'+
+    '<label class="auto-chk"><input type="checkbox" id="asBagClean"'+(S.autoBagClean?' checked':'')+'> 每月自動清理背包</label>'+
+    '<p style="font-size:12px;margin:6px 0 2px">賣出裝備資質</p>'+
+    '<label class="auto-chk" style="display:inline-block;width:18%"><input type="checkbox" id="asEq凡品"'+(S.autoSellTiers&&S.autoSellTiers['凡品']?' checked':'')+'>凡</label>'+
+    '<label class="auto-chk" style="display:inline-block;width:18%"><input type="checkbox" id="asEq良品"'+(S.autoSellTiers&&S.autoSellTiers['良品']?' checked':'')+'>良</label>'+
+    '<label class="auto-chk" style="display:inline-block;width:18%"><input type="checkbox" id="asEq上品"'+(S.autoSellTiers&&S.autoSellTiers['上品']?' checked':'')+'>上</label>'+
+    '<label class="auto-chk" style="display:inline-block;width:18%"><input type="checkbox" id="asEq絕品"'+(S.autoSellTiers&&S.autoSellTiers['絕品']?' checked':'')+'>絕</label>'+
+    '<label class="auto-chk" style="display:inline-block;width:18%"><input type="checkbox" id="asEq神品"'+(S.autoSellTiers&&S.autoSellTiers['神品']?' checked':'')+'>神</label>'+
+    '<p style="font-size:12px;margin:8px 0 2px">賣出功法資質</p>'+
+    '<label class="auto-chk" style="display:inline-block;width:18%"><input type="checkbox" id="asSk凡品"'+(S.autoSellSkillTiers&&S.autoSellSkillTiers['凡品']?' checked':'')+'>凡</label>'+
+    '<label class="auto-chk" style="display:inline-block;width:18%"><input type="checkbox" id="asSk良品"'+(S.autoSellSkillTiers&&S.autoSellSkillTiers['良品']?' checked':'')+'>良</label>'+
+    '<label class="auto-chk" style="display:inline-block;width:18%"><input type="checkbox" id="asSk上品"'+(S.autoSellSkillTiers&&S.autoSellSkillTiers['上品']?' checked':'')+'>上</label>'+
+    '<label class="auto-chk" style="display:inline-block;width:18%"><input type="checkbox" id="asSk絕品"'+(S.autoSellSkillTiers&&S.autoSellSkillTiers['絕品']?' checked':'')+'>絕</label>'+
+    '<label class="auto-chk" style="display:inline-block;width:18%"><input type="checkbox" id="asSk神品"'+(S.autoSellSkillTiers&&S.autoSellSkillTiers['神品']?' checked':'')+'>神</label>'+
+    '<label class="auto-chk"><input type="checkbox" id="asUseItem"'+(S.autoUseItem?' checked':'')+'> 自動使用藥品／丹藥</label>'+
+    '<label class="auto-chk"><input type="checkbox" id="asEquip"'+(S.autoEquipBest!==false?' checked':'')+'> 自動穿更高評分裝備</label></div>'+
     '<div class="auto-sec"><div class="auto-sec-t">拍賣行</div>'+
     '<label class="auto-chk"><input type="checkbox" id="asAuction"'+(S.autoAuction?' checked':'')+'> 有入場券時自動競拍</label>'+
     '<div style="font-size:12px;margin:4px 0">最低銀兩 <input id="asAucMoney" type="number" value="'+(S.autoAuctionMinMoney||5000)+'" style="width:90px;padding:4px;border-radius:6px;border:1px solid var(--line-dk)"></div>'+
     '<div style="font-size:12px;margin:4px 0">優先套裝 <select id="asAucSet">'+setOpts(S.autoAuctionSet||'any')+'</select></div></div>'+
-    '<div class="auto-sec"><div class="auto-sec-t">其餘</div>'+
+    '<div class="auto-sec"><div class="auto-sec-t">懸賞／其餘</div>'+
+    '<label class="auto-chk"><input type="checkbox" id="asBounty"'+(S.autoBounty?' checked':'')+'> 自動接懸賞</label>'+
+    '<div style="font-size:12px;margin:4px 0">懸賞陣營 <select id="asBountyAlign">'+
+    '<option value="match"'+(S.autoBountyAlign==='match'?' selected':'')+'>跟隨正邪</option>'+
+    '<option value="正"'+(S.autoBountyAlign==='正'?' selected':'')+'>只接正道</option>'+
+    '<option value="邪"'+(S.autoBountyAlign==='邪'?' selected':'')+'>只接邪道</option>'+
+    '<option value="all"'+(S.autoBountyAlign==='all'?' selected':'')+'>全部</option></select></div>'+
     '<label class="auto-chk"><input type="checkbox" id="asMaster"'+(S.autoAcceptMaster?' checked':'')+'> 自動拜師</label>'+
     '<label class="auto-chk"><input type="checkbox" id="asDestiny"'+(S.autoDestinyBond!==false?' checked':'')+'> 自動結交宿命</label>'+
     '<label class="auto-chk"><input type="checkbox" id="asTower"'+(S.autoSkipTower!==false?' checked':'')+'> 不自動進塔</label></div>'+
@@ -5299,6 +5359,15 @@ function saveAutoSettingsFromPanel(){
   if(g('asMaster'))S.autoAcceptMaster=!!g('asMaster').checked;
   if(g('asDestiny'))S.autoDestinyBond=!!g('asDestiny').checked;
   if(g('asTower'))S.autoSkipTower=!!g('asTower').checked;
+  if(g('asUseItem'))S.autoUseItem=!!g('asUseItem').checked;
+  if(g('asBounty'))S.autoBounty=!!g('asBounty').checked;
+  if(g('asBountyAlign'))S.autoBountyAlign=g('asBountyAlign').value;
+  if(!S.autoSellTiers)S.autoSellTiers={};
+  if(!S.autoSellSkillTiers)S.autoSellSkillTiers={};
+  ['凡品','良品','上品','絕品','神品'].forEach(function(x){
+    var eq=g('asEq'+x); if(eq)S.autoSellTiers[x]=!!eq.checked;
+    var sk=g('asSk'+x); if(sk)S.autoSellSkillTiers[x]=!!sk.checked;
+  });
   saveGame();
   toast('✓ 自動設定已儲存');
 }
@@ -5406,8 +5475,32 @@ function runAutoMonthlyTasks(){
     if(S.autoAuction&&S.hasAuctionTicket&&S.money>=(S.autoAuctionMinMoney||5000)){
       tryAutoAuctionBuy();
     }
+    // 7) 自動接懸賞（按正邪）
+    if(S.autoBounty){
+      tryAutoAcceptBounty();
+    }
   }catch(e){console.error('runAutoMonthlyTasks',e);}
 }
+function tryAutoAcceptBounty(){
+  if(!BOUNTY_LIST||!BOUNTY_LIST.length)return;
+  if(!S.bountyActive)S.bountyActive=[];
+  if(S.bountyActive.length>=3)return; // 最多同時 3 個
+  var align=S.autoBountyAlign||'match';
+  var prefer=null;
+  if(align==='match'){
+    var v=(S.righteous||0)-(S.demonic||0);
+    prefer=v>=10?'正':(v<=-10?'邪':null);
+  }else if(align==='正'||align==='邪')prefer=align;
+  else if(align==='all')prefer=null;
+  for(var i=0;i<BOUNTY_LIST.length;i++){
+    var b=BOUNTY_LIST[i];
+    if(!b||b.accepted)continue;
+    var ba=b.align||(b.type&&b.type.align)||'正';
+    if(prefer&&prefer!=='all'&&ba!==prefer)continue;
+    try{acceptBounty(i);S.log.push('【自動】接下懸賞：'+(b.name||b.type||''));return;}catch(e){}
+  }
+}
+
 function tryAutoEquipFromBag(){
   if(!S.bagEquip||!S.bagEquip.length)return;
   if(!S.equip)S.equip=emptyEquipSlots();
@@ -5551,6 +5644,19 @@ function applyAutoCompanionFilters(){
       }
     }
   }
+}
+function ensureConfidanteSlotForAuto(){
+  if(!S||!S.autoPlay)return;
+  if(!S.confidantes)S.confidantes=[];
+  if(S.partner&&!S.partnerDead&&S.partner.stage==='夫妻'&&S.autoPartnerMeet===false)return;
+  if(S.confidantes.length<10)return;
+  var worst=0,wr=99;
+  for(var i=0;i<S.confidantes.length;i++){
+    var r=tierRank(S.confidantes[i].aptitude||'凡品');
+    if(r<wr){wr=r;worst=i;}
+  }
+  var drop=S.confidantes.splice(worst,1)[0];
+  if(drop&&S.log)S.log.push('【自動】紅顏已滿，割捨資質最低的 '+drop.name+'（'+(drop.aptitude||'?')+'）');
 }
 function choose(i){
   var ev=S.currentEvent;var opt=(ev.options||ev.opts)[i];var result;
@@ -5867,16 +5973,41 @@ function inheritStats(){
   if(!S||!S.gameOver)return;
   if(S._statsInherited){toast('已經繼承過了');return;}
   if(TOTAL_SCORE<=0){toast('沒有積分可消耗');return;}
-  var r=0.25;
-  var bonus={martial:Math.floor(S.martial*r),inner:Math.floor(S.inner*r),wisdom:Math.floor(S.wisdom*r),fortune:Math.floor(S.fortune*r),calm:Math.floor(S.calm*r),maxHp:Math.floor(S.maxHp*r),money:Math.floor(S.money*r),fame:Math.floor(S.fame*r)};
-  confirmBox('💎 屬性繼承','消耗全部 '+TOTAL_SCORE+' 積分，將此次人生的 25% 屬性帶入下一世？\n\n武力 +'+bonus.martial+'\n內力 +'+bonus.inner+'\n悟性 +'+bonus.wisdom+'\n福緣 +'+bonus.fortune+'\n靜 +'+bonus.calm+'\n血量上限 +'+bonus.maxHp+'\n銀兩 +'+bonus.money+'\n名聲 +'+bonus.fame,function(){
+  var cost=Math.floor(TOTAL_SCORE/2);
+  if(cost<1){toast('積分不足');return;}
+  var r=0.5;
+  var bonus={
+    martial:Math.floor((S.martial||0)*r),
+    inner:Math.floor((S.inner||0)*r),
+    wisdom:Math.floor((S.wisdom||0)*r),
+    fortune:Math.floor((S.fortune||0)*r),
+    calm:Math.floor((S.calm||0)*r),
+    maxHp:Math.floor((S.maxHp||0)*r),
+    money:Math.floor((S.money||0)*r),
+    fame:Math.floor((S.fame||0)*r)
+  };
+  // 與既有繼承累加（除非徹底重置，否則保留）
+  var prev={};
+  try{var raw=localStorage.getItem('wuxiaInheritanceBonus');if(raw)prev=JSON.parse(raw)||{};}catch(e){}
+  var merged={
+    martial:(prev.martial||0)+bonus.martial,
+    inner:(prev.inner||0)+bonus.inner,
+    wisdom:(prev.wisdom||0)+bonus.wisdom,
+    fortune:(prev.fortune||0)+bonus.fortune,
+    calm:(prev.calm||0)+bonus.calm,
+    maxHp:(prev.maxHp||0)+bonus.maxHp,
+    money:(prev.money||0)+bonus.money,
+    fame:(prev.fame||0)+bonus.fame
+  };
+  confirmBox('💎 屬性繼承','消耗一半積分（'+cost+'／現有 '+TOTAL_SCORE+'），將本世 50% 屬性累加至來世基礎？\n\n武力 +'+bonus.martial+'\n內力 +'+bonus.inner+'\n悟性 +'+bonus.wisdom+'\n福緣 +'+bonus.fortune+'\n靜 +'+bonus.calm+'\n血量上限 +'+bonus.maxHp+'\n銀兩 +'+bonus.money+'\n名聲 +'+bonus.fame+'\n\n（累積繼承直至徹底重置才清除）',function(){
     S._statsInherited=true;
-    var consumed=TOTAL_SCORE;TOTAL_SCORE=0;saveScore();
-    try{localStorage.setItem('wuxiaInheritanceBonus',JSON.stringify(bonus));}catch(e){}
-    toast('💎 消耗 '+consumed+' 點積分，屬性將繼承！',3000);
-    renderEnding(document.getElementById('event'));render();
+    TOTAL_SCORE-=cost;if(TOTAL_SCORE<0)TOTAL_SCORE=0;saveScore();
+    try{localStorage.setItem('wuxiaInheritanceBonus',JSON.stringify(merged));}catch(e){}
+    toast('已繼承 50% 屬性，消耗 '+cost+' 積分');
+    renderEnding(document.getElementById('event'));
   });
 }
+
 function applyInheritanceBonus(){
   var raw;try{raw=localStorage.getItem('wuxiaInheritanceBonus');}catch(e){return false;}
   if(!raw)return false;
@@ -6046,11 +6177,11 @@ function renderEnding(el){
   var ac=0;ACHIEVEMENTS.forEach(function(a){if(hasAchievement(a.id))ac++;});
   var ih='<div style="background:#1a0f18;border:2px solid #c084fc;border-radius:8px;padding:12px;margin:12px 0;text-align:left">';
   ih+='<div style="color:#c084fc;font-size:14px;font-weight:bold;letter-spacing:2px;text-align:center">💎 屬性繼承</div>';
-  if(S._statsInherited)ih+='<div style="color:#4ade80;font-size:12px;text-align:center;margin-top:8px">✓ 已消耗全部積分，屬性將帶入下一世</div>';
+  if(S._statsInherited)ih+='<div style="color:#4ade80;font-size:12px;text-align:center;margin-top:8px">✓ 已消耗一半積分，50% 屬性將累加至來世</div>';
   else if(TOTAL_SCORE>0){
     ih+='<div style="color:var(--muted);font-size:12px;text-align:center;margin:6px 0">當前積分：<b style="color:#fbbf24">'+TOTAL_SCORE+'</b></div>';
-    ih+='<div style="color:var(--muted);font-size:11px;text-align:center;margin-bottom:8px">消耗全部積分，將此次人生的 25% 屬性帶入下一世</div>';
-    ih+='<button class="evo" onclick="inheritStats()">💎 消耗全部積分繼承 25% 屬性</button>';
+    ih+='<div style="color:var(--muted);font-size:11px;text-align:center;margin-bottom:8px">消耗一半積分，將本世 50% 屬性累加至來世基礎（徹底重置才清除）</div>';
+    ih+='<button class="evo" onclick="inheritStats()">💎 消耗一半積分・繼承 50% 屬性</button>';
   }else ih+='<div style="color:var(--muted);font-size:12px;text-align:center;margin-top:6px">無積分可消耗</div>';
   ih+='</div>';
   var h='<div class="ending"><h2 style="color:var(--gold);font-size:24px">'+(S._endingTitle||'江湖過客')+'</h2>';
@@ -6285,6 +6416,42 @@ var TALENTS={
 {name:'氣運之子',d:'福緣+40，靜+20',ability:'天命所歸：事件判定 +15，戰鬥中 6% 完全閃避。',f:function(s){s.fortune+=40;s.calm+=20;}},
 {name:'不死之身',d:'血量上限+500，每月回血+5',ability:'浴火重生：致命傷害鎖血 1 點，5 回合不死（每場一次）。',f:function(s){s.maxHp+=500;s.hp+=500;s.regen=5;}}
 ]};
+
+function showTowerTalentPick(){
+  if(IS_FIRST_LIFE){toast('初次人生尚無塔天賦');return;}
+  var list=typeof getTowerUnlockedList==='function'?getTowerUnlockedList():[];
+  if(!list.length){toast('尚未解鎖任何時空之塔天賦');return;}
+  window._towerTalentPicks=list;
+  var el=document.getElementById('event');
+  var html='<div class="ev-meta" style="text-align:center">時空之塔</div><h2 style="text-align:center;border:none">選擇塔天賦</h2>';
+  html+='<p style="text-align:center;color:var(--muted);font-size:13px">以下為已解鎖的塔天賦，選一項作為本世加成（可略過）</p>';
+  list.forEach(function(u,i){
+    html+='<div class="talent-box" style="border-color:#60a5fa" onclick="chooseTowerTalent('+i+')">';
+    html+='<span class="tt" style="color:#60a5fa">🕰 塔・'+u.role+'</span>';
+    html+='<div class="tn" style="color:#60a5fa">'+(u.icon||'')+' '+u.name+'</div>';
+    html+='<div class="td">'+u.desc+'</div>';
+    html+='<div style="font-size:11px;color:var(--muted);margin-top:4px">解鎖層：'+(u.floor||'?')+'</div></div>';
+  });
+  html+='<button type="button" class="ghost" onclick="drawTalent()">← 返回普通天賦</button>';
+  el.innerHTML=html;
+}
+function chooseTowerTalent(i){
+  var list=window._towerTalentPicks||[];
+  var u=list[i];
+  if(!u){toast('資料遺失');return;}
+  // 塔天賦暫存，仍需選普通天賦；或直接套用並進入
+  window._pendingTowerTalent=u;
+  toast('已選定塔天賦：'+u.name+'，請再選一項普通天賦');
+  drawTalent();
+}
+function applyPendingTowerTalent(){
+  var u=window._pendingTowerTalent;
+  if(!u||!S)return;
+  S.towerTalentId=u.id;S.towerTalentName=u.name;
+  S.martial=(S.martial||0)+5;S.inner=(S.inner||0)+5;S.maxHp=(S.maxHp||0)+50;S.hp=(S.hp||0)+50;
+  if(S.log)S.log.push('【時空之塔】繼承天賦：'+u.name);
+  window._pendingTowerTalent=null;
+}
 function drawTalent(){
   var picks=[];
   if(IS_FIRST_LIFE){for(var i=0;i<3;i++)picks.push({tier:'神品',talent:pick(TALENTS['神品']),source:'normal'});}
@@ -6308,7 +6475,7 @@ function drawTalent(){
   var html='<div class="ev-meta" style="text-align:center">開局流程</div><h2 style="text-align:center;border:none">'+S.playerName+'，選擇你的天賦</h2><div class="steps"><span class="step done">① 性別</span><span class="step done">② 姓名</span><span class="step on">③ 天賦</span><span class="step">④ 入世</span></div>';
   if(IS_FIRST_LIFE)html+='<div style="text-align:center;color:#92400e;font-size:13px;margin:8px 0;padding:10px;background:#fef3c7;border:1px solid #f0d48a;border-radius:8px">✦ 初次踏入江湖，天賦必為神品 ✦</div>';
   else html+='<div style="text-align:center;color:#92400e;font-size:13px;margin:8px 0;padding:10px;background:#fef3c7;border:1px solid #f0d48a;border-radius:8px">當前積分：<b>'+TOTAL_SCORE+'</b>　刷新消耗 <b>10</b> 分</div>';
-  if(towerList.length)html+='<div style="text-align:center;color:#60a5fa;font-size:12px;margin:6px 0">🕰 已解鎖時空之塔天賦 '+towerList.length+' 個，可於下方選取</div>';
+  if(towerList.length)html+='<button type="button" class="main" style="background:linear-gradient(180deg,#1e3a5f,#0f2744);border-color:#60a5fa;color:#93c5fd;margin:8px 0" onclick="showTowerTalentPick()">🕰 時空之塔天賦（已解鎖 '+towerList.length+' 個）</button>';
   for(var k=0;k<picks.length;k++){
     var pk=picks[k];
     var c=pk.source==='tower'?'#60a5fa':(TIERS[pk.tier]?TIERS[pk.tier].c:'#c9b58a');
@@ -6361,6 +6528,7 @@ function chooseTalent(i){
     if(!S.equip)S.equip=emptyEquipSlots();
     S.talent=p;
     if(p.talent&&typeof p.talent.f==='function')p.talent.f(S);
+    try{applyPendingTowerTalent();}catch(e){}
     window._picks=null;
     var w=genEquip('主手');w.tier='凡品';w.name='鐵劍';w.main={name:'武力',key:'martial',val:3};
     S.equip['主手']=w;
