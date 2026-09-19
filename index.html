@@ -288,6 +288,87 @@ button.ghost{background:#fff;color:var(--muted);border:1px solid var(--line-dk);
 .battleBtns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}
 .battleBtns .main,.battleBtns .ghost{width:auto;min-width:100px;margin:0}
 
+/* ========== 視覺增強層 (Kenney / 立繪風格就緒) ========== */
+.scene-bg{position:relative;border-radius:var(--radius);overflow:hidden}
+.scene-bg::before{content:'';position:absolute;inset:0;background:var(--scene-bg,linear-gradient(160deg,#f5efe6 0%,#e8dfd0 40%,#d4c4a8 100%));opacity:.55;pointer-events:none;z-index:0}
+.scene-bg>*{position:relative;z-index:1}
+.scene-city{--scene-bg:linear-gradient(180deg,#c9b89a 0%,#e8dfd0 35%,#f3ebe0 100%)}
+.scene-wild{--scene-bg:linear-gradient(180deg,#4a6a3a 0%,#8fb070 28%,#d4c4a0 65%,#f3ebe0 100%)}
+.scene-inn{--scene-bg:linear-gradient(180deg,#3d2a1a 0%,#6b4a2e 25%,#c9a87a 55%,#f3ebe0 100%)}
+.scene-sect{--scene-bg:linear-gradient(180deg,#1a2a3a 0%,#2d4a5a 30%,#8aa0b0 60%,#e8dfd0 100%)}
+.scene-tower{--scene-bg:linear-gradient(180deg,#0f0a1a 0%,#2a1a3a 40%,#5a3a6a 70%,#c9b0d0 100%)}
+.scene-battle{--scene-bg:linear-gradient(180deg,#2a1510 0%,#5a3020 40%,#c9a070 80%,#f3ebe0 100%)}
+.scene-pharmacy{--scene-bg:linear-gradient(180deg,#2d4a2a 0%,#5a8a50 25%,#c5d4a8 55%,#f0f5e6 100%)}
+.scene-market{--scene-bg:linear-gradient(180deg,#8a6a3a 0%,#d4a84b 30%,#f0e0c0 60%,#faf6f0 100%)}
+.scene-palace{--scene-bg:linear-gradient(180deg,#3a1a1a 0%,#8b1e1e 30%,#d4a84b 55%,#f5efe6 100%)}
+.scene-home{--scene-bg:linear-gradient(180deg,#5a4030 0%,#a08060 35%,#e8dfd0 70%,#faf6f0 100%)}
+.scene-tag{position:absolute;top:10px;right:12px;font-size:11px;padding:3px 10px;border-radius:12px;background:rgba(255,253,249,.85);border:1px solid var(--line-dk);color:var(--muted);z-index:2;letter-spacing:1px}
+.portrait-frame{flex-direction:column;gap:2px}
+.portrait-frame .por-sil{font-size:1.1em;line-height:1}
+.portrait-frame .por-name{font-size:13px;font-weight:700;color:rgba(44,36,22,.75);letter-spacing:1px}
+.portrait-frame.sm .por-name{font-size:11px}
+.portrait-frame.lg .por-sil{font-size:1.4em}
+
+.portrait-frame{
+  width:96px;height:96px;border-radius:12px;border:2px solid var(--line-dk);
+  background:linear-gradient(145deg,#fffdf9,#e8dfd0);display:flex;align-items:center;justify-content:center;
+  font-size:36px;box-shadow:var(--shadow);flex-shrink:0;position:relative;overflow:hidden;
+  background-size:cover;background-position:center;
+}
+.portrait-frame.sm{width:64px;height:64px;font-size:24px;border-radius:10px}
+.portrait-frame.lg{width:120px;height:140px;font-size:48px;border-radius:14px}
+.portrait-frame.player{border-color:var(--crimson);box-shadow:0 0 0 2px rgba(139,30,30,.15)}
+.portrait-frame.master{border-color:#d4a84b}
+.portrait-frame.partner{border-color:#ff6b9d}
+.portrait-frame.enemy{border-color:#9b2226}
+.portrait-frame.pet{border-color:#60a5fa}
+.portrait-frame img{width:100%;height:100%;object-fit:cover}
+
+.event-visual{display:flex;gap:14px;align-items:flex-start;margin-bottom:12px}
+.event-visual .ev-text{flex:1;min-width:0}
+.event-visual .portrait-frame{margin-top:4px}
+
+.visual-card{
+  background:var(--card);border:1px solid var(--line-dk);border-radius:12px;padding:12px;
+  display:flex;gap:12px;align-items:center;margin:8px 0;box-shadow:var(--shadow);
+  transition:transform .15s,box-shadow .15s
+}
+.visual-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(60,40,20,.12)}
+.visual-card .info{flex:1}
+.visual-card .nm{font-weight:700;font-size:15px}
+.visual-card .meta{font-size:12px;color:var(--muted);margin-top:2px}
+
+.opt-card{position:relative;overflow:hidden}
+.opt-card::after{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gold-lt);opacity:0;transition:opacity .15s}
+.opt-card:hover::after{opacity:1}
+
+@keyframes hpPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.15)}}
+.charHpBar>div{transition:width .35s ease}
+.battleChar.martial-glow{box-shadow:0 0 12px rgba(251,191,36,.45);animation:hpPulse 1.2s infinite}
+.battleChar.undying-glow{box-shadow:0 0 12px rgba(239,68,68,.4)}
+.battleChar.dodge-glow{box-shadow:0 0 10px rgba(96,165,250,.4)}
+.battleChar.couple-glow{box-shadow:0 0 10px rgba(255,107,157,.4)}
+.battleChar.destiny-glow{border-color:#fbbf24}
+
+@keyframes fadeSlideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+#event>*,.visual-card,.opt-card{animation:fadeSlideIn .25s ease}
+
+.icon-stat{display:inline-flex;align-items:center;gap:3px}
+.icon-stat::before{font-size:13px}
+
+.topbar .brand h1{text-shadow:0 1px 0 rgba(255,255,255,.6)}
+.tabs .tab.on{box-shadow:0 2px 6px rgba(139,30,30,.25)}
+
+.battle-portrait-row{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.battle-portrait-row .portrait-frame{margin:0 auto}
+
+.status-icons{display:flex;flex-wrap:wrap;gap:6px 12px}
+.status-icons .stat b{font-variant-numeric:tabular-nums}
+
+/* 簡易紙張紋理 */
+body{background-image:radial-gradient(ellipse at 20% 20%,rgba(255,253,249,.4) 0%,transparent 50%),radial-gradient(ellipse at 80% 60%,rgba(232,223,208,.35) 0%,transparent 45%);background-attachment:fixed}
+#event{background-image:linear-gradient(180deg,rgba(255,253,249,.97),rgba(250,246,240,.98))}
+
 </style>
 </head>
 <body>
@@ -476,6 +557,70 @@ function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
 function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=rnd(i+1);var t=b[i];b[i]=b[j];b[j]=t}return b}
 function hasSeen(id){return S&&S.seen&&S.seen.indexOf(id)>=0}
 
+/* ========== 視覺素材系統（就緒替換 Kenney / 立繪） ========== */
+/* 視覺系統說明
+   ・場景：依事件文字自動切換（藥館／客棧／街市／山野／門派／塔／戰場／官府／居所）
+   ・人像：每位角色依姓名種子色＋性別剪影，同名永遠同色；可在 PORTRAIT_MAP 填真實立繪路徑
+   ・寵物事件：欄位未滿才觸發，全滿停止；有空缺再開
+   ・伴侶／紅顏：無伴侶或已逝→遇伴侶；正妻且紅顏<10→遇紅顏；滿員停止，有空缺再開
+*/
+var PORTRAIT_MAP={};
+var VISUAL={
+  sceneFromEvent:function(ev){
+    if(!ev)return 'scene-city';
+    var t=((ev.text||ev.t||'')+' '+(ev.name||ev.title||'')+' '+(ev.id||''));
+    if(/塔|時空|虛空|破碎/.test(t))return 'scene-tower';
+    if(/藥館|藥鋪|醫館|郎中|藥材|丹房|煉丹/.test(t))return 'scene-pharmacy';
+    if(/客棧|酒樓|茶館|酒館|客店|酒肆/.test(t))return 'scene-inn';
+    if(/市集|街市|坊市|攤販|商鋪|當鋪|錢莊/.test(t))return 'scene-market';
+    if(/山|林|野|谷|湖|河|荒野|山洞|密林|峰|崖|溪|竹林/.test(t))return 'scene-wild';
+    if(/門派|師門|少林|武當|華山|峨眉|丐幫|魔教|宗師|藏經|練功|演武/.test(t))return 'scene-sect';
+    if(/皇宮|官府|衙門|王府|大殿/.test(t))return 'scene-palace';
+    if(/戰|敵|殺|賊|仇|決鬥|比武|廝殺|追殺/.test(t))return 'scene-battle';
+    if(/家|宅|院|房|閨|廳/.test(t))return 'scene-home';
+    return 'scene-city';
+  },
+  nameHue:function(name){var h=0;if(!name)return 30;for(var i=0;i<name.length;i++)h=(h*31+name.charCodeAt(i))>>>0;return h%360;},
+  genderFromName:function(name,kind){
+    if(kind==='partner'||kind==='confidante'){if(S&&S.playerGender==='男')return '女';if(S&&S.playerGender==='女')return '男';}
+    if(kind==='enemy')return '敵';if(kind==='pet')return '寵';if(kind==='master')return '師';if(kind==='child')return '子';
+    if(name&&/女|娘|妹|姐|妃|姬|仙|紅|雪|月|花|婉|煙|婷|薇|瑤|柔|清|香|蓮/.test(name))return '女';
+    return '男';
+  },
+  portraitHTML:function(name,kind,size){
+    size=size||'';
+    var cls='portrait-frame '+(kind||'')+(size?' '+size:'');
+    if(name&&PORTRAIT_MAP[name])return '<div class="'+cls+'" title="'+name+'" style="background-image:url(\''+PORTRAIT_MAP[name]+'\')"></div>';
+    var g=this.genderFromName(name,kind),hue=this.nameHue(name||'俠');
+    var bg='linear-gradient(160deg,hsl('+hue+',48%,90%) 0%,hsl('+((hue+35)%360)+',42%,70%) 100%)';
+    var sil='⚔️';
+    if(g==='女')sil='🗡️';
+    if(kind==='enemy'){sil='😈';bg='linear-gradient(160deg,#3d1a14,#7a3a2a)';}
+    if(kind==='pet'){sil='🐾';bg='linear-gradient(160deg,#e3f2fd,#64b5f6)';}
+    if(kind==='master'){sil='🧘';bg='linear-gradient(160deg,#fff8e1,#ffc107)';}
+    if(kind==='partner'||kind==='confidante'){sil=(g==='女'?'💕':'💝');bg='linear-gradient(160deg,#fce4ec,#ec407a)';}
+    if(kind==='child'){sil='👶';bg='linear-gradient(160deg,#e8f5e9,#66bb6a)';}
+    if(kind==='player'){sil=(S&&S.playerGender==='女')?'🗡️':'⚔️';bg='linear-gradient(160deg,#fdecea,#c62828)';}
+    var initial=(name&&name.length)?name.charAt(name.length-1):'俠';
+    return '<div class="'+cls+'" title="'+(name||'')+'" style="background:'+bg+'"><div class="por-sil">'+sil+'</div><div class="por-name">'+initial+'</div></div>';
+  },
+  wrapEventVisual:function(title,text,extraHTML,ev){
+    var scene=this.sceneFromEvent(ev);
+    var labels={'scene-pharmacy':'藥館','scene-inn':'客棧','scene-market':'街市','scene-wild':'山野','scene-sect':'門派','scene-tower':'時空之塔','scene-battle':'戰場','scene-palace':'官府','scene-home':'居所','scene-city':'江湖'};
+    var por=this.portraitHTML((S&&S.playerName)||'俠客','player');
+    if(ev&&ev.id==='ml')por=this.portraitHTML('有緣人','partner');
+    if(ev&&(ev.id==='pf'||ev.id==='pa'))por=this.portraitHTML('靈獸','pet');
+    if(S&&S.masterEncounterPending)por=this.portraitHTML(S.masterEncounterPending.name||'宗師','master');
+    var h='<div class="scene-bg '+scene+'"><div class="scene-tag">📍 '+(labels[scene]||'江湖')+'</div>';
+    h+='<div class="event-visual">'+por+'<div class="ev-text">';
+    h+='<div class="ev-meta">'+(S?S.age+'歲・'+(S.month+1)+'月':'')+(S&&S._isSpecialEvent?'　·　特殊機緣':'')+'</div>';
+    h+='<h2>'+title+'</h2><p>'+text+'</p></div></div>';
+    if(extraHTML)h+=extraHTML;
+    h+='</div>';
+    return h;
+  }
+};
+
 /* ========== 名字生成 ========== */
 var NAME_SURNAMES=['楚','蕭','顧','陸','沈','江','燕','花','李','張','王','劉','陳','楊','趙','周','吳','孫','馬','朱','許','何','呂','施','孔','曹','嚴','華','金','魏','陶','姜','戚','謝','鄒','喻','柏','水','竇','章','雲','蘇','潘','葛','奚','范','彭','郎','魯','韋','昌','苗','鳳','方','俞','任','袁','柳','鮑','史','唐','費','廉','岑','薛','雷','賀','倪','湯','滕','殷','羅','畢','郝','鄔','安','常','樂','于','時','傅','皮','卞','齊','康','伍','余','元','卜','孟','平','黃','和','穆','尹','姚','邵','湛','汪','祁','毛','禹','狄','米','貝','明','臧','計','伏','成','戴','談','宋','茅','龐','熊','紀','舒','屈','項','祝','董','梁','杜','阮','藍','閔','席','季','麻','強','賈','路','婁','危','江','童','顏','郭','梅','盛','林','刁','鍾','徐','邱','駱','高','夏','蔡','田','樊','胡','凌','霍','虞','萬','支','柯','昝','管','盧','莫','經','房','裘','繆','干','解','應','宗','丁','宣','賁','鄧','郁','單','杭','洪','包','諸','左','石','崔','吉','鈕','龔','程','嵇','邢','滑','裴','陸','榮','翁','荀','羊','於','惠','甄','曲','家','封','芮','羿','儲','靳','汲','邴','糜','松','井','段','富','巫','烏','焦','巴','弓','牧','隗','山','谷','車','侯','宓','蓬','全','郗','班','仰','秋','仲','伊','宮','寧','仇','欒','暴','甘','鈄','厲','戎','祖','武','符','劉','景','詹','束','龍','葉','幸','司','韶','郜','黎','薊','薄','印','宿','白','懷','蒲','邰','從','鄂','索','咸','籍','賴','卓','藺','屠','蒙','池','喬','陰','鬱','胥','能','蒼','雙','聞','莘','黨','翟','譚','貢','勞','逄','姬','申','扶','堵','冉','宰','酈','雍','郤','璩','桑','桂','濮','牛','壽','通','邊','扈','燕','冀','郟','浦','尚','農','溫','別','莊','晏','柴','瞿','閻','充','慕','連','茹','習','宦','艾','魚','容','向','古','易','慎','戈','廖','庾','終','暨','居','衡','步','都','耿','滿','弘','匡','國','文','寇','廣','祿','闕','東','歐','殳','沃','利','蔚','越','夔','隆','師','鞏','厙','聶','晁','勾','敖','融','冷','訾','辛','闞','那','簡','饒','空','曾','毋','沙','乜','養','鞠','須','豐','巢','關','蒯','相','查','后','荊','紅','游','竺','權','逯','蓋','益','桓','公','獨孤','上官','慕容','西門','南宮','東方','軒轅','歐陽','皇甫','司馬','令狐','諸葛','夏侯','尉遲','公孫','長孫','宇文','司徒','司空','端木','百里','呼延','赫連','拓跋','完顏'];
 var NAME_MALE=['風','逸','寒','離','墨','辰','無歸','無缺','雲','天','磊','峰','軒','宇','淵','澈','白','夜','玄','羽','飛','驚','烈','承','熙','恆','岳','松','嶺','行','霄','霖','竹','鷹','翔','楓','歌','嘯','川','海','江','河','山','野','霜','雨','雷','光','明','輝','耀','星','日','濤','浪','澤','濟','衡','謙','誠','寧','安','英','豪','傑','俊','雄','霸','傲','陌','默','痕','影','青','遠','征','孤','冷','哲','瀚','博','睿','思','航','凱','諾','言','辭','文','武','斌','彥','宏','偉','強','剛','毅','勇','猛','虎','龍','麒','麟','鵬','鴻','鵠','鶴','擎','破','軍','振','邦','國','建','華','興','盛','昌','隆','德','仁','義','禮','智','信','忠','孝','廉','清','正','直','瑜','瑾','琨','琦','琪','環','璧','琮','琰','琛','瑞','祥','祺','福','祿','壽','康','泰','平','順','利','達','通','亨','元','乾','坤','震','甲','乙','丙','丁','戊','己','庚','辛','壬','癸','子','丑','寅','卯','巳','午','未','申','酉','戌','亥','清','溪','泉','湖','洋','溟','滄','波','澜','潮','汐','浦','洲','峰','巒','岩','石','磐','锋','锐','剑','刃','戈','矛','盾','弓','箭','戟','斧','鞭','锤','枪','棍','杖','琴','棋','书','画','诗','酒','茶','尘','客','路','者','逸尘','无忌','无痕','破军','惊鸿','逐风','问天','承志','守正','怀远','致远','明远','浩然','子轩','子墨','子安','子瑜','君浩','君豪','伟杰','俊杰','天佑','天成','天磊','文博','文轩','永强','永康','志强','志明','建军','国栋','海峰','海涛','高峰','高山','长空','长风','正阳','旭东','晓东','晓明','晨阳','晨曦','景行','景天','智渊','智远','永年','永福','嘉伟','嘉豪','嘉俊','振华','振宇','晓峰','晓军','金龙','金虎','银龙','铁柱','铁牛','石头','大牛','二狗','三宝','阿强','阿伟','阿龙','小虎','小龙','小峰','少侠','少杰','少华'];
@@ -638,25 +783,35 @@ function getAptMult(apt){return APT_BATTLE_MULT[apt]||1.0;}
 
 /* ========== 狀態系統 ========== */
 var STATUS_DEFS={
-  poison:{name:'中毒',badge:'st-poison',icon:'☠',desc:'每回合損失 4% 最大生命',maxTurns:4,dotRate:0.04},
+  poison:{name:'中毒',badge:'st-poison',icon:'☠',desc:'每回合損失 10% 最大生命（可疊 5 層）',maxTurns:99,dotRate:0.10,maxStack:5},
   weaken:{name:'虛弱',badge:'st-weaken',icon:'▼',desc:'攻擊力 -30%',maxTurns:3,atkMult:0.7},
-  paralyze:{name:'麻痺',badge:'st-paralyze',icon:'⚡',desc:'無法行動',maxTurns:1},
+  paralyze:{name:'麻痺',badge:'st-paralyze',icon:'⚡',desc:'每兩回合才能攻擊一次',maxTurns:4,everyOther:true},
   confuse:{name:'混亂',badge:'st-confuse',icon:'?',desc:'攻擊自己',maxTurns:2},
   armor_break:{name:'破甲',badge:'st-armor',icon:'✖',desc:'防禦力 -50%',maxTurns:3,defMult:0.5},
-  burn:{name:'燃燒',badge:'st-burn',icon:'🔥',desc:'每回合損失 6% 最大生命',maxTurns:3,dotRate:0.06}
+  burn:{name:'灼燒',badge:'st-burn',icon:'🔥',desc:'每回合損失 10% 最大生命（可疊 5 層）',maxTurns:99,dotRate:0.10,maxStack:5},
+  stun:{name:'暈眩',badge:'st-stun',icon:'💫',desc:'下回合無法攻擊',maxTurns:1},
+  freeze:{name:'冰凍',badge:'st-freeze',icon:'❄',desc:'無法攻擊，持續 2 回合',maxTurns:2},
+  charm:{name:'魅惑',badge:'st-charm',icon:'💜',desc:'隨機攻擊友方（無友方則無法行動）',maxTurns:2}
 };
 function addStatus(target,type,turns){
   if(!target.statuses)target.statuses={};
+  if(!target.statusStacks)target.statusStacks={};
   var def=STATUS_DEFS[type];if(!def)return;
   var t=turns||def.maxTurns;
-  if(target.statuses[type])target.statuses[type]=Math.max(target.statuses[type],t);
-  else target.statuses[type]=t;
+  if(def.maxStack){
+    target.statusStacks[type]=Math.min(def.maxStack,(target.statusStacks[type]||0)+1);
+    target.statuses[type]=Math.max(target.statuses[type]||0,t);
+  }else if(target.statuses[type]){
+    target.statuses[type]=Math.max(target.statuses[type],t);
+  }else{
+    target.statuses[type]=t;
+  }
 }
 function hasStatus(target,type){return target.statuses&&target.statuses[type]>0;}
 function clearOneBadStatus(target){
   if(!target.statuses)return false;
   for(var k in target.statuses){
-    if(target.statuses[k]>0){target.statuses[k]=0;return k;}
+    if(target.statuses[k]>0){target.statuses[k]=0;if(target.statusStacks)delete target.statusStacks[k];return k;}
   }
   return false;
 }
@@ -669,14 +824,24 @@ function tickStatuses(target,logArr){
     var def=STATUS_DEFS[type];
     if(!def){toRemove.push(type);continue;}
     if(def.dotRate&&target.maxHp>0){
-      var dmg=Math.floor(target.maxHp*def.dotRate);
+      var stacks=(target.statusStacks&&target.statusStacks[type])||1;
+      var dmg=Math.floor(target.maxHp*def.dotRate*stacks);
       target.hp=Math.max(0,target.hp-dmg);
-      if(logArr)logArr.push({who:'system',skill:'☠ '+target.name+' 受到 '+def.name+' 效果：'+dmg+' 點傷害'});
+      if(logArr)logArr.push({who:'system',skill:'☠ '+target.name+' 受到 '+def.name+(stacks>1?'×'+stacks:'')+'：'+dmg+' 點傷害'});
     }
     target.statuses[type]--;
     if(target.statuses[type]<=0)toRemove.push(type);
   }
-  toRemove.forEach(function(t){delete target.statuses[t];});
+  toRemove.forEach(function(t){delete target.statuses[t];if(target.statusStacks)delete target.statusStacks[t];});
+}
+function canActThisTurn(unit){
+  if(!unit)return false;
+  if(hasStatus(unit,'stun')||hasStatus(unit,'freeze'))return false;
+  if(hasStatus(unit,'paralyze')){
+    unit._paraSkip=!(unit._paraSkip);
+    if(unit._paraSkip)return false;
+  }
+  return true;
 }
 function statusAtkMult(target){return hasStatus(target,'weaken')?STATUS_DEFS.weaken.atkMult:1;}
 function statusDefMult(target){return hasStatus(target,'armor_break')?STATUS_DEFS.armor_break.defMult:1;}
@@ -804,7 +969,9 @@ function tierRank(t){return TIER_ORDER.indexOf(t);}
 function tierColor(tier){if(!tier)return '#7a6a52';if(String(tier).indexOf('塔')===0||String(tier).indexOf('塔·')>=0)return '#60a5fa';return (TIERS[tier]&&TIERS[tier].c)||'#7a6a52';}
 function rollTier(){var total=0,list=[];for(var t in TIERS){total+=TIERS[t].w;list.push(t);}var r=Math.random()*total;for(var i=0;i<list.length;i++){r-=TIERS[list[i]].w;if(r<=0)return list[i];}return '凡品';}
 function rollTierForCompanion(){
-  // 寵物／伴侶：神品約 15% + 12 次保底
+  // 自動歷練時：寵物／伴侶／紅顏一律神品，避免篩選丟棄造成卡死
+  if(S&&S.autoPlay){S._companionPity=0;return '神品';}
+  // 手動：神品約 15% + 12 次保底
   if(!S._companionPity)S._companionPity=0;
   S._companionPity++;
   if(S._companionPity>=12){S._companionPity=0;return '神品';}
@@ -2041,7 +2208,12 @@ t:'一位隱世老者攔住你：「你身上有股不死之氣……」',o:[
 ['設陷阱捕捉神鳥',function(s){s.demonic+=4;s.fortune+=2;s.money+=30+rnd(30);return '你設陷阱捕捉。魔性 +4　福緣 +2　銀兩 +30~60';}]]}
 ],
 'special':[
-{id:'ml',r:'destiny',age:[16,60],once:false,t:'{meetText}',o:[
+{id:'ml',r:'destiny',age:[16,60],once:false,cond:function(s){
+  // 伴侶或紅顏有空位就觸發；兩者皆滿才停
+  if(!s.partner||s.partnerDead)return true;
+  if(!s.confidantes)s.confidantes=[];
+  return s.confidantes.length<10;
+},t:'{meetText}',o:[
 ['上前攀談',function(s){
   var pg=(s.playerGender==='男')?'女':'男';
   var nm=generateName(pg);
@@ -2049,16 +2221,44 @@ t:'一位隱世老者攔住你：「你身上有股不死之氣……」',o:[
   var apt=rollTierForCompanion();
   var dt=null;
   if(apt==='神品'){var t=pick(PARTNER_DESTINY_TALENTS);dt={id:t.id,name:t.name,icon:t.icon,desc:t.desc};}
-  if(s.partner&&!s.partnerDead&&s.partner.stage==='夫妻'){
-    if(!s.confidantes)s.confidantes=[];
-    if(s.confidantes.length>=10)return '你已擁有十位紅顏知己。';
+  if(!s.confidantes)s.confidantes=[];
+  // 自動：優先補滿紅顏 → 紅顏未滿時一律進紅顏；滿了才當伴侶
+  var preferConf=!!(s.autoPlay&&s.autoFillConfidanteFirst);
+  var confMin=s.autoConfidanteMinTier||'凡品';
+  var asPartner=!(s.partner&&!s.partnerDead);
+  if(preferConf&&s.confidantes.length<10)asPartner=false;
+  if(s.partner&&!s.partnerDead&&s.partner.stage==='夫妻')asPartner=false;
+  if(s.partner&&!s.partnerDead&&s.partner.stage!=='夫妻'&&!preferConf){
+    // 已有相識／相戀：新遇進紅顏，不覆蓋
+    asPartner=false;
+  }
+  if(!asPartner){
+    if(s.confidantes.length>=10)return '你已擁有十位紅顏知己，緣分已滿。';
+    // 自動篩選紅顏資質
+    if(s.autoPlay&&tierRank(apt)<tierRank(confMin)){
+      s.log.push('【自動】'+nm+'（'+apt+'）未達紅顏標準「'+confMin+'」，緣分散去');
+      return nm+'（'+apt+'）資質未達你的標準，擦肩而過。';
+    }
     s.confidantes.push({name:nm,gender:pg,personality:tmpl.p,desc:(tierRank(apt)>=tierRank('絕品'))?tmpl.desc:'',body:tmpl.body,appearance:tmpl.appearance,bio:tmpl.bio,traitKey:tmpl.traitKey,traitVal:tmpl.traitVal,traitName:tmpl.traitName,love:15,stage:'紅顏',met:s.totalMonths,hp:100,maxHp:100,log:[],aptitude:apt,auxTalent:pick(AUX_TALENTS),destinyTalent:dt,equip:emptyEquipSlots(),skills:[],growth:0,joinedMonth:s.totalMonths});
     if(dt){s.log.push('✦ 神品紅顏知己！'+nm+' 擁有天命天賦【'+dt.name+'】');toast('✦ 神品紅顏知己！',4000);}
     checkAchievements();
     return nm+' 成為你的紅顏知己。';
   }
-  s.partner={name:nm,gender:pg,personality:tmpl.p,desc:(tierRank(apt)>=tierRank('絕品'))?tmpl.desc:'',body:tmpl.body,appearance:tmpl.appearance,bio:tmpl.bio,traitKey:tmpl.traitKey,traitVal:tmpl.traitVal,traitName:tmpl.traitName,love:15,stage:'相識',met:s.totalMonths,hp:100,maxHp:100,martial:0,inner:0,wisdom:0,fortune:0,calm:0,log:[],aptitude:apt,auxTalent:pick(AUX_TALENTS),destinyTalent:dt,equip:emptyEquipSlots(),skills:[],growth:0,lastProposalMonth:-999};
+  // 自動：伴侶品階不足 → 若開優先紅顏且紅顏有空則轉紅顏，否則拋棄或轉紅顏
+  if(s.autoPlay&&s.autoPartnerMinTier&&tierRank(apt)<tierRank(s.autoPartnerMinTier||'凡品')){
+    if(s.confidantes.length<10){
+      if(tierRank(apt)>=tierRank(confMin)){
+        s.confidantes.push({name:nm,gender:pg,personality:tmpl.p,desc:'',body:tmpl.body||'',appearance:tmpl.appearance||'',bio:tmpl.bio||'',traitKey:tmpl.traitKey,traitVal:tmpl.traitVal,traitName:tmpl.traitName,love:15,stage:'紅顏',met:s.totalMonths,hp:100,maxHp:100,log:[],aptitude:apt,auxTalent:pick(AUX_TALENTS),destinyTalent:dt,equip:emptyEquipSlots(),skills:[],growth:0,joinedMonth:s.totalMonths});
+        s.log.push('【自動】'+nm+'（'+apt+'）未達伴侶「'+(s.autoPartnerMinTier)+'」，轉入紅顏');
+        return nm+' 未達正緣標準，成為紅顏知己。';
+      }
+    }
+    s.log.push('【自動】'+nm+'（'+apt+'）未達標準，緣分散去');
+    return nm+'（'+apt+'）資質未達你的標準，擦肩而過。';
+  }
+  s.partner={name:nm,gender:pg,personality:tmpl.p,desc:(tierRank(apt)>=tierRank('絕品'))?tmpl.desc:'',body:tmpl.body,appearance:tmpl.appearance,bio:tmpl.bio,traitKey:tmpl.traitKey,traitVal:tmpl.traitVal,traitName:tmpl.traitName,love:15,stage:'相識',met:s.totalMonths,hp:400,maxHp:400,martial:35,inner:28,wisdom:10,fortune:10,calm:10,log:[],aptitude:apt,auxTalent:pick(AUX_TALENTS),destinyTalent:dt,equip:emptyEquipSlots(),skills:[],growth:0,lastProposalMonth:-999};
   s.partnerDead=false;
+  try{ensurePartnerDivineGear(s.partner);}catch(e){}
   logPartner(s,'相遇','你們一見如故。');
   if(dt){s.log.push('✦ 神品伴侶！'+nm+' 擁有天命天賦【'+dt.name+'】');toast('✦ 神品伴侶！',4000);}
   checkAchievements();
@@ -2073,7 +2273,7 @@ t:'你與{partner}相處日久，心中情意漸濃。',o:[
 t:'你的伴侶告訴你，你們將迎來一個孩子。',o:[
 ['歡喜迎接',function(s){var c=genChild(s);if(!s.childrenList)s.childrenList=[];s.childrenList.push(c);s.children++;s.calm+=15;s.money-=30;logPartner(s,'生子','孩子'+c.name+'出生了。');return '數月後，'+c.name+'（'+c.gender+'，'+c.aptitude+'）出生了。靜 +15';}],
 ['擔心養不起',function(s){var c=genChild(s);if(!s.childrenList)s.childrenList=[];s.childrenList.push(c);s.children++;s.stress+=15;s.money-=30;return '孩子'+c.name+'還是出生了。壓力 +15';}]]},
-{id:'pf',r:'encounter',age:[12,60],once:false,cond:function(s){return s.pets.length<5&&s.totalMonths-s.lastPetAdopt>=60;},
+{id:'pf',r:'encounter',age:[12,60],once:false,cond:function(s){return s.pets.length<5;},
 t:'路邊草叢裡，你聽到微弱的哀鳴。',o:[
 ['救牠',function(s){s.next='pa';return '你小心翼翼抱起牠。';}],
 ['離開',function(s){s.calm+=1;return '你搖搖頭離開。靜 +1';}]]},
@@ -2131,7 +2331,13 @@ function prepareSpecialEvent(ev){
   if(!ev||ev.id!=='pa')return ev;
   var speciesList=['狗','貓','鷹','蛇','狼','蟲','鼠','蟻','猴','龜','鹿','狐'];
   var cache={};
-  speciesList.forEach(function(sp){cache[sp]={name:pick(PET_NAMES[sp]),tier:rollTierForCompanion()};});
+  speciesList.forEach(function(sp){cache[sp]={name:pick(PET_NAMES[sp]||['小寵']),tier:rollTierForCompanion()};});
+  // 自動：本次可選寵物中至少一隻必為神品
+  if(S&&S.autoPlay){
+    var keys=Object.keys(cache);
+    var g=keys[Math.floor(Math.random()*keys.length)];
+    cache[g].tier='神品';
+  }
   var cloned={};
   for(var k in ev)cloned[k]=ev[k];
   var srcOpts=ev.opts||ev.o||[];
@@ -2141,12 +2347,15 @@ function prepareSpecialEvent(ev){
     var sp=PET_SPECIES_MAP[otext];
     if(!sp)return {t:otext,f:ofunc};
     var data=cache[sp];
+    if(!data){data={name:pick(PET_NAMES[sp]||['小寵']),tier:rollTierForCompanion()};}
     return {t:otext,text:otext+'（'+data.name+'・資質：'+data.tier+'）',f:(function(species,d){return function(s){
       var result=createPet(s,species,d.tier,d.name);
       if(!result)return '寵物欄位已滿。';
       return '你收養了「'+d.name+'」（'+d.tier+'），牠成為你的寵物。';
     };})(sp,data)};
   });
+  cloned.text=ev.text||ev.t||'你要收養這隻小動物嗎？';
+  if(S&&S.autoPlay)cloned.text='（自動）發現可收養的靈獸，請選擇一隻（本次必有神品）：';
   return cloned;
 }
 function _pickEventInner(){
@@ -2729,7 +2938,7 @@ function buildSaveObject(){
     childrenList:S.childrenList||[],confidantes:S.confidantes||[],
     inheritedFrom:S.inheritedFrom||null,inheritedDeeds:S.inheritedDeeds||[],
     flags:S.flags,seen:S.seen,log:S.log.slice(-60),next:S.next,
-    equip:S.equip,bagEquip:S.bagEquip,bagItem:S.bagItem,skills:S.skills,
+    equip:S.equip,bagEquip:S.bagEquip,bagItem:S.bagItem,skills:S.skills,battleRecords:(S.battleRecords||[]).slice(-10),
     bountyActive:S.bountyActive,riddleHistory:S.riddleHistory,riddleCorrect:S.riddleCorrect||0,
     master:S.master,exiledFrom:S.exiledFrom,master0Name:S.master0Name,
     exileCount:S.exileCount,lastHunt:S.lastHunt,huntCount:S.huntCount,
@@ -2739,7 +2948,7 @@ function buildSaveObject(){
     achievements:S.achievements||{},achieveStats:S.achieveStats||{},
     TOTAL_SCORE:TOTAL_SCORE,_statsInherited:S._statsInherited||false,
     hasAuctionTicket:S.hasAuctionTicket||false,auctionFragments:S.auctionFragments||0,
-    companionPity:S._companionPity||0,specialStreak:S._specialStreak||0,autoSellTiers:S.autoSellTiers||null,autoUseItem:!!S.autoUseItem,autoPlay:false,autoPreferAlign:S.autoPreferAlign||'none',autoPreferBattle:!!S.autoPreferBattle,autoPreferSpend:S.autoPreferSpend!==false,autoPetSave:S.autoPetSave!==false,autoPetMinTier:S.autoPetMinTier||'凡品',autoPartnerMeet:S.autoPartnerMeet!==false,autoPartnerMinTier:S.autoPartnerMinTier||'上品',autoPartnerInteract:S.autoPartnerInteract!==false,autoAcceptMaster:!!S.autoAcceptMaster,autoDestinyBond:S.autoDestinyBond!==false,autoSkipTower:S.autoSkipTower!==false,autoBounty:!!S.autoBounty,tower:S.tower||null,towerTalentId:S.towerTalentId||null,towerTalentName:S.towerTalentName||null,
+    companionPity:S._companionPity||0,specialStreak:S._specialStreak||0,autoSellTiers:S.autoSellTiers||null,autoUseItem:!!S.autoUseItem,autoPlay:false,autoPreferAlign:S.autoPreferAlign||'none',autoPreferBattle:!!S.autoPreferBattle,autoPreferSpend:S.autoPreferSpend!==false,autoPetSave:S.autoPetSave!==false,autoPetMinTier:S.autoPetMinTier||'凡品',autoPartnerMeet:S.autoPartnerMeet!==false,autoPartnerMinTier:S.autoPartnerMinTier||'上品',autoPartnerInteract:S.autoPartnerInteract!==false,autoFillConfidanteFirst:!!S.autoFillConfidanteFirst,autoConfidanteMinTier:S.autoConfidanteMinTier||'凡品',autoAcceptMaster:!!S.autoAcceptMaster,autoDestinyBond:S.autoDestinyBond!==false,autoSkipTower:S.autoSkipTower!==false,autoBounty:!!S.autoBounty,tower:S.tower||null,towerTalentId:S.towerTalentId||null,towerTalentName:S.towerTalentName||null,
     saveTime:Date.now()
   };
 }
@@ -2837,8 +3046,8 @@ function loadGame(){
     partner:d.partner||null,partnerDead:!!d.partnerDead,pets:d.pets||[],children:d.children||0,
     childrenList:d.childrenList||[],confidantes:d.confidantes||[],
     inheritedFrom:d.inheritedFrom||null,inheritedDeeds:d.inheritedDeeds||[],
-    flags:d.flags||{},seen:d.seen||[],log:d.log||[],
-    maxAge:100,gameOver:false,currentEvent:null,pendingResult:null,autoSellTiers:{'凡品':false,'良品':false,'上品':false,'絕品':false,'神品':false},autoUseItem:false,autoPlay:false,autoPreferAlign:'none',autoPreferBattle:false,tower:{active:false,floor:1,runMul:1,bestFloor:0,milestones:{},lifespanGained:0},towerTalentId:null,towerTalentName:null,next:d.next||null,deathReason:'',
+    flags:d.flags||{},seen:d.seen||[],log:d.log||[],battleRecords:d.battleRecords||[],
+    maxAge:100,gameOver:false,currentEvent:null,pendingResult:null,autoSellTiers:{'凡品':false,'良品':false,'上品':false,'絕品':false,'神品':false},autoUseItem:false,autoPlay:false,autoPreferAlign:'none',autoPreferBattle:false,tower:(function(){var tw=d.tower||{active:false,floor:1,runMul:1,bestFloor:0,milestones:{},lifespanGained:0};if(tw.autoContinue===undefined)tw.autoContinue=false;return tw;})(),towerTalentId:null,towerTalentName:null,next:d.next||null,deathReason:'',
     equip:d.equip||de,bagEquip:d.bagEquip||[],bagItem:d.bagItem||[],skills:d.skills||[],
     bountyActive:d.bountyActive||[],riddleHistory:d.riddleHistory||[],riddleCorrect:d.riddleCorrect||0,
     master:d.master||null,exiledFrom:d.exiledFrom||null,master0Name:d.master0Name||null,
@@ -2934,6 +3143,8 @@ function loadGame(){
   if(d.autoPartnerMeet!==undefined)S.autoPartnerMeet=!!d.autoPartnerMeet;
   if(d.autoPartnerMinTier)S.autoPartnerMinTier=d.autoPartnerMinTier;
   if(d.autoPartnerInteract!==undefined)S.autoPartnerInteract=!!d.autoPartnerInteract;
+  if(d.autoFillConfidanteFirst!==undefined)S.autoFillConfidanteFirst=!!d.autoFillConfidanteFirst;
+  if(d.autoConfidanteMinTier)S.autoConfidanteMinTier=d.autoConfidanteMinTier;
   if(d.autoAcceptMaster!==undefined)S.autoAcceptMaster=!!d.autoAcceptMaster;
   if(d.autoDestinyBond!==undefined)S.autoDestinyBond=!!d.autoDestinyBond;
   if(d.autoSkipTower!==undefined)S.autoSkipTower=!!d.autoSkipTower;
@@ -3173,12 +3384,17 @@ function checkMasterPromotion(){
 }
 function checkMasterHunt(){
   if(!S.exiledFrom||S.huntCount>=10)return;
-  // 叛師後每半年（6個月）必追殺一次
+  // 叛師後每半年（6個月）必追殺一次（條件不變）
   if(S.totalMonths-S.lastHunt<6)return;
   S.lastHunt=S.totalMonths;S.huntCount++;
   var m=findMaster(S.master0Name);if(!m)return;
   S.log.push('【追殺】'+m.name+'派出的追兵來了！（半年一至）');
-  startBattle(m.name+'（追殺者）',null,null,null,'hunt');
+  // 改為普通事件形式，不鎖死畫面；點選後才開戰
+  var en=m.name+'（追殺者）';
+  S.currentEvent={id:'_hunt',name:'師父追殺',text:m.name+' 派出的追兵已至跟前，殺意凜然，無可逃避。',options:[
+    {t:'拔劍迎戰',f:function(s){s._pendingBattle={name:en,source:'hunt'};return '你硬著頭皮迎上！';}}
+  ]};
+  S.pendingResult=null;S._isSpecialEvent=true;
 }
 function checkMasterTask(){
   if(!S.master)return false;
@@ -3190,6 +3406,26 @@ function checkMasterTask(){
   MASTER_TASK={task:task,rank:rk,month:S.totalMonths};MASTER_TASK_STEP=0;
   S.lastMasterTask=S.totalMonths;
   S.log.push('【師門任務】'+S.master.name+'下令：'+task.t);
+  // 同步成主線可選事件（與普通事件相同流程，可切分頁）
+  S.currentEvent={id:'_master_task',name:'師門任務',text:S.master.name+'（'+rk+'弟子）下令：'+task.t+'。\n'+task.desc+'\n目標：'+task.enemy+'　預期：銀兩與名聲。',options:[
+    {t:'立即執行（觸發戰鬥）',f:function(s){
+      var tsk=MASTER_TASK&&MASTER_TASK.task;var tRef=MASTER_TASK?JSON.parse(JSON.stringify(MASTER_TASK)):null;
+      MASTER_TASK=null;MASTER_TASK_STEP=0;
+      if(tsk){s._pendingBattle={name:tsk.enemy,source:'master',masterTaskRef:tRef};s.log.push('【師門任務】'+tsk.t+'：與 '+tsk.enemy+' 交戰！');}
+      return '你領命前往！';
+    }},
+    {t:'謀定後動（悟性判定）',f:function(s){
+      if(!MASTER_TASK)return '任務已結束。';
+      var sv=s.wisdom+s.fortune/2+s.inner/2;
+      var tsk=MASTER_TASK.task;
+      var diff=tsk.type==='easy'?30:tsk.type==='medium'?90:200;
+      MASTER_TASK.success=(sv+rnd(40))>=diff;
+      MASTER_TASK_STEP=MASTER_TASK.success?1:2;
+      finishMasterTask();
+      return MASTER_TASK_STEP===1||(MASTER_TASK&&MASTER_TASK.success)?'謀略奏效。':'謀略未成。';
+    }}
+  ]};
+  S.pendingResult=null;S._isSpecialEvent=true;
   return true;
 }
 function renderMasterTask(){
@@ -3250,10 +3486,11 @@ function finishMasterTask(){
     h+='<div style="color:var(--muted)">氣血受損　壓力 +15</div></div>';
     S.master.failCount=(S.master.failCount||0)+1;
   }
-  h+='<button class="main" onclick="exitMasterTask()">返回主線</button>';
   el.innerHTML=h;saveGame();
+  // 師門任務結算後自動回主線（與一般戰鬥一致）
+  setTimeout(function(){try{exitMasterTask();}catch(e){}},80);
 }
-function exitMasterTask(){MASTER_TASK=null;MASTER_TASK_STEP=0;TAB='main';nextMonth();}
+function exitMasterTask(){MASTER_TASK=null;MASTER_TASK_STEP=0;TAB='main';nextMonth();if(S&&S.autoPlay){try{scheduleAutoPlay();}catch(e){}}}
 
 /* ========== 戰鬥系統 ========== */
 function getPlayerBattleSkills(){
@@ -3300,16 +3537,73 @@ function calcEnemyStrength(basePower,source){
   return {hp:Math.max(20,hp),atk:Math.max(3,atk),def:Math.max(2,def)};
 }
 function canPartnerFight(){return S.partner&&!S.partnerDead&&(S.partner.stage==='相戀'||S.partner.stage==='夫妻')&&S.partner.hp>0;}
+function ensurePartnerDivineGear(p){
+  if(!p)return;
+  if(!p.equip)p.equip=emptyEquipSlots();
+  if(!p.skills)p.skills=[];
+  if(!p.partnerWeapon){
+    p.partnerWeapon={
+      name:'伴侶·夫妻劍',slot:'主手',tier:'神品',isDivine:true,isPartnerExclusive:true,
+      level:1,exp:0,expNext:80,baseName:'伴侶·夫妻劍',
+      main:{key:'martial',name:'武力',val:48},
+      subs:[{key:'inner',name:'內力',val:20},{key:'maxHp',name:'氣血',val:200}],
+      divineSpecial:{
+        id:'couple_sword',name:'情劍亂心',icon:'💞',
+        desc:'每次攻擊 50% 機率對敵方全體施加麻痹／暈眩／灼燒／冰凍／中毒／魅惑之一（各判定一次）'
+      }
+    };
+    p.equip['主手']=p.partnerWeapon;
+  }
+  if(!p.partnerSkill){
+    p.partnerSkill={
+      name:'伴侶·雙修心法',stype:'內功',tier:'神品',isDivine:true,isPartnerExclusive:true,isMasterSkill:true,
+      level:1,exp:0,expNext:100,baseName:'伴侶·雙修心法',
+      main:{key:'inner',name:'內力',val:40},
+      divineSpecial:{
+        id:'couple_heart',name:'雙修共鳴',icon:'💗',
+        desc:'攻擊時附加內力傷害；等級越高傷害越高'
+      }
+    };
+    if(!p.skills.some(function(sk){return sk&&sk.isPartnerExclusive;}))p.skills.push(p.partnerSkill);
+  }
+  // 成長：神品級基準屬性
+  if(p.martial===undefined||p.martial<30)p.martial=Math.max(p.martial||0,30+Math.floor((p.love||0)/5));
+  if(p.inner===undefined||p.inner<25)p.inner=Math.max(p.inner||0,25);
+  if(!p.maxHp||p.maxHp<400){p.maxHp=Math.max(p.maxHp||100,400);p.hp=Math.max(p.hp||0,p.maxHp);}
+}
+function applyCoupleSwordEffect(b,enemy){
+  if(!b||!enemy||enemy.hp<=0)return;
+  if(!chance(0.5))return;
+  var pool=['paralyze','stun','burn','freeze','poison','charm'];
+  var pickSt=pool[Math.floor(Math.random()*pool.length)];
+  var turns=1;
+  if(pickSt==='freeze'||pickSt==='charm')turns=2;
+  if(pickSt==='paralyze')turns=4;
+  if(pickSt==='burn'||pickSt==='poison')turns=99;
+  addStatus(enemy,pickSt,turns);
+  var nm=(STATUS_DEFS[pickSt]&&STATUS_DEFS[pickSt].name)||pickSt;
+  b.log.push({who:'system',skill:'💞 夫妻劍·情劍亂心 → 敵方獲得【'+nm+'】'});
+}
 function getPartnerBattleStats(){
   if(!canPartnerFight())return null;
   var p=S.partner;
-  var sm=(p.stage==='夫妻')?1.0:0.6;
+  ensurePartnerDivineGear(p);
+  var sm=(p.stage==='夫妻')?1.35:0.95;
   var am=getAptMult(p.aptitude||'凡品');
-  var base=20+Math.floor(p.love/3)+(p.traitKey==='martial'?p.traitVal*2:0);
+  // 神話級：武力＋內力＋專武＋專功＋情意
+  var wLv=(p.partnerWeapon&&p.partnerWeapon.level)||1;
+  var sLv=(p.partnerSkill&&p.partnerSkill.level)||1;
+  var base=80+Math.floor((p.martial||0)*2.2)+(p.inner||0)*1.5+Math.floor((p.love||0)/2)+wLv*12+sLv*10;
+  if(p.traitKey==='martial')base+=(p.traitVal||0)*3;
   var atk=Math.floor(base*sm*am);
-  var hpMax=Math.floor(100*am);
-  var hpCur=Math.floor(p.hp*am);
-  return {name:p.name,hp:hpCur,maxHp:hpMax,atk:atk,def:5,stage:p.stage,destinyTalent:p.destinyTalent||null,aptitude:p.aptitude||'凡品',statuses:{}};
+  var def=Math.floor(atk*0.35+ (p.inner||0));
+  var hpMax=Math.floor(Math.max(p.maxHp||400,400)*am*(p.stage==='夫妻'?1.2:1));
+  var hpCur=Math.floor(Math.min(p.hp||hpMax,p.maxHp||hpMax)*am*(p.stage==='夫妻'?1.2:1));
+  return {
+    name:p.name,hp:Math.max(1,hpCur),maxHp:hpMax,atk:atk,def:def,stage:p.stage,
+    destinyTalent:p.destinyTalent||null,aptitude:p.aptitude||'凡品',statuses:{},statusStacks:{},
+    partnerWeapon:p.partnerWeapon,partnerSkill:p.partnerSkill
+  };
 }
 function getPetBattleStats(){
   var list=[];
@@ -3359,12 +3653,15 @@ function startBattle(name,hp,atk,def,source){
     enemy:{name:name,hp:hp,maxHp:hp,atk:atk,def:def,mp:100,maxMp:100,skills:generateEnemySkills(name),statuses:{}},
     turn:0,log:[],auto:false,done:false,result:null,
     isHunt:(source==='hunt')||name.indexOf('追殺者')>=0,
+    isTower:(source==='tower'),towerFloor:(source==='tower'&&S&&S.tower)?(S.tower.floor||1):null,
     coupleDamageTotal:0,coupleHealedLastTurn:0,
     isAbandonedRevenge:(source==='abandoned_revenge'),
     setMoneyPerTurn:_mpt,setRegenPerTurn:_rpt,enemySlowChance:_es,
-    setBonusApplied:{atkDown:_eAd,defDown:_eDd}
+    setBonusApplied:{atkDown:_eAd,defDown:_eDd},
+    masterTaskRef:null
   };
-  document.getElementById('tabsBar').style.display='none';
+  try{document.getElementById('tabsBar').style.display='flex';}catch(e){}
+  try{initTowerTalentBattle(BATTLE);}catch(e){}
   renderBattle();
   try{tryAutoStartBattle();}catch(e){}
 }
@@ -3495,16 +3792,31 @@ function battleTurn(){
   }
   if(b.partner&&b.partner.hp>0){
     tickStatuses(b.partner,b.log);
-    if(!hasStatus(b.partner,'paralyze')){
-      var pB=Math.max(1,Math.floor(b.partner.atk*0.5+rnd(10)));
+    if(canActThisTurn(b.partner)){
+      var wLv=(b.partner.partnerWeapon&&b.partner.partnerWeapon.level)||1;
+      var sLv=(b.partner.partnerSkill&&b.partner.partnerSkill.level)||1;
+      var pB=Math.max(1,Math.floor(b.partner.atk*0.85+wLv*8+sLv*6+rnd(15)));
       var pA=pB;
-      var pl=(b.partner.stage==='夫妻')?'齊心協力':'情意綿綿';
+      var pl=(b.partner.stage==='夫妻')?'夫妻劍·雙修一擊':'情劍初鳴';
       var dt=b.partner.destinyTalent;
       if(dt&&dt.id==='ptd_double'){pA=Math.floor(pB*1.8);pl+='（琴瑟和鳴）';}
       if(dt&&dt.id==='ptd_lowhp'&&b.player.hp>0&&b.player.hp<b.player.maxHp*0.3){pA=Math.floor(pA*3);pl+='（生死相依）';}
+      // 雙修心法：附加內力傷害
+      pA+=Math.floor(((S.partner&&S.partner.inner)||0)*0.4+sLv*5);
       b.enemy.hp-=pA;if(b.enemy.hp<0)b.enemy.hp=0;
       b.log.push({who:'partner',skill:pl,dmg:pA});
       b.coupleDamageTotal+=pA;
+      // 夫妻劍特效：50% 異常（對當前敵方判定；多敵時逐一判定）
+      applyCoupleSwordEffect(b,b.enemy);
+      // 專武／專功戰鬥經驗
+      if(S.partner&&S.partner.partnerWeapon){
+        try{if(typeof gainWeaponExp==='function')gainWeaponExp(S.partner.partnerWeapon,25+rnd(20));
+        else{S.partner.partnerWeapon.exp=(S.partner.partnerWeapon.exp||0)+25;if(S.partner.partnerWeapon.exp>=(S.partner.partnerWeapon.expNext||80)&&S.partner.partnerWeapon.level<10){S.partner.partnerWeapon.level++;S.partner.partnerWeapon.exp=0;S.partner.partnerWeapon.expNext=80+S.partner.partnerWeapon.level*20;S.partner.partnerWeapon.main.val+=4;b.log.push({who:'system',skill:'🗡️ 夫妻劍成長至 Lv.'+S.partner.partnerWeapon.level});}}}catch(e){}
+      }
+      if(S.partner&&S.partner.partnerSkill){
+        try{if(typeof gainSkillExp==='function')gainSkillExp(S.partner.partnerSkill,20+rnd(15));
+        else{S.partner.partnerSkill.exp=(S.partner.partnerSkill.exp||0)+20;if(S.partner.partnerSkill.exp>=(S.partner.partnerSkill.expNext||100)&&S.partner.partnerSkill.level<10){S.partner.partnerSkill.level++;S.partner.partnerSkill.exp=0;S.partner.partnerSkill.expNext=100+S.partner.partnerSkill.level*25;S.partner.partnerSkill.main.val+=3;b.log.push({who:'system',skill:'📜 雙修心法成長至 Lv.'+S.partner.partnerSkill.level});}}}catch(e){}
+      }
     }
   }
   b.pets.forEach(function(p){
@@ -3572,8 +3884,42 @@ function battleTurn(){
   }
   tickStatuses(b.enemy,b.log);
   if(b.enemy.hp<=0){endBattle(true);return;}
+  if(hasStatus(b.enemy,'stun')){
+    b.log.push({who:'system',skill:'💫 敵人暈眩，無法出手！'});
+    renderBattle();
+    if(b.auto&&!b.done)setTimeout(battleTurn,typeof autoDelay==='function'?autoDelay():700);
+    return;
+  }
+  if(hasStatus(b.enemy,'freeze')){
+    b.log.push({who:'system',skill:'❄ 敵人冰凍，無法出手！'});
+    renderBattle();
+    if(b.auto&&!b.done)setTimeout(battleTurn,typeof autoDelay==='function'?autoDelay():700);
+    return;
+  }
   if(hasStatus(b.enemy,'paralyze')){
-    b.log.push({who:'system',skill:'⚡ 敵人被麻痺，無法出手！'});
+    b.enemy._paraSkip=!(b.enemy._paraSkip);
+    if(b.enemy._paraSkip){
+      b.log.push({who:'system',skill:'⚡ 敵人麻痺，本回合無法出手！'});
+      renderBattle();
+      if(b.auto&&!b.done)setTimeout(battleTurn,typeof autoDelay==='function'?autoDelay():700);
+      return;
+    }
+  }
+  // 魅惑：攻擊友方（寵物／伴侶），無友方則無法行動
+  if(hasStatus(b.enemy,'charm')){
+    var allies=[];
+    if(b.partner&&b.partner.hp>0)allies.push({type:'partner',ref:b.partner,name:b.partner.name});
+    (b.pets||[]).forEach(function(pp){if(pp.hp>0)allies.push({type:'pet',ref:pp,name:pp.name});});
+    if(allies.length===0){
+      b.log.push({who:'system',skill:'💜 敵人被魅惑且無友方可攻，呆立不動！'});
+      renderBattle();
+      if(b.auto&&!b.done)setTimeout(battleTurn,typeof autoDelay==='function'?autoDelay():700);
+      return;
+    }
+    var al=pick(allies);
+    var cdmg=Math.max(1,Math.floor(b.enemy.atk*0.4+rnd(8)));
+    al.ref.hp=Math.max(0,al.ref.hp-cdmg);
+    b.log.push({who:'enemy',skill:'魅惑亂擊→'+al.name,dmg:cdmg,target:al.type,targetName:al.name});
     renderBattle();
     if(b.auto&&!b.done)setTimeout(battleTurn,typeof autoDelay==='function'?autoDelay():700);
     return;
@@ -3610,6 +3956,7 @@ function battleTurn(){
         b.log.push({who:'system',skill:'✦ 逆運經脈：反彈 '+rf+' 點傷害 ✦'});
       }
     });
+    try{dmg=applyTowerTalentOnPlayerDamaged(b,dmg);}catch(e){}
     b.player.hp-=dmg;if(b.player.hp<0)b.player.hp=0;
     b.log.push({who:'enemy',skill:es.name,dmg:dmg,target:'player'});
     if(es.status&&b.player.hp>0){
@@ -3672,6 +4019,49 @@ function killPartner(reason,age){
   S.stress=Math.min(100,S.stress+30);
   S.log.push('【伴侶】'+S.partner.name+'離你而去……');
 }
+function appendBattleRecords(b){
+  if(!S||!b||!b.log)return;
+  if(!S.battleRecords)S.battleRecords=[];
+  var enemyName=(b.enemy&&b.enemy.name)||'敵人';
+  var rec=[];
+  b.log.forEach(function(e){
+    if(!e)return;
+    var text='';
+    if(e.who==='player'&&e.target!=='partner'&&e.target!=='pet'&&typeof e.dmg==='number')
+      text='你使用「'+e.skill+'」→ '+enemyName+' -'+e.dmg+' HP';
+    else if(e.who==='partner'&&typeof e.dmg==='number')
+      text='伴侶使用「'+e.skill+'」→ '+enemyName+' -'+e.dmg+' HP';
+    else if(e.who==='system'&&typeof e.skill==='string'){
+      var st=e.skill;
+      if(/對敵人造成|敵人受到|敵人中毒|敵人麻痺|敵人暈眩|敵人冰凍|敵人被魅惑|敵人虛弱|破甲|反彈/.test(st))
+        text='特效：'+st;
+    }
+    if(text)rec.push({time:Date.now(),text:text});
+  });
+  if(!rec.length)return;
+  rec.forEach(function(r){S.battleRecords.push(r);});
+  if(S.battleRecords.length>10)S.battleRecords=S.battleRecords.slice(-10);
+}
+function renderBattleRecords(el){
+  if(!el)return;
+  var list=(S&&S.battleRecords)||[];
+  var h='<h2>⚔ 戰鬥記錄</h2>';
+  h+='<div class="info-card">最近 10 條戰鬥文字記錄。只記錄你／伴侶對敵人的攻擊、功法、武器／裝備特效、傷害與異常狀態。</div>';
+  if(!list.length){
+    h+='<div style="color:var(--muted);font-size:12px;padding:12px 0">目前還沒有戰鬥記錄。</div>';
+  }else{
+    h+='<div class="battleRecordList">';
+    for(var i=list.length-1;i>=0;i--){
+      var r=list[i];
+      h+='<div style="padding:9px 10px;border-bottom:1px dashed #d8cbb8;font-size:12px;line-height:1.55">'+r.text+'</div>';
+    }
+    h+='</div>';
+  }
+  h+='<button class="main" onclick="switchTab(\'main\')">返回主線</button>';
+  el.innerHTML=h;
+}
+function openBattleRecords(){TAB='battleRecords';renderEvent();render();}
+
 function endBattle(win){
   var b=BATTLE;if(!b)return;
   b.done=true;b.result=win;
@@ -3724,7 +4114,31 @@ function endBattle(win){
     if(b.isAbandonedRevenge){S.money=Math.floor(S.money*0.8);S.stress+=15;}
   }
   checkAchievements();
-  renderBattle();saveGame();
+  appendBattleRecords(b);
+  // 時空之塔：若正在「自動討戰」，勝利後自動關閉結果畫面並銜接下一層；
+  // 戰敗則停止自動討戰，停在結果畫面。
+  if(BATTLE&&BATTLE.isTower){
+    if(BATTLE.result===true && S.tower && S.tower.autoContinue){
+      BATTLE.autoTowerContinue=true;
+      renderBattle();
+      saveGame();
+      setTimeout(function(){
+        try{
+          if(BATTLE&&BATTLE.isTower&&BATTLE.done&&BATTLE.result===true&&S.tower&&S.tower.autoContinue){
+            closeBattle();
+          }
+        }catch(e){console.error('[時空之塔] 自動銜接下一層失敗',e);}
+      },250);
+    }else{
+      if(BATTLE.result!==true && S.tower)S.tower.autoContinue=false;
+      renderBattle();saveGame();
+    }
+    return;
+  }
+  if(win)toast('✦ 戰鬥勝利 ✦',1800);
+  else toast('✖ 戰鬥失敗 ✖',1800);
+  saveGame();
+  closeBattle();
 }
 function battleAuto(){if(!BATTLE||BATTLE.done)return;BATTLE.auto=true;battleTurn();}
 function battleFlee(){
@@ -3743,7 +4157,9 @@ function battleFlee(){
     S.fame=Math.max(0,S.fame-5);
     BATTLE.done=true;BATTLE.result='flee';
     BATTLE.log.push({who:'system',skill:'逃跑成功'});
-    renderBattle();
+    toast('成功逃脫',1500);
+    saveGame();
+    closeBattle();
   }else{
     BATTLE.log.push({who:'system',skill:'逃跑失敗'});
     var es=pick(BATTLE.enemy.skills);
@@ -3756,21 +4172,46 @@ function battleFlee(){
     renderBattle();
   }
 }
+function startTowerAutoContinue(){
+  if(!BATTLE||!BATTLE.isTower||!BATTLE.done||BATTLE.result!==true)return;
+  ensureTowerState();
+  // 持續旗標：下一層建立新 BATTLE 後，仍要知道這是「自動討戰」模式。
+  S.tower.autoContinue=true;
+  BATTLE.autoTowerContinue=true;
+  closeBattle();
+}
 function closeBattle(){
   document.getElementById('tabsBar').style.display='flex';
   if(!BATTLE)return;
   var result=BATTLE.result,avengerRef=BATTLE.avengerRef,avengerAge=BATTLE.avengerAge;
   var isMT=BATTLE.isMasterTask,mtRef=BATTLE.masterTaskRef;
   var wasTower=BATTLE.isTower,towerFloor=BATTLE.towerFloor;
+  var autoTowerContinue=!!BATTLE.autoTowerContinue || !!(wasTower&&S.tower&&S.tower.autoContinue&&result===true);
   BATTLE=null;
   if(wasTower){
     if(result===true){
       onTowerBattleWin();
-      TAB='tower';renderTower();render();saveGame();
+      if(autoTowerContinue && S.tower && S.tower.active && S.hp>0){
+        // 自動討戰：勝利後立即進入下一層，直到全滅
+        toast('⚔ 自動討戰第 '+S.tower.floor+' 層',1200);
+        saveGame();
+        setTimeout(function(){
+          try{
+            if(S && S.tower && S.tower.active && S.hp>0 && !BATTLE){
+              towerChallengeFloor();
+            }
+          }catch(e){console.error('[時空之塔] 自動討戰失敗',e);}
+        },350);
+      }else{
+        TAB='tower';renderTower();render();saveGame();
+      }
       return;
     }else if(result==='flee'){
+      if(S.tower)S.tower.autoContinue=false;
       toast('塔中不可逃跑');TAB='tower';renderTower();render();return;
     }else{
+      // 戰敗／全滅：自動討戰在這裡停止，保留戰敗畫面讓玩家重新挑戰。
+      if(S.tower)S.tower.autoContinue=false;
       // 战败：不掉层，可重试；不强退
       S.hp=Math.max(1,Math.floor(getTotalMaxHp()*0.2));
       S.log.push('【時空之塔】第 '+(towerFloor||'?')+' 層挑戰失敗，養精蓄銳後可再試。');
@@ -3802,9 +4243,12 @@ function closeBattle(){
     MASTER_TASK=mtRef;
     MASTER_TASK.success=(result===true);
     finishMasterTask();
+    TAB='main';
     return;
   }
+  TAB='main';
   nextMonth();
+  if(S.autoPlay){try{scheduleAutoPlay();}catch(e){}}
 }
 function renderBattle(){
   var b=BATTLE;if(!b)return;
@@ -3822,8 +4266,14 @@ function renderBattle(){
   if(b.isMasterTask)battleTitle='📜 師門任務・第 '+b.turn+' 回合 📜';
   if(b.isHunt)battleTitle='💀 師父追殺・第 '+b.turn+' 回合 💀';
   if(b.isAbandonedRevenge)battleTitle='🔥 棄子復仇・第 '+b.turn+' 回合 🔥';
-  var h='<div class="battleScreen">';
+  var h='<div class="battleScreen scene-bg scene-battle">';
   h+='<div class="battleHeader">'+battleTitle+'</div>';
+  h+='<div class="battle-portrait-row">';
+  h+=VISUAL.portraitHTML(b.player.name,'player','sm');
+  if(b.partner&&b.partner.hp>0)h+=VISUAL.portraitHTML(b.partner.name,'partner','sm');
+  h+='<div style="flex:1;text-align:center;font-size:22px;color:var(--crimson);font-weight:700">⚔</div>';
+  h+=VISUAL.portraitHTML(b.enemy.name,'enemy','sm');
+  h+='</div>';
   h+='<div class="battleChar enemy"><div class="charName">'+b.enemy.name+(b.isHunt?'（追殺）':'')+(b.isAbandonedRevenge?'（棄子復仇）':'')+'</div>';
   h+='<div class="charHpBar"><div style="width:'+ehpP+'%"></div></div>';
   h+='<div class="charHpText">HP '+b.enemy.hp+' / '+b.enemy.maxHp+'　攻'+Math.floor(b.enemy.atk*statusAtkMult(b.enemy))+'　防'+Math.floor(b.enemy.def*statusDefMult(b.enemy))+'</div>';
@@ -3898,29 +4348,25 @@ function renderBattle(){
   }
   h+='</div><div class="battleActions">';
   if(b.done){
-    if(b.result===true){
-      h+='<div style="text-align:center;color:#4ade80;font-size:16px;padding:8px">✦ 戰鬥勝利 ✦</div>';
-      if(b.loot)h+='<div style="color:'+TIERS[b.loot.tier].c+';text-align:center;font-size:12px">掉落裝備：'+b.loot.name+'</div>';
-      if(b.evoDrop)h+='<div style="color:#fbbf24;text-align:center;font-size:12px">掉落進化道具：'+b.evoDrop+'</div>';
-      for(var es in S.equip){
-        var eG=S.equip[es];
-        if(eG&&eG.isMasterWeapon){
-          var wc=eG.isDivine?'#fbbf24':TIERS[eG.tier].c;
-          h+='<div style="text-align:center;font-size:11px;color:'+wc+';margin-top:4px">🗡️ '+eG.name+' Lv.'+eG.level+(eG.level<10?'　EXP '+eG.exp+'/'+eG.expNext:'　✦ 神器')+'</div>';
-        }
+    // 時空之塔：保留結算畫面與結束按鈕；其他戰鬥已在 endBattle 自動回主線
+    if(b.isTower){
+      if(b.result===true){
+        h+='<div style="text-align:center;color:#4ade80;font-size:16px;padding:8px">✦ 戰鬥勝利 ✦</div>';
+        if(b.loot)h+='<div style="color:'+TIERS[b.loot.tier].c+';text-align:center;font-size:12px">掉落裝備：'+b.loot.name+'</div>';
+        if(b.evoDrop)h+='<div style="color:#fbbf24;text-align:center;font-size:12px">掉落進化道具：'+b.evoDrop+'</div>';
+      }else if(b.result==='flee'){
+        h+='<div style="text-align:center;color:var(--muted);font-size:16px;padding:8px">你成功逃脫了</div>';
+      }else{
+        h+='<div style="text-align:center;color:#ef4444;font-size:16px;padding:8px">✖ 全員倒下・戰鬥失敗 ✖</div>';
       }
-      S.skills.forEach(function(sk){
-        if(sk.isMasterSkill){
-          var sc=sk.isDivine?'#fbbf24':TIERS[sk.tier].c;
-          h+='<div style="text-align:center;font-size:11px;color:'+sc+';margin-top:2px">📜 '+sk.name+' Lv.'+sk.level+(sk.level<10?'　EXP '+sk.exp+'/'+sk.expNext:'　✦ 神功')+'</div>';
-        }
-      });
-    }else if(b.result==='flee'){
-      h+='<div style="text-align:center;color:var(--muted);font-size:16px;padding:8px">你成功逃脫了</div>';
+      h+='<button class="main" onclick="closeBattle()">結束戰鬥</button>';
+      if(b.result===true){
+        h+='<button class="main" style="background:linear-gradient(180deg,#7a5a18,#5b4310);border-color:#8b6b24" onclick="startTowerAutoContinue()">⚔ 自動討戰下一層（直到全滅）</button>';
+      }
     }else{
-      h+='<div style="text-align:center;color:#ef4444;font-size:16px;padding:8px">✖ 全員倒下・戰鬥失敗 ✖</div>';
+      h+='<div style="text-align:center;color:var(--muted);padding:10px">結算中，返回主線…</div>';
+      setTimeout(function(){try{if(BATTLE&&BATTLE.done&&!BATTLE.isTower)closeBattle();}catch(e){}},50);
     }
-    h+='<button class="main" onclick="closeBattle()">結束戰鬥</button>';
   }else{
     if(b.auto){h+='<div style="text-align:center;color:var(--muted);padding:10px">自動戰鬥中…</div>';}
     else{h+='<button class="main" onclick="battleTurn()">繼續攻擊</button>';h+='<button class="main" onclick="battleAuto()">自動戰鬥</button>';}
@@ -3941,46 +4387,66 @@ function checkPartnerDeath(){
 function partnerMonthlyGrowth(){
   if(!S.partner||S.partnerDead)return;
   var p=S.partner;
-  // 初始化戰鬥屬性欄位
+  ensurePartnerDivineGear(p);
   if(p.martial===undefined)p.martial=0;
   if(p.inner===undefined)p.inner=0;
   if(p.wisdom===undefined)p.wisdom=0;
   if(p.fortune===undefined)p.fortune=0;
   if(p.calm===undefined)p.calm=0;
-  if(!p.maxHp)p.maxHp=100;
+  if(!p.maxHp)p.maxHp=400;
   if(p.hp===undefined)p.hp=p.maxHp;
   if(!p.skills)p.skills=[];
   if(!p.equip)p.equip=emptyEquipSlots();
-  var rate={凡品:1,良品:1.5,上品:2,絕品:3,神品:5};
-  var r=rate[p.aptitude]||1;
-  // 每月微幅成長：血量上限 + 武力／內力（確保戰鬥會變強）
-  var hpGain=Math.max(1,Math.floor(r*2+rnd(3)));
-  p.maxHp=(p.maxHp||100)+hpGain;
+  // 神品級成長倍率（對齊神話師父級）
+  var rate={凡品:2,良品:3,上品:5,絕品:8,神品:14};
+  var r=rate[p.aptitude]||2;
+  if(p.stage==='夫妻')r=Math.floor(r*1.4);
+  var hpGain=Math.max(5,Math.floor(r*6+rnd(8)));
+  p.maxHp=(p.maxHp||400)+hpGain;
   p.hp=Math.min(p.maxHp,(p.hp||0)+hpGain);
-  if(chance(0.6))p.martial=(p.martial||0)+Math.max(1,Math.floor(r));
-  if(chance(0.5))p.inner=(p.inner||0)+Math.max(1,Math.floor(r*0.8));
+  p.martial=(p.martial||0)+Math.max(2,Math.floor(r*1.2));
+  p.inner=(p.inner||0)+Math.max(2,Math.floor(r));
+  // 專武／專功每月經驗
+  if(p.partnerWeapon&&p.partnerWeapon.level<10){
+    p.partnerWeapon.exp=(p.partnerWeapon.exp||0)+15+Math.floor(r*2);
+    while(p.partnerWeapon.exp>=(p.partnerWeapon.expNext||80)&&p.partnerWeapon.level<10){
+      p.partnerWeapon.exp-=p.partnerWeapon.expNext||80;
+      p.partnerWeapon.level++;
+      p.partnerWeapon.expNext=80+p.partnerWeapon.level*25;
+      p.partnerWeapon.main.val+=5;
+      S.log.push('【伴侶】夫妻劍突破至 Lv.'+p.partnerWeapon.level);
+    }
+  }
+  if(p.partnerSkill&&p.partnerSkill.level<10){
+    p.partnerSkill.exp=(p.partnerSkill.exp||0)+12+Math.floor(r*2);
+    while(p.partnerSkill.exp>=(p.partnerSkill.expNext||100)&&p.partnerSkill.level<10){
+      p.partnerSkill.exp-=p.partnerSkill.expNext||100;
+      p.partnerSkill.level++;
+      p.partnerSkill.expNext=100+p.partnerSkill.level*30;
+      p.partnerSkill.main.val+=4;
+      S.log.push('【伴侶】雙修心法突破至 Lv.'+p.partnerSkill.level);
+    }
+  }
   p.growth=(p.growth||0)+r;
-  if(p.growth>=10){
+  if(p.growth>=8){
     p.growth=0;
-    var amount=Math.max(2,Math.floor(r*2+1));
+    var amount=Math.max(4,Math.floor(r*2+2));
     var roll=Math.random();
-    if(roll<0.45){
-      // 主屬性大成長（偏戰鬥）
-      var at=chance(0.7)?pick(['martial','inner']):pick(['martial','inner','wisdom','fortune','calm']);
+    if(roll<0.55){
+      var at=chance(0.75)?pick(['martial','inner']):pick(['martial','inner','wisdom','fortune','calm']);
       p[at]=(p[at]||0)+amount;
-      // 同步血量
-      var extraHp=amount*4;
+      var extraHp=amount*8;
       p.maxHp+=extraHp;p.hp=Math.min(p.maxHp,p.hp+extraHp);
       S.log.push('【伴侶成長】'+p.name+' '+getAttrName(at)+' +'+amount+'　氣血上限 +'+extraHp);
-    }else if(roll<0.75&&p.skills.length<12){
-      var sk=genSkill(p.aptitude);
+    }else if(roll<0.8&&p.skills.length<12){
+      var sk=genSkill(p.aptitude==='神品'?'神品':p.aptitude);
       p.skills.push(sk);
       S.log.push('【伴侶成長】'+p.name+' 學會了 '+sk.name+'（'+(sk.tier||p.aptitude)+'）');
     }else{
-      var slot=pick(['主手','身體','頭部','鞋子','項鍊']);
-      var eq=genEquip(slot,p.aptitude);
+      var slot=pick(['身體','頭部','鞋子','項鍊']);
+      var eq=genEquip(slot,p.aptitude==='神品'?'神品':p.aptitude);
       if(partnerAutoEquip(eq))S.log.push('【伴侶成長】'+p.name+' 裝備了 '+eq.name);
-      else S.log.push('【伴侶成長】'+p.name+' 獲得裝備 '+eq.name+'（未更優，未替換）');
+      else S.log.push('【伴侶成長】'+p.name+' 獲得裝備 '+eq.name);
     }
   }
   var aux=p.auxTalent;
@@ -4053,9 +4519,12 @@ function nextMonth(skipSpecial){
   checkBountyCompletion();
   if(S.totalMonths-BOUNTY_REFRESH>=3||BOUNTY_LIST.length===0){refreshBounties();BOUNTY_REFRESH=S.totalMonths;}
   if(S.totalMonths-AUCTION_REFRESH>=6||AUCTION_LIST.length===0){refreshAuctions();AUCTION_REFRESH=S.totalMonths;}
-  if(S.exiledFrom&&!S.gameOver){checkMasterHunt();if(BATTLE){render();return;}}
+  if(S.exiledFrom&&!S.gameOver){
+    checkMasterHunt();
+    if(S.currentEvent&&S.currentEvent.id==='_hunt'){TAB='main';renderEvent();render();return;}
+  }
   checkMasterPromotion();
-  if(checkMasterTask()){render();renderEvent();return;}
+  if(checkMasterTask()){TAB='main';renderEvent();render();return;}
   if(tryMasterEncounter()){TAB='main';if(S.destinyEncounterPending)renderDestinyEncounter();else renderMasterEncounter();render();return;}if(typeof tryDestinyFollowUp==='function'&&tryDestinyFollowUp()){TAB='main';renderDestinyFollowUp();render();return;}
   checkAchievements();
   try{runAutoMonthlyTasks();ensureConfidanteSlotForAuto();}catch(_m){}
@@ -4085,11 +4554,43 @@ function checkSpecialEvents(){
     TAB='main';renderEvent();render();
     return true;
   }
-  if(!S.partner&&spPool.some(function(e){return e.id==='ml';})){
-    if(chance(0.15)){S.currentEvent=convertEvent(spPool.filter(function(e){return e.id==='ml';})[0]);S.pendingResult=null;S._isSpecialEvent=true;/* 自動歷練可處理特殊事件 */TAB='main';renderEvent();render();return true;}
-  }
-  if(S.pets.length<5&&spPool.some(function(e){return e.id==='pf';})){
-    if(chance(0.15)){S.currentEvent=convertEvent(spPool.filter(function(e){return e.id==='pf';})[0]);S.pendingResult=null;S._isSpecialEvent=true;/* 自動歷練可處理特殊事件 */TAB='main';renderEvent();render();return true;}
+  // 伴侶／紅顏・寵物：僅自動歷練開啟時「有空位必觸發直到滿員」；未開自動維持舊機率與冷卻
+  if(S.autoPlay){
+    if(spPool.some(function(e){return e.id==='ml';})){
+      var confN=(S.confidantes||[]).length;
+      var needLove=(!S.partner||S.partnerDead)||confN<10;
+      if(needLove){
+        S.currentEvent=convertEvent(spPool.filter(function(e){return e.id==='ml';})[0]);
+        S.pendingResult=null;S._isSpecialEvent=true;TAB='main';renderEvent();render();return true;
+      }
+    }
+    if(S.pets.length<5){
+      // 自動：直接進入選寵（跳過「救牠」），並保證選項中有神品
+      var paRaw=(SCENE_EVENTS['special']||[]).filter(function(e){return e.id==='pa';})[0]
+        ||spPool.filter(function(e){return e.id==='pa'||e.id==='pf';})[0];
+      if(paRaw){
+        var paEv=paRaw.id==='pa'?paRaw:((SCENE_EVENTS['special']||[]).filter(function(e){return e.id==='pa';})[0]||paRaw);
+        S.currentEvent=prepareSpecialEvent(convertEvent(paEv.id==='pa'?paEv:{id:'pa',t:'你要收養這隻小動物嗎？',o:paEv.o||paEv.opts||[]}));
+        if(!S.currentEvent.id)S.currentEvent.id='pa';
+        S.pendingResult=null;S._isSpecialEvent=true;TAB='main';renderEvent();render();return true;
+      }
+    }
+  }else{
+    if(spPool.some(function(e){return e.id==='ml';})){
+      var canMeet=false;
+      if(!S.partner||S.partnerDead)canMeet=true;
+      else if(S.partner.stage==='夫妻'&&(S.confidantes||[]).length<10)canMeet=true;
+      if(canMeet&&chance(0.15)){
+        S.currentEvent=convertEvent(spPool.filter(function(e){return e.id==='ml';})[0]);
+        S.pendingResult=null;S._isSpecialEvent=true;TAB='main';renderEvent();render();return true;
+      }
+    }
+    if(S.pets.length<5&&spPool.some(function(e){return e.id==='pf';})){
+      if((S.totalMonths-(S.lastPetAdopt||-60))>=60&&chance(0.15)){
+        S.currentEvent=convertEvent(spPool.filter(function(e){return e.id==='pf';})[0]);
+        S.pendingResult=null;S._isSpecialEvent=true;TAB='main';renderEvent();render();return true;
+      }
+    }
   }
   if(!S.master&&!S.sect&&S.age>=14&&S.age<=30&&spPool.some(function(e){return e.id==='sr';})){
     if(chance(0.05)){S.currentEvent=convertEvent(spPool.filter(function(e){return e.id==='sr';})[0]);S.pendingResult=null;S._isSpecialEvent=true;/* 自動歷練可處理特殊事件 */TAB='main';renderEvent();render();return true;}
@@ -4468,6 +4969,10 @@ function renderSidePanel(){
     else ph=S.partner.name+'（'+S.partner.stage+'）';
   }
   var h='';
+  h+='<div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px">';
+  h+=VISUAL.portraitHTML(S.playerName,'player');
+  h+='<button type="button" class="ghost" style="width:auto;margin:0;padding:10px 12px" onclick="openBattleRecords()">⚔ 戰鬥記錄</button>';
+  h+='</div>';
   h+='<div class="realm-box"><div class="rt">武學境界　'+r.name+'</div>';
   h+='<div class="progbar"><i style="width:'+r.pct+'%"></i></div>';
   h+='<div class="rd">'+r.next+'</div><div class="rd">'+r.hint+'</div></div>';
@@ -4590,10 +5095,16 @@ function renderEvent(){
   if(!el)return;
   if(!S){el.innerHTML='';return;}
   if(S.gameOver){renderEnding(el);return;}
-  if(BATTLE){renderBattle();return;}
-  if(MASTER_TASK){renderMasterTask();return;}
-  if(S.masterEncounterPending){renderMasterEncounter();return;}if(S.destinyEncounterPending){renderDestinyEncounter();return;}if(S.destinyFollowPending){renderDestinyFollowUp();return;}
+  // 僅在主線分頁顯示戰鬥／師門任務／奇遇，其他分頁可自由切換（不再鎖死畫面）
+  if(TAB==='main'){
+    if(BATTLE){renderBattle();return;}
+    if(MASTER_TASK){renderMasterTask();return;}
+    if(S.masterEncounterPending){renderMasterEncounter();return;}
+    if(S.destinyEncounterPending){renderDestinyEncounter();return;}
+    if(S.destinyFollowPending){renderDestinyFollowUp();return;}
+  }
   if(TAB==='partner'){showPartner();return;}
+  if(TAB==='battleRecords'){renderBattleRecords(el);return;}
   if(TAB==='confidante'){showConfidantes();return;}
   if(TAB==='pet'){renderPetTab(el);return;}
   if(TAB==='children'){renderChildren(el);return;}
@@ -4616,20 +5127,19 @@ function renderEvent(){
   else text=text.replace(/\{partner\}/g,'伴侶');
   if(ev.id==='ml'){text=S.playerGender==='男'?'你在旅途中遇見一位氣質不凡的女子，對方也正看著你。':'你在旅途中遇見一位風度翩翩的男子，對方也正看著你。';}
   if(S.pendingResult){
-    el.innerHTML='<div class="ev-meta">'+S.age+'歲・'+(S.month+1)+'月</div><h2>結果</h2><p>'+text+'</p><p style="color:#92400e;background:#fef3c7;padding:12px;border-radius:8px;border:1px solid #f0d48a">'+S.pendingResult+'</p><button class="main" onclick="afterChoice()">繼續江湖</button>';
+    var resExtra='<p style="color:#92400e;background:#fef3c7;padding:12px;border-radius:8px;border:1px solid #f0d48a">'+S.pendingResult+'</p><button class="main" onclick="afterChoice()">繼續江湖</button>';
+    el.innerHTML=VISUAL.wrapEventVisual('結果',text,resExtra,ev);
     return;
   }
   var title=ev.name||ev.title||(S.age+'歲・'+(S.month+1)+'月');
-  var html='<div class="ev-meta">'+S.age+'歲・'+(S.month+1)+'月'+(S._isSpecialEvent?'　·　特殊機緣':'')+'</div>';
-  html+='<h2>'+title+'</h2><p>'+text+'</p>';
-  html+='<div style="margin-top:14px;font-size:12px;color:var(--muted);letter-spacing:2px">—— 抉擇取捨 ——</div>';
+  var optsHTML='<div style="margin-top:14px;font-size:12px;color:var(--muted);letter-spacing:2px">—— 抉擇取捨 ——</div>';
   var oa=ev.options||ev.opts;
   if(oa&&oa.length){
-    for(var i=0;i<oa.length;i++) html+=renderOptButton(oa[i],i);
+    for(var i=0;i<oa.length;i++) optsHTML+=renderOptButton(oa[i],i);
   }else{
-    html+='<button class="main" onclick="nextMonth()">繼續</button>';
+    optsHTML+='<button class="main" onclick="nextMonth()">繼續</button>';
   }
-  el.innerHTML=html;
+  el.innerHTML=VISUAL.wrapEventVisual(title,text,optsHTML,ev);
 }
 function renderEquip(el){
   var h='<h2>裝備欄</h2>';
@@ -4669,20 +5179,7 @@ function renderEquip(el){
 function renderBag(el){
   ensureAutoSettings();
   var h='<h2>背包</h2><div style="color:var(--muted);font-size:12px;margin-bottom:4px">裝備 '+S.bagEquip.length+'/20　道具 '+S.bagItem.length+'/30</div>';
-    h+='<div class="auto-panel">';
-  h+='<div class="auto-title">💰 裝備自動賣出</div>';
-  h+='<div class="auto-desc">勾選的品階，之後進入背包的裝備會立刻換成銀兩（師門武器除外）。開啟時也會清空背包中已有對應品階。</div>';
-  h+='<div class="auto-checks">';
-  var tiers=['凡品','良品','上品','絕品','神品'];
-  tiers.forEach(function(tt){
-    var on=!!(S.autoSellTiers&&S.autoSellTiers[tt]);
-    h+='<label class="auto-chip'+(on?' on':'')+'" style="--chip:'+TIERS[tt].c+'"><input type="checkbox" '+(on?'checked':'')+' onchange="toggleAutoSell(\''+tt+'\',this.checked)"><span>'+tt+'</span></label>';
-  });
-  h+='</div>';
-  h+='<div class="auto-title" style="margin-top:12px">⚡ 道具自動使用</div>';
-  h+='<div class="auto-desc">開啟後，藥品與屬性丹會在入手當下直接生效；進化道具與神秘材料仍會留在背包。</div>';
-  h+='<label class="auto-switch'+(S.autoUseItem?' on':'')+'"><input type="checkbox" '+(S.autoUseItem?'checked':'')+' onchange="toggleAutoUseItem(this.checked)"><span class="sw"></span><span class="sw-lab">'+(S.autoUseItem?'已開啟・入手即用':'點此開啟自動使用')+'</span></label>';
-  h+='</div>';
+    h+='<p style="font-size:12px;color:var(--muted);margin:6px 0 10px">自動賣出／自動使用請至頂部「自動」設定</p>';
 h+='<h3 style="color:var(--crimson);font-size:13px;margin:12px 0 6px">裝備</h3><div class="grid">';
   S.bagEquip.forEach(function(e,i){h+='<div class="item" style="border-color:'+TIERS[e.tier].c+'" onclick="equipItem('+i+')"><div class="nm" style="color:'+TIERS[e.tier].c+'">'+e.name+'</div><div class="at">['+e.slot+'] '+e.main.name+'+'+e.main.val+'</div><div class="at">'+e.tier+(e.setId?' ◆'+e.setName:'')+'</div><button class="sellBtn" onclick="event.stopPropagation();sellEquip('+i+')">💰 賣 '+moneyGain(TIERS[e.tier].val)+'兩</button></div>';});
   h+='</div><h3 style="color:var(--gold);font-size:13px;margin:6px 0">道具</h3><div class="grid">';
@@ -4876,6 +5373,144 @@ function getTowerUnlockedList(){
   }}
   return list;
 }
+
+/* ========== 時空之塔天賦・實戰效果（塔內外皆生效） ========== */
+function getActiveTowerTalentId(){
+  return (S&&S.towerTalentId)?S.towerTalentId:null;
+}
+function getTowerTalentSpec(id){
+  if(!id)return null;
+  var found=null;
+  ['melee','ranged','support','guard'].forEach(function(role){
+    (TOWER_ROLE_TALENTS[role]||[]).forEach(function(t){if(t.id===id)found={role:role,t:t};});
+  });
+  return found;
+}
+/** 開戰時初始化塔天賦戰鬥標記 */
+function initTowerTalentBattle(b){
+  if(!b)return;
+  b.towerTalent=getActiveTowerTalentId();
+  b._ttExtraActions=0;
+  b._ttLockBlood=0;
+  b._ttFirstStrikeDone=false;
+  b._ttPreShotDone=false;
+  var id=b.towerTalent;
+  if(!id)return;
+  // 鎖血次數
+  if(id==='tm_g1')b._ttLockBlood=1;
+  if(id==='tm_g2')b._ttLockBlood=2;
+  if(id==='tm_g3'||id==='tm_g4'||id==='tm_g5'||id==='tm_g6')b._ttLockBlood=2;
+  // 戰前先手一槍
+  if(id==='tm_r6'&&b.enemy){
+    var pre=Math.max(1,Math.floor((b.player.atk||10)*0.8));
+    b.enemy.hp=Math.max(0,b.enemy.hp-pre);
+    b.log.push({who:'system',skill:'🕰 時空穿射・戰前先打：'+pre});
+    b._ttPreShotDone=true;
+  }
+  // 天命改寫：敵永久削弱
+  if(id==='tm_s6'&&b.enemy){
+    b.enemy.atk=Math.max(1,Math.floor(b.enemy.atk*0.7));
+    b.enemy.def=Math.max(0,Math.floor(b.enemy.def*0.7));
+    b.log.push({who:'system',skill:'🕰 天命改寫：敵永久削弱'});
+  }
+  // 運筹／離間：敵攻降低
+  if(id==='tm_s1'&&b.enemy){b.enemy.atk=Math.max(1,Math.floor(b.enemy.atk*0.8));}
+  if(id==='tm_s2'&&b.enemy){b.enemy.atk=Math.max(1,Math.floor(b.enemy.atk*0.65));}
+  // 空城：標記無暴擊
+  if(id==='tm_s4')b._ttNoEnemyCrit=true;
+}
+/** 計算玩家攻擊時的無視防禦比例與倍率 */
+function towerTalentAttackMods(b){
+  var id=b&&b.towerTalent;if(!id)return {ignoreDef:0,dmgMult:1,extraHits:0,extraMult:0.4,armorBreak:false,banHeal:false,burn:false,aoe:false,seal:false,name:''};
+  var m={ignoreDef:0,dmgMult:1,extraHits:0,extraMult:0.4,armorBreak:false,banHeal:false,burn:false,aoe:false,seal:false,name:''};
+  // melee
+  if(id==='tm_m1'){m.ignoreDef=0.25;m.extraHits=chance(0.30)?1:0;m.extraMult=0.4;m.name='白刃争锋';}
+  else if(id==='tm_m2'){m.ignoreDef=0.40;m.extraHits=chance(0.50)?1:0;m.extraMult=0.5;m.armorBreak=true;m.name='開山裂石';}
+  else if(id==='tm_m3'){m.ignoreDef=0.55;m.aoe=true;m.name='無雙橫掃';}
+  else if(id==='tm_m4'){m.ignoreDef=0.70;if(b.player.hp/b.player.maxHp<0.5)m.dmgMult=2;m.name='殺意焚身';}
+  else if(id==='tm_m5'){m.ignoreDef=0.85;if(!b._ttFirstStrikeDone){m.dmgMult=3;b._ttFirstStrikeDone=true;}m.name='戰神附體';}
+  else if(id==='tm_m6'){m.ignoreDef=0.95;m.extraHits=1;m.extraMult=1.0;m.name='天人斬';}
+  // ranged
+  else if(id==='tm_r1'){m.ignoreDef=0.30;m.banHeal=chance(0.35);m.name='穿楊一矢';b._ttPlayerFirst=true;}
+  else if(id==='tm_r2'){m.extraHits=1+rnd(2);m.extraMult=0.55;m.name='連珠劫';b._ttPlayerFirst=true;}
+  else if(id==='tm_r3'){m.aoe=true;m.burn=true;m.name='流火箭雨';b._ttPlayerFirst=true;}
+  else if(id==='tm_r4'){m.dmgMult=1.6;m.armorBreak=true;m.name='奪命飛刃';b._ttPlayerFirst=true;}
+  else if(id==='tm_r5'){m.extraHits=1;m.extraMult=0.9;m.seal=true;m.name='天外飛仙';b._ttPlayerFirst=true;}
+  else if(id==='tm_r6'){m.extraHits=1;m.extraMult=0.85;m.name='時空穿射';}
+  // support offensive bits
+  else if(id==='tm_s3'){m.aoe=true;m.burn=true;m.name='火燒連營';}
+  else if(id==='tm_s5'){m.dmgMult=1.25;m.name='三分天下';}
+  return m;
+}
+/** 防禦減傷 */
+function towerTalentDefendMult(b){
+  var id=b&&b.towerTalent;if(!id)return 1;
+  if(id==='tm_g1')return 0.65;
+  if(id==='tm_g2')return 0.50;
+  if(id==='tm_g3')return 0.40;
+  if(id==='tm_g4')return 0.30;
+  if(id==='tm_g5'){
+    var ratio=b.player.hp/Math.max(1,b.player.maxHp);
+    return ratio<0.3?0.12:0.20;
+  }
+  if(id==='tm_g6')return 0.10;
+  // support defensive
+  if(id==='tm_s1')return 0.95;
+  return 1;
+}
+function applyTowerTalentAfterPlayerHit(b,dmg1){
+  if(!b||!b.towerTalent)return;
+  var id=b.towerTalent;
+  // 戰神附體擊殺回血
+  if(id==='tm_m5'&&b.enemy.hp<=0){
+    var heal=Math.floor(b.player.maxHp*0.15);
+    b.player.hp=Math.min(b.player.maxHp,b.player.hp+heal);
+    b.log.push({who:'system',skill:'🕰 戰神附體・擊殺回血 +'+heal});
+  }
+  // 反傷（guard）
+  if(id&&id.indexOf('tm_g')===0&&b.enemy.hp>0){
+    var thorn=Math.max(1,Math.floor(dmg1*0.15));
+    // 反傷在受擊時處理
+  }
+  // 火燒連營治療減半標記
+  if(id==='tm_s3')b._ttHealHalf=true;
+}
+function applyTowerTalentOnPlayerDamaged(b,incoming){
+  if(!b||!b.towerTalent)return incoming;
+  var id=b.towerTalent;
+  var dmg=Math.floor(incoming*towerTalentDefendMult(b));
+  // 反傷
+  if(id==='tm_g1'||id==='tm_g2'||id==='tm_g4'){
+    var th=Math.max(1,Math.floor(dmg*0.25));
+    if(b.enemy){b.enemy.hp=Math.max(0,b.enemy.hp-th);b.log.push({who:'system',skill:'🕰 反傷 '+th});}
+  }
+  // 鎖血
+  if(b.player.hp-dmg<1&&b._ttLockBlood>0){
+    b._ttLockBlood--;
+    b.player.hp=1;
+    b.log.push({who:'system',skill:'🕰 鎖血發動！剩餘 '+(b._ttLockBlood)+' 次'});
+    return 0;
+  }
+  // 天命改寫：否決必殺（致死改為留1）
+  if(id==='tm_s6'&&b.player.hp-dmg<1){
+    b.player.hp=1;
+    b.log.push({who:'system',skill:'🕰 天命改寫・否決必殺'});
+    return 0;
+  }
+  // 時空壁垒屏障
+  if(id==='tm_g6'&&!b._ttBarrierUsed&&dmg>b.player.maxHp*0.3){
+    b._ttBarrierUsed=true;
+    dmg=Math.floor(dmg*0.3);
+    b.log.push({who:'system',skill:'🕰 時空壁垒・生命屏障'});
+  }
+  // 磐石回血
+  if(id==='tm_g3'&&b.player.hp>0){
+    var rh=Math.floor(b.player.maxHp*0.03);
+    b.player.hp=Math.min(b.player.maxHp,b.player.hp+rh);
+  }
+  return dmg;
+}
+
 function unlockTowerTalentByFloor(floor){
   // 每通關 10 層解鎖對應品階隨機一職天賦（終身一次）
   if(floor%10!==0)return null;
@@ -4901,8 +5536,9 @@ function towerFloorInfo(floor){
   return {floor:f,phase:phase,count:count,tier:tier,tierIdx:tierIdx,enemyMul:mul,color:TOWER_TIER_COLOR[tier]};
 }
 function ensureTowerState(){
-  if(!S.tower)S.tower={active:false,floor:1,runMul:1,bestFloor:0,milestones:{},lifespanGained:0};
+  if(!S.tower)S.tower={active:false,floor:1,runMul:1,bestFloor:0,milestones:{},lifespanGained:0,autoContinue:false};
   if(S.tower.runMul<1)S.tower.runMul=1;
+  if(S.tower.autoContinue===undefined)S.tower.autoContinue=false;
 }
 function getTowerRunMul(){
   ensureTowerState();
@@ -5090,7 +5726,7 @@ function renderTower(){
 }
 function startTowerRun(){
   ensureTowerState();
-  S.tower.active=true;S.tower.floor=1;S.tower.runMul=1;
+  S.tower.active=true;S.tower.autoContinue=false;S.tower.floor=1;S.tower.runMul=1;
   S.log.push('【時空之塔】你踏入時空之塔，從第 1 層開始。');
   toast('🕰 挑戰開始',2000);
   renderTower();saveGame();
@@ -5194,6 +5830,8 @@ function ensureAutoSettings(){
   if(S.autoPartnerMeet===undefined)S.autoPartnerMeet=true;
   if(S.autoPartnerMinTier===undefined)S.autoPartnerMinTier='上品';
   if(S.autoPartnerInteract===undefined)S.autoPartnerInteract=true;
+  if(S.autoFillConfidanteFirst===undefined)S.autoFillConfidanteFirst=false;
+  if(S.autoConfidanteMinTier===undefined)S.autoConfidanteMinTier='凡品';
   if(S.autoAcceptMaster===undefined)S.autoAcceptMaster=false;
   if(S.autoDestinyBond===undefined)S.autoDestinyBond=true;
   if(S.autoSkipTower===undefined)S.autoSkipTower=true;
@@ -5289,8 +5927,11 @@ function openAutoSettingsPanel(){
     '<label class="auto-chk"><input type="checkbox" id="asPetEvo"'+(S.autoPetEvolve!==false?' checked':'')+'> 滿足條件自動進化</label></div>'+
     '<div class="auto-sec"><div class="auto-sec-t">伴侶／紅顏</div>'+
     '<label class="auto-chk"><input type="checkbox" id="asPMeet"'+(S.autoPartnerMeet!==false?' checked':'')+'> 遇見時攀談</label>'+
+    '<label class="auto-chk"><input type="checkbox" id="asFillConf"'+(S.autoFillConfidanteFirst?' checked':'')+'> 優先補滿紅顏</label>'+
+    '<p style="font-size:11px;color:var(--muted);margin:2px 0 6px">勾選後：新遇先填紅顏至 10 人，滿後才選伴侶；未達紅顏品階則拋棄</p>'+
+    '<div style="font-size:12px;margin:4px 0">紅顏最低品階 <select id="asCTier">'+tierOpts(S.autoConfidanteMinTier||'凡品')+'</select></div>'+
     '<div style="font-size:12px;margin:4px 0">正緣最低品階 <select id="asPTier">'+tierOpts(S.autoPartnerMinTier||'上品')+'</select></div>'+
-    '<p style="font-size:11px;color:var(--muted);margin:0 0 6px">低於標準→轉紅顏；已有夫妻則新遇進紅顏</p>'+
+    '<p style="font-size:11px;color:var(--muted);margin:0 0 6px">伴侶未達標準→轉紅顏（若紅顏也未達則拋棄）</p>'+
     '<label class="auto-chk"><input type="checkbox" id="asPInt"'+(S.autoPartnerInteract!==false?' checked':'')+'> 自動伴侶互動</label>'+
     '<label class="auto-chk"><input type="checkbox" id="asPropose"'+(S.autoPropose!==false?' checked':'')+'> 情意≥80 自動求婚</label>'+
     '<label class="auto-chk"><input type="checkbox" id="asPromote"'+(S.autoPromoteConfidante!==false?' checked':'')+'> 伴侶死後自動扶正紅顏</label></div>'+
@@ -5347,6 +5988,8 @@ function saveAutoSettingsFromPanel(){
   if(g('asPetTier'))S.autoPetMinTier=g('asPetTier').value;
   if(g('asPetEvo'))S.autoPetEvolve=!!g('asPetEvo').checked;
   if(g('asPMeet'))S.autoPartnerMeet=!!g('asPMeet').checked;
+  if(g('asFillConf'))S.autoFillConfidanteFirst=!!g('asFillConf').checked;
+  if(g('asCTier'))S.autoConfidanteMinTier=g('asCTier').value;
   if(g('asPTier'))S.autoPartnerMinTier=g('asPTier').value;
   if(g('asPInt'))S.autoPartnerInteract=!!g('asPInt').checked;
   if(g('asPropose'))S.autoPropose=!!g('asPropose').checked;
@@ -5413,6 +6056,13 @@ function scoreAutoOption(opt){
   if(wantBattle){if(isB)score+=50;}else{if(isB)score-=15;}
   if(isB&&(S._autoBattleStreak||0)>=2)score-=80;
   if(/救牠|救它|抱起/.test(t))score+=S.autoPetSave!==false?80:-40;
+  // 自動補寵：優先選神品，絕不選「放牠走」
+  if(S.autoPlay&&(S.pets||[]).length<5){
+    if(/放牠走|放它走/.test(t))score-=200;
+    if(/神品/.test(t))score+=200;
+    if(/絕品/.test(t))score+=80;
+    if(/小狗|小貓|幼鷹|小狼|小狐|小蛇|小蟲|小鼠|小蟻|小猴|小龜|小鹿/.test(t)||PET_SPECIES_MAP[t])score+=40;
+  }
   if(/上前攀談|鼓起勇氣/.test(t))score+=S.autoPartnerMeet!==false?70:-40;
   if(/點頭離開|擦肩/.test(t))score+=S.autoPartnerMeet!==false?-20:40;
   if(S.autoPartnerInteract!==false&&/陪|看星星|散步|談心|送|關心|擁抱/.test(t))score+=55;
@@ -5599,9 +6249,9 @@ function runAutoPlayStep(){
   }
 }
 function tryAutoStartBattle(){
-  // 追殺／自動模式：開戰即自動
+  // 追殺／一般自動／時空之塔「自動討戰」：開戰即自動
   if(typeof BATTLE==='undefined'||!BATTLE||BATTLE.done)return;
-  var force=BATTLE.isHunt||(S&&S.autoPlay);
+  var force=BATTLE.isHunt||(S&&S.autoPlay)||(S&&S.tower&&S.tower.autoContinue&&BATTLE.isTower);
   if(force&&!BATTLE.auto){
     BATTLE.auto=true;
     setTimeout(function(){try{if(BATTLE&&!BATTLE.done)battleTurn();}catch(e){}},autoDelay());
@@ -5611,25 +6261,46 @@ function tryAutoStartBattle(){
 function applyAutoCompanionFilters(){
   if(!S)return;
   ensureAutoSettings();
-  // 僅在自動歷練時套用品階規則
   if(!S.autoPlay)return;
-  // 伴侶品階不足 → 紅顏（非夫妻）
+  if(!S.confidantes)S.confidantes=[];
+  var confMin=S.autoConfidanteMinTier||'凡品';
+  var pNeed=S.autoPartnerMinTier||'凡品';
+  // 紅顏品階篩選：未達標準直接拋棄
+  for(var i=S.confidantes.length-1;i>=0;i--){
+    var c=S.confidantes[i];
+    if(tierRank(c.aptitude||'凡品')<tierRank(confMin)){
+      S.log.push('【自動】紅顏 '+c.name+'（'+(c.aptitude||'?')+'）未達「'+confMin+'」，已拋棄');
+      S.confidantes.splice(i,1);
+    }
+  }
+  // 優先補滿紅顏：伴侶未達正緣標準時，有空則轉紅顏（再過紅顏篩選），否則清空伴侶位
   if(S.partner&&!S.partnerDead&&S.partner.stage!=='夫妻'){
-    var need=S.autoPartnerMinTier||'凡品';
-    if(tierRank(S.partner.aptitude||'凡品')<tierRank(need)){
-      if(!S.confidantes)S.confidantes=[];
+    if(tierRank(S.partner.aptitude||'凡品')<tierRank(pNeed)||S.autoFillConfidanteFirst){
       var p=S.partner;
-      if(S.confidantes.length<10){
-        S.confidantes.push({
-          name:p.name,gender:p.gender||'',personality:p.personality||'',
-          love:p.love||20,aptitude:p.aptitude||'凡品',met:p.met||S.totalMonths,
-          destinyTalent:p.destinyTalent||null
-        });
-        S.log.push('【自動】'+p.name+'（'+p.aptitude+'）未達「'+need+'」，轉入紅顏');
-      }else{
-        S.log.push('【自動】'+p.name+' 品階不足且紅顏已滿，緣分散去');
+      var keepAsConf=S.confidantes.length<10&&tierRank(p.aptitude||'凡品')>=tierRank(confMin);
+      // 優先紅顏模式：只要紅顏未滿且過紅顏門檻就轉；未開優先則僅品階不足時轉
+      if(S.autoFillConfidanteFirst){
+        if(S.confidantes.length<10){
+          if(tierRank(p.aptitude||'凡品')>=tierRank(confMin)){
+            S.confidantes.push({name:p.name,gender:p.gender||'',personality:p.personality||'',love:p.love||20,aptitude:p.aptitude||'凡品',met:p.met||S.totalMonths,destinyTalent:p.destinyTalent||null});
+            S.log.push('【自動·優先紅顏】'+p.name+'（'+p.aptitude+'）轉入紅顏');
+          }else{
+            S.log.push('【自動·優先紅顏】'+p.name+'（'+p.aptitude+'）未達紅顏「'+confMin+'」，拋棄');
+          }
+          S.partner=null;S.partnerDead=false;
+        }else if(tierRank(p.aptitude||'凡品')<tierRank(pNeed)){
+          S.log.push('【自動】'+p.name+' 未達正緣且紅顏已滿，緣分散去');
+          S.partner=null;S.partnerDead=false;
+        }
+      }else if(tierRank(p.aptitude||'凡品')<tierRank(pNeed)){
+        if(keepAsConf){
+          S.confidantes.push({name:p.name,gender:p.gender||'',personality:p.personality||'',love:p.love||20,aptitude:p.aptitude||'凡品',met:p.met||S.totalMonths,destinyTalent:p.destinyTalent||null});
+          S.log.push('【自動】'+p.name+'（'+p.aptitude+'）未達「'+pNeed+'」，轉入紅顏');
+        }else{
+          S.log.push('【自動】'+p.name+' 品階不足，緣分散去');
+        }
+        S.partner=null;S.partnerDead=false;
       }
-      S.partner=null;S.partnerDead=false;
     }
   }
   // 剛收養寵物
@@ -5650,11 +6321,13 @@ function ensureConfidanteSlotForAuto(){
   if(!S.confidantes)S.confidantes=[];
   if(S.partner&&!S.partnerDead&&S.partner.stage==='夫妻'&&S.autoPartnerMeet===false)return;
   if(S.confidantes.length<10)return;
+  // 滿員且最低資質已達神品：不再拋棄任何紅顏
   var worst=0,wr=99;
   for(var i=0;i<S.confidantes.length;i++){
     var r=tierRank(S.confidantes[i].aptitude||'凡品');
     if(r<wr){wr=r;worst=i;}
   }
+  if(wr>=tierRank('神品'))return;
   var drop=S.confidantes.splice(worst,1)[0];
   if(drop&&S.log)S.log.push('【自動】紅顏已滿，割捨資質最低的 '+drop.name+'（'+(drop.aptitude||'?')+'）');
 }
@@ -5680,6 +6353,7 @@ function choose(i){
     var pb=S._pendingBattle;S._pendingBattle=null;S.pendingResult=null;
     clampMoney();checkAchievements();saveGame();
     startBattle(pb.name,null,null,null,pb.source||'event');
+    if(BATTLE&&pb.masterTaskRef){BATTLE.isMasterTask=true;BATTLE.masterTaskRef=pb.masterTaskRef;}
     return;
   }
   var deltas=[];
@@ -5693,15 +6367,30 @@ function choose(i){
   S.pendingResult=result;checkAchievements();render();renderEvent();saveGame();
   if(S.autoPlay)scheduleAutoPlay();
 }
+function needsAutoFillSlots(){
+  if(!S||!S.autoPlay)return false;
+  if((S.pets||[]).length<5)return true;
+  if(!S.partner||S.partnerDead)return true;
+  if((S.confidantes||[]).length<10)return true;
+  return false;
+}
 function afterChoice(){
   clampMoney();
   S.pendingResult=null;
   var wasSpecial=S._isSpecialEvent;S._isSpecialEvent=false;
   checkBountyCompletion();
   if(checkAbandonedChildRevenge()){if(S.autoPlay)scheduleAutoPlay();return;}
+  // 自動補寵物／伴侶／紅顏期間：不推進歲數，反覆觸發直到滿員
+  if(S.autoPlay&&needsAutoFillSlots()){
+    if(checkSpecialEvents()){if(S.autoPlay)scheduleAutoPlay();return;}
+  }
   if(wasSpecial){
     S._specialStreak=(S._specialStreak||0)+1;
-    if(S._specialStreak>=3){S._specialStreak=0;nextMonth(true);}
+    // 補欄期間禁止 skipSpecial 強行過月
+    if(S.autoPlay&&needsAutoFillSlots()){
+      if(checkSpecialEvents()){if(S.autoPlay)scheduleAutoPlay();return;}
+    }
+    if(S._specialStreak>=3&&!(S.autoPlay&&needsAutoFillSlots())){S._specialStreak=0;nextMonth(true);}
     else nextMonth();
     if(S.autoPlay)scheduleAutoPlay();
     return;
@@ -5728,12 +6417,13 @@ function showConfidantes(){
   if(!S.confidantes||S.confidantes.length===0){h+='<p style="color:var(--muted)">尚無紅顏知己。</p><button class="main" onclick="switchTab(\'main\')">返回主線</button>';el.innerHTML=h;return;}
   S.confidantes.forEach(function(c,i){
     var apt=c.aptitude||'凡品';
-    h+='<div class="confidanteCard" onclick="showConfidante('+i+')">';
-    h+='<div class="cn">'+c.name+'（'+(c.personality||'神秘')+'）</div>';
+    h+='<div class="confidanteCard visual-card" onclick="showConfidante('+i+')">';
+    h+=VISUAL.portraitHTML(c.name,'partner','sm');
+    h+='<div class="info"><div class="cn">'+c.name+'（'+(c.personality||'神秘')+'）</div>';
     h+='<div style="color:'+TIERS[apt].c+';font-size:12px;margin-top:4px">資質：<b>'+apt+'</b></div>';
     if(c.destinyTalent)h+='<div style="color:#fbbf24;font-size:11px">✦ 天命：'+c.destinyTalent.name+'</div>';
     h+='<div style="color:#60a5fa;font-size:12px;margin-top:2px">天賦：'+(c.auxTalent?c.auxTalent.name:'無')+'</div>';
-    h+='<div style="color:#ff6b9d;font-size:11px;margin-top:2px">好感度：'+Math.min(100,c.love||0)+'/100</div></div>';
+    h+='<div style="color:#ff6b9d;font-size:11px;margin-top:2px">好感度：'+Math.min(100,c.love||0)+'/100</div></div></div>';
   });
   h+='<button class="main" onclick="switchTab(\'main\')">返回主線</button>';
   el.innerHTML=h;
@@ -5758,7 +6448,9 @@ function showConfidante(idx){
 }
 function showPartner(){
   if(!S.partner){toast('你還沒有伴侶');return;}
-  var p=S.partner;TAB='partner';
+  var p=S.partner;
+  try{ensurePartnerDivineGear(p);}catch(e){}
+  TAB='partner';
   var el=document.getElementById('event');
   var h='<h2>💕 伴侶資訊</h2>';
   if(S.partnerDead){
@@ -5776,6 +6468,39 @@ function showPartner(){
     h+='<div class="pethpbar"><div style="width:'+Math.max(0,p.hp)+'%"></div></div>';
     h+='<div style="color:#c084fc;font-size:12px;margin-top:6px">特殊加成：'+p.traitName+'</div>';
     if(p.auxTalent)h+='<div style="color:#fbbf24;font-size:12px;margin-top:4px">✦ 輔助天賦：'+p.auxTalent.name+'（'+p.auxTalent.desc+'）</div>';
+    if(p.partnerWeapon){
+      var pwc=p.partnerWeapon.isDivine?'#fbbf24':(TIERS[p.partnerWeapon.tier]?TIERS[p.partnerWeapon.tier].c:'#c9b58a');
+      h+='<div style="margin-top:10px;padding:9px;border:1px solid '+pwc+';border-radius:8px;background:#fbf7ef;cursor:pointer" onclick="showPartnerWeaponDetail()">';
+      h+='<div style="color:'+pwc+';font-weight:bold">🗡️ 武器：'+p.partnerWeapon.name+' Lv.'+(p.partnerWeapon.level||1)+'</div>';
+      h+='<div style="font-size:11px;margin-top:4px">主屬性：'+p.partnerWeapon.main.name+' +'+p.partnerWeapon.main.val+'</div>';
+      if(p.partnerWeapon.subs&&p.partnerWeapon.subs.length)h+='<div style="font-size:11px;color:var(--muted)">副屬性：'+p.partnerWeapon.subs.map(function(x){return x.name+' +'+x.val;}).join('、')+'</div>';
+      if(p.partnerWeapon.divineSpecial)h+='<div style="font-size:11px;color:#fbbf24;margin-top:3px">✦ '+p.partnerWeapon.divineSpecial.name+'　點擊查看特效</div>';
+      h+='</div>';
+    }
+    if(p.partnerSkill){
+      var psc=p.partnerSkill.isDivine?'#fbbf24':(TIERS[p.partnerSkill.tier]?TIERS[p.partnerSkill.tier].c:'#c9b58a');
+      h+='<div style="margin-top:8px;padding:9px;border:1px solid '+psc+';border-radius:8px;background:#fbf7ef;cursor:pointer" onclick="showPartnerSkillDetail()">';
+      h+='<div style="color:'+psc+';font-weight:bold">📜 功法：'+p.partnerSkill.name+' Lv.'+(p.partnerSkill.level||1)+'</div>';
+      h+='<div style="font-size:11px;margin-top:4px">主屬性：'+p.partnerSkill.main.name+' +'+p.partnerSkill.main.val+'</div>';
+      if(p.partnerSkill.divineSpecial)h+='<div style="font-size:11px;color:#fbbf24;margin-top:3px">✦ '+p.partnerSkill.divineSpecial.name+'　點擊查看特效</div>';
+      h+='</div>';
+    }
+    var partnerEquipList=[];
+    if(p.equip){for(var peSlot in p.equip){if(p.equip[peSlot]&&p.equip[peSlot]!==p.partnerWeapon)partnerEquipList.push({slot:peSlot,item:p.equip[peSlot]});}}
+    h+='<div style="margin-top:8px;padding:9px;border:1px solid #c9b58a;border-radius:8px;background:#fbf7ef">';
+    h+='<div style="font-weight:bold;color:#8a6a32">🛡️ 伴侶裝備</div>';
+    if(!partnerEquipList.length){
+      h+='<div style="font-size:11px;color:var(--muted);margin-top:5px">目前除專屬武器外沒有其他裝備。</div>';
+    }else{
+      partnerEquipList.forEach(function(pe){
+        var ei=pe.item, ec=ei.isDivine?'#fbbf24':(TIERS[ei.tier]?TIERS[ei.tier].c:'#c9b58a');
+        h+='<div style="margin-top:6px;padding:7px;border:1px solid '+ec+';border-radius:6px;cursor:pointer" onclick="showPartnerEquipDetail(\''+pe.slot+'\')">';
+        h+='<div style="color:'+ec+';font-weight:bold;font-size:12px">'+pe.slot+'：'+ei.name+'</div>';
+        h+='<div style="font-size:10px;color:var(--muted)">'+ei.main.name+' +'+ei.main.val+'　點擊查看屬性／特效</div>';
+        h+='</div>';
+      });
+    }
+    h+='</div>';
     h+='<div style="color:var(--muted);font-size:12px;margin-top:4px">相識於 '+Math.floor(p.met/12)+'歲</div>';
     if(p.stage==='相識')h+='<div style="color:#4ade80;font-size:12px;margin-top:8px">💡 情意值達 55 可觸發表白</div>';
     else if(p.stage==='相戀')h+='<div style="color:#c084fc;font-size:12px;margin-top:8px">💕 相戀階段伴侶會助戰</div>';
@@ -5800,6 +6525,59 @@ function showPartner(){
   h+='<button class="main" onclick="switchTab(\'main\')">返回主線</button>';
   el.innerHTML=h;
 }
+function showPartnerWeaponDetail(){
+  if(!S||!S.partner)return;
+  try{ensurePartnerDivineGear(S.partner);}catch(e){}
+  var e=S.partner.partnerWeapon;if(!e)return;
+  var el=document.getElementById('event');
+  var tc=e.isDivine?'#fbbf24':(TIERS[e.tier]?TIERS[e.tier].c:'#c9b58a');
+  var h='<h2 style="color:'+tc+'">🗡️ '+e.name+' Lv.'+(e.level||1)+'</h2>';
+  h+='<div style="background:#f5efe6;border-radius:8px;padding:12px;margin:8px 0;border:1px solid '+tc+'">';
+  h+='<div class="at">部位：'+(e.slot||'主手')+'　◆ 伴侶專屬</div>';
+  h+='<div class="at">品階：<span style="color:'+tc+'">'+(e.isDivine?'神器':(e.tier||'神品'))+'</span></div>';
+  h+='<div class="at" style="margin-top:6px">主屬性：<b style="color:var(--gold)">'+e.main.name+' +'+e.main.val+'</b></div>';
+  if(e.subs&&e.subs.length){h+='<div class="at" style="margin-top:4px">副屬性：</div>';e.subs.forEach(function(x){h+='<div class="at" style="padding-left:8px">✦ '+x.name+' +'+x.val+'</div>';});}
+  h+='<div class="at" style="margin-top:8px;color:#fbbf24">成長等級：Lv.'+(e.level||1)+((e.level||1)<10?'　EXP '+(e.exp||0)+'/'+(e.expNext||80):'　✦ 已滿級')+'</div>';
+  h+='</div>';
+  if(e.divineSpecial)h+=formatDivineDesc(e);
+  h+='<button class="main" onclick="showPartner()">返回伴侶</button>';
+  el.innerHTML=h;TAB='partner';
+}
+function showPartnerEquipDetail(slot){
+  if(!S||!S.partner||!S.partner.equip)return;
+  var e=S.partner.equip[slot];if(!e)return;
+  var el=document.getElementById('event');
+  var tc=e.isDivine?'#fbbf24':(TIERS[e.tier]?TIERS[e.tier].c:'#c9b58a');
+  var h='<h2 style="color:'+tc+'">🛡️ '+e.name+'</h2>';
+  h+='<div style="background:#f5efe6;border-radius:8px;padding:12px;margin:8px 0;border:1px solid '+tc+'">';
+  h+='<div class="at">部位：'+slot+'　◆ 伴侶裝備</div>';
+  h+='<div class="at">品階：<span style="color:'+tc+'">'+(e.isDivine?'神器':(e.tier||'神品'))+'</span></div>';
+  if(e.main)h+='<div class="at" style="margin-top:6px">主屬性：<b style="color:var(--gold)">'+e.main.name+' +'+e.main.val+'</b></div>';
+  if(e.subs&&e.subs.length){h+='<div class="at" style="margin-top:4px">副屬性：</div>';e.subs.forEach(function(x){h+='<div class="at" style="padding-left:8px">'+x.name+' +'+x.val+'</div>';});}
+  h+='</div>';
+  if(e.divineSpecial)h+=formatDivineDesc(e);
+  h+='<button class="main" onclick="showPartner()">返回伴侶</button>';
+  el.innerHTML=h;TAB='partner';
+}
+function showPartnerSkillDetail(){
+  if(!S||!S.partner)return;
+  try{ensurePartnerDivineGear(S.partner);}catch(e){}
+  var sk=S.partner.partnerSkill;if(!sk)return;
+  var el=document.getElementById('event');
+  var tc=sk.isDivine?'#fbbf24':(TIERS[sk.tier]?TIERS[sk.tier].c:'#c9b58a');
+  var h='<h2 style="color:'+tc+'">📜 '+sk.name+' Lv.'+(sk.level||1)+'</h2>';
+  h+='<div style="background:#f5efe6;border-radius:8px;padding:12px;margin:8px 0;border:1px solid '+tc+'">';
+  h+='<div class="at">類型：'+(sk.stype||'內功')+'　◆ 伴侶專屬</div>';
+  h+='<div class="at">品階：<span style="color:'+tc+'">'+(sk.isDivine?'神功':(sk.tier||'神品'))+'</span></div>';
+  h+='<div class="at" style="margin-top:6px">主屬性：<b style="color:var(--gold)">'+sk.main.name+' +'+sk.main.val+'</b></div>';
+  if(sk.subs&&sk.subs.length){h+='<div class="at" style="margin-top:4px">副屬性：</div>';sk.subs.forEach(function(x){h+='<div class="at" style="padding-left:8px">✦ '+x.name+' +'+x.val+'</div>';});}
+  h+='<div class="at" style="margin-top:8px;color:#fbbf24">成長等級：Lv.'+(sk.level||1)+((sk.level||1)<10?'　EXP '+(sk.exp||0)+'/'+(sk.expNext||100):'　✦ 已滿級')+'</div>';
+  h+='</div>';
+  if(sk.divineSpecial)h+=formatDivineDesc(sk);
+  h+='<button class="main" onclick="showPartner()">返回伴侶</button>';
+  el.innerHTML=h;TAB='partner';
+}
+
 function renderPetTab(el){
   var h='<h2>🐾 我的寵物（'+S.pets.length+'/5）</h2>';
   if(S.pets.length===0)h+='<div style="color:var(--muted);font-size:12px">尚未收養寵物。</div>';
@@ -5808,12 +6586,13 @@ function renderPetTab(el){
     var tree=PET_TREE[p.species];
     if(!tree||!tree.stages[p.stage])return;
     var cur=tree.stages[p.stage];var apt=p.aptitude||'凡品';
-    h+='<div class="petListCard" style="border-color:'+TIERS[cur.tier].c+'" onclick="showPet('+i+')">';
-    h+='<div class="pn" style="color:'+TIERS[cur.tier].c+'">'+p.n+'（'+p.species+'）</div>';
+    h+='<div class="petListCard visual-card" style="border-color:'+TIERS[cur.tier].c+'" onclick="showPet('+i+')">';
+    h+=VISUAL.portraitHTML(p.n,'pet','sm');
+    h+='<div class="info"><div class="pn" style="color:'+TIERS[cur.tier].c+'">'+p.n+'（'+p.species+'）</div>';
     h+='<div style="font-size:11px;color:var(--muted)">階段 '+(p.stage+1)+'/'+tree.stages.length+'　'+cur.tier+'　年齡 '+petAge(p)+'歲　資質 <b style="color:'+TIERS[apt].c+'">'+apt+'</b></div>';
     if(p.destinyTalent)h+='<div style="color:#fbbf24;font-size:10px">✦ 天命：'+p.destinyTalent.icon+' '+p.destinyTalent.name+'</div>';
     h+='<div style="font-size:11px;color:#60a5fa">技能：'+cur.skill.name+'（×'+cur.skill.mult+'）</div>';
-    h+='<div style="font-size:11px;color:var(--muted)">HP '+p.hp+'/'+p.maxHp+'　攻 '+(cur.atk+(p.bonusAtk||0))+'×'+getAptMult(apt)+'　親密 '+p.bond+'</div>';
+    h+='<div style="font-size:11px;color:var(--muted)">HP '+p.hp+'/'+p.maxHp+'　攻 '+(cur.atk+(p.bonusAtk||0))+'×'+getAptMult(apt)+'　親密 '+p.bond+'</div></div>';
     h+='</div>';
   });
   h+='<button class="main" onclick="switchTab(\'main\')">返回主線</button>';
@@ -5924,11 +6703,13 @@ function renderMaster(el){
     var m=findMaster(S.master.name);
     var rk=['記名','親傳','關門'][S.master.rank];
     var sc=S.master.side==='正道'?'#4ade80':'#ef4444';
-    h+='<div class="masterCard"><div class="mn" style="color:'+sc+'">'+m.name+'</div>';
+    h+='<div class="masterCard" style="display:flex;gap:12px;align-items:flex-start">';
+    h+=VISUAL.portraitHTML(m.name,'master');
+    h+='<div style="flex:1"><div class="mn" style="color:'+sc+'">'+m.name+'</div>';
     h+='<div class="ms">'+(S.master.side==='正道'?'【正道宗師】':'【邪道巨擘】')+'　品階：<span style="color:'+TIERS[m.tier].c+'">'+m.tier+'</span></div>';
     h+='<div class="mdesc">「'+m.desc+'」</div>';
     h+='<div class="ms">弟子等級：<span style="color:var(--gold)">'+rk+'弟子</span></div>';
-    h+='<div class="ms">拜師於：'+Math.floor(S.master.metMonth/12)+'歲</div>';
+    h+='<div class="ms">拜師於：'+Math.floor(S.master.metMonth/12)+'歲</div></div></div>';
     h+='<div style="margin-top:8px"><div style="color:var(--gold);font-size:12px;font-weight:bold">師門所授</div>';
     if(S.master.skills.length===0)h+='<div style="color:var(--muted);font-size:11px">尚無</div>';
     S.master.skills.forEach(function(sk){
@@ -5947,7 +6728,7 @@ function renderMaster(el){
       var w=S.master.weapon,wc=w.isDivine?'#fbbf24':TIERS[w.tier].c;
       h+='<div style="margin-top:6px;cursor:pointer" onclick="showEquipDetail(\''+w.slot+'\')" title="點擊查看詳情"><span class="skillTag'+(w.isDivine?' divine-weapon':' master-weapon')+'" style="border-color:'+wc+';color:'+wc+'">'+w.name+' Lv.'+w.level+'（'+w.main.name+'+'+w.main.val+'）'+(w.level<10?'　EXP '+w.exp+'/'+w.expNext:'')+(w.divineSpecial?'　✦'+w.divineSpecial.name:'')+'</span><div style="font-size:10px;color:var(--muted);margin-top:2px">點擊查看神級特效與屬性</div></div>';
     }
-    h+='</div></div>';
+    h+='</div>';
     h+='<button class="option" style="margin-top:12px;border-color:#8a3030;color:#e8a0a0" onclick="exileMaster()">⚔ 叛離師門</button>';
   }
   h+='<button class="main" onclick="switchTab(\'main\')">返回主線</button>';
@@ -6063,7 +6844,7 @@ function beginInheritedLife(childData){
     money:50,fame:Math.floor((childData.fame||0)*0.5),regen:0,sect:childData.sect||'',
     talent:{tier:childData.talent.tier,talent:{name:childData.talent.name,d:childData.talent.d,ability:childData.talent.ability||'',f:function(){}}},
     partner:null,partnerDead:false,pets:[],children:0,childrenList:[],confidantes:[],
-    inheritedFrom:oldName,inheritedDeeds:oldDeeds,flags:{inherited:true},seen:[],log:[],
+    inheritedFrom:oldName,inheritedDeeds:oldDeeds,flags:{inherited:true},seen:[],log:[],battleRecords:[],
     gameOver:false,currentEvent:null,pendingResult:null,next:null,deathReason:'',
     equip:emptyEquipSlots(),bagEquip:[],bagItem:[],skills:[],bountyActive:[],riddleHistory:[],riddleCorrect:0,
     master:childData.masterName?{name:childData.masterName,side:'正道',rank:0,tier:'上品',metMonth:0,skills:[],weapon:null}:null,
@@ -6456,31 +7237,19 @@ function drawTalent(){
   var picks=[];
   if(IS_FIRST_LIFE){for(var i=0;i<3;i++)picks.push({tier:'神品',talent:pick(TALENTS['神品']),source:'normal'});}
   else{for(var i=0;i<3;i++){var tier=rollTier();picks.push({tier:tier,talent:pick(TALENTS[tier]),source:'normal'});}}
-  // 時空之塔已解鎖天賦（來生可選）
-  var towerList=typeof getTowerUnlockedList==='function'?getTowerUnlockedList():[];
-  towerList.forEach(function(u){
-    picks.push({
-      tier:'塔·'+u.role,
-      source:'tower',
-      towerId:u.id,
-      talent:{
-        name:u.icon+' '+u.name,
-        d:'【時空之塔】'+u.desc,
-        ability:'塔天賦・通過塔層解鎖',
-        f:function(s){s.towerTalentId=u.id;s.towerTalentName=u.name;s.martial=(s.martial||0)+5;s.inner=(s.inner||0)+5;s.maxHp=(s.maxHp||0)+50;}
-      }
-    });
-  });
+  // 時空之塔天賦永不混入此列表
+  var towerCount=0;
+  try{if(!IS_FIRST_LIFE&&typeof getTowerUnlockedList==='function')towerCount=getTowerUnlockedList().length;}catch(e){}
   var el=document.getElementById('event');
-  var html='<div class="ev-meta" style="text-align:center">開局流程</div><h2 style="text-align:center;border:none">'+S.playerName+'，選擇你的天賦</h2><div class="steps"><span class="step done">① 性別</span><span class="step done">② 姓名</span><span class="step on">③ 天賦</span><span class="step">④ 入世</span></div>';
+  var html='<div class="ev-meta" style="text-align:center">開局流程</div><h2 style="text-align:center;border:none">'+(S.playerName||'')+'，選擇你的天賦</h2><div class="steps"><span class="step done">① 性別</span><span class="step done">② 姓名</span><span class="step on">③ 天賦</span><span class="step">④ 入世</span></div>';
   if(IS_FIRST_LIFE)html+='<div style="text-align:center;color:#92400e;font-size:13px;margin:8px 0;padding:10px;background:#fef3c7;border:1px solid #f0d48a;border-radius:8px">✦ 初次踏入江湖，天賦必為神品 ✦</div>';
   else html+='<div style="text-align:center;color:#92400e;font-size:13px;margin:8px 0;padding:10px;background:#fef3c7;border:1px solid #f0d48a;border-radius:8px">當前積分：<b>'+TOTAL_SCORE+'</b>　刷新消耗 <b>10</b> 分</div>';
-  if(towerList.length)html+='<button type="button" class="main" style="background:linear-gradient(180deg,#1e3a5f,#0f2744);border-color:#60a5fa;color:#93c5fd;margin:8px 0" onclick="showTowerTalentPick()">🕰 時空之塔天賦（已解鎖 '+towerList.length+' 個）</button>';
+  if(towerCount>0)html+='<button type="button" class="main" style="background:linear-gradient(180deg,#1e3a5f,#0f2744);border-color:#60a5fa;color:#93c5fd;margin:8px 0" onclick="showTowerTalentPick()">🕰 時空之塔天賦（已解鎖 '+towerCount+' 個）· 點此進入</button>';
   for(var k=0;k<picks.length;k++){
     var pk=picks[k];
-    var c=pk.source==='tower'?'#60a5fa':(TIERS[pk.tier]?TIERS[pk.tier].c:'#c9b58a');
+    var c=TIERS[pk.tier]?TIERS[pk.tier].c:'#c9b58a';
     var talent=pk.talent;
-    html+='<div class="talent-box" style="border-color:'+c+'" onclick="chooseTalent('+k+')"><span class="tt" style="color:'+c+'">'+(pk.source==='tower'?'🕰時空之塔':pk.tier)+'</span><div class="tn" style="color:'+c+'">'+talent.name+'</div><div class="td">'+talent.d+'</div>';
+    html+='<div class="talent-box" style="border-color:'+c+'" onclick="chooseTalent('+k+')"><span class="tt" style="color:'+c+'">'+pk.tier+'</span><div class="tn" style="color:'+c+'">'+talent.name+'</div><div class="td">'+talent.d+'</div>';
     if(talent.ability)html+='<div style="font-size:11px;color:#fbbf24;margin-top:6px;padding-top:6px;border-top:1px dashed var(--line);line-height:1.5">✦ 專屬能力：'+talent.ability+'</div>';
     html+='</div>';
   }
