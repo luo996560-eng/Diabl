@@ -3549,7 +3549,8 @@ function ensurePartnerDivineGear(p){
       subs:[{key:'inner',name:'內力',val:20},{key:'maxHp',name:'氣血',val:200}],
       divineSpecial:{
         id:'couple_sword',name:'情劍亂心',icon:'💞',
-        desc:'每次攻擊 50% 機率對敵方全體施加麻痹／暈眩／灼燒／冰凍／中毒／魅惑之一（各判定一次）'
+        passive:true,
+        desc:'固定被動：伴侶不論使用任何招式、功法、武器或裝備特效對敵人造成攻擊／傷害時，均有 50% 機率觸發情劍亂心，對敵方施加麻痺／暈眩／灼燒／冰凍／中毒／魅惑之一。'
       }
     };
     p.equip['主手']=p.partnerWeapon;
@@ -3571,9 +3572,12 @@ function ensurePartnerDivineGear(p){
   if(p.inner===undefined||p.inner<25)p.inner=Math.max(p.inner||0,25);
   if(!p.maxHp||p.maxHp<400){p.maxHp=Math.max(p.maxHp||100,400);p.hp=Math.max(p.hp||0,p.maxHp);}
 }
+// 情劍亂心：伴侶夫妻武器的「固定被動」。
+// 不判斷伴侶使用的是哪一招，只要伴侶本次攻擊／造成傷害，就進行一次 50% 觸發判定。
 function applyCoupleSwordEffect(b,enemy){
-  if(!b||!enemy||enemy.hp<=0)return;
-  if(!chance(0.5))return;
+  if(!b||!enemy||enemy.hp<=0)return false;
+  if(!b.partner||b.partner.hp<=0||b.partner.stage!=='夫妻')return false;
+  if(!chance(0.5))return false;
   var pool=['paralyze','stun','burn','freeze','poison','charm'];
   var pickSt=pool[Math.floor(Math.random()*pool.length)];
   var turns=1;
@@ -3582,7 +3586,8 @@ function applyCoupleSwordEffect(b,enemy){
   if(pickSt==='burn'||pickSt==='poison')turns=99;
   addStatus(enemy,pickSt,turns);
   var nm=(STATUS_DEFS[pickSt]&&STATUS_DEFS[pickSt].name)||pickSt;
-  b.log.push({who:'system',skill:'💞 夫妻劍·情劍亂心 → 敵方獲得【'+nm+'】'});
+  b.log.push({who:'system',skill:'💞 夫妻劍·情劍亂心（被動）→ 敵方獲得【'+nm+'】'});
+  return true;
 }
 function getPartnerBattleStats(){
   if(!canPartnerFight())return null;
@@ -3806,7 +3811,7 @@ function battleTurn(){
       b.enemy.hp-=pA;if(b.enemy.hp<0)b.enemy.hp=0;
       b.log.push({who:'partner',skill:pl,dmg:pA});
       b.coupleDamageTotal+=pA;
-      // 夫妻劍特效：50% 異常（對當前敵方判定；多敵時逐一判定）
+      // 情劍亂心是固定被動：不論伴侶使用何種招式／功法／武器／裝備特效，只要本次攻擊造成傷害，就在本次伴侶攻擊結束後統一做一次 50% 判定。
       applyCoupleSwordEffect(b,b.enemy);
       // 專武／專功戰鬥經驗
       if(S.partner&&S.partner.partnerWeapon){
@@ -6507,6 +6512,7 @@ function showPartner(){
     else if(p.stage==='夫妻')h+='<div style="color:#ff6b9d;font-size:12px;margin-top:8px">⚔ 夫妻階段伴侶全力參戰！</div>';
     h+='</div>';
     if(p.stage==='夫妻')h+='<div class="coupleSkillCard"><div class="ct">💞 夫妻功法（固定被動・100%觸發）</div><div class="cd">戰鬥中，你與伴侶（妻子／夫君）使用任意功法造成的傷害，全部計入夫妻功法。<br>每回合結束時，以傷害總值的 50%（天命「情比金堅」為 80%）轉化為雙方生命回復。<br>只要雙方都在場且有造成傷害，必定觸發。</div></div>';
+    if(p.stage==='夫妻'&&p.partnerWeapon&&p.partnerWeapon.divineSpecial&&p.partnerWeapon.divineSpecial.id==='couple_sword')h+='<div class="coupleSkillCard"><div class="ct">💞 情劍亂心（固定被動・50%觸發）</div><div class="cd">不論伴侶使用任何招式、功法、武器或裝備特效，只要伴侶對敵人發動攻擊／造成傷害，就必定納入情劍亂心的被動判定；每次伴侶攻擊均有 50% 機率使敵人獲得麻痺、暈眩、灼燒、冰凍、中毒、魅惑之一。</div></div>';
   }
   h+='<div class="partnerSection"><div class="label">◆ 身材</div><div class="body">'+p.body+'</div></div>';
   h+='<div class="partnerSection"><div class="label">◆ 樣貌</div><div class="body">'+p.appearance+'</div></div>';
