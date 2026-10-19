@@ -2427,13 +2427,16 @@ function shouldAutoSellEquip(eq){
   ensureAutoSettings();
   return !!(eq&&!eq.fromMaster&&!eq.isMasterWeapon&&S.autoSellTiers&&S.autoSellTiers[eq.tier]);
 }
-function addToBagEquip(eq){
+function addToBagEquip(eq,opts){
   if(!eq)return {sold:false,msg:''};
-  if(shouldAutoSellEquip(eq)){
+  opts=opts||{};
+  // forceKeep：拍賣得標等主動取得的裝備，不觸發自動賣出
+  if(!opts.forceKeep&&shouldAutoSellEquip(eq)){
     var p=moneyGain(TIERS[eq.tier]?TIERS[eq.tier].val:10);
     S.money+=p;
     return {sold:true,price:p,msg:'獲得裝備「'+eq.name+'」→ 自動賣出 <b>'+p+'</b> 兩'};
   }
+  if(!S.bagEquip)S.bagEquip=[];
   if(S.bagEquip.length>=20){
     var fb=TIERS[eq.tier]?TIERS[eq.tier].val:10;
     S.money+=fb;
@@ -7919,7 +7922,27 @@ function placeBid(i){
 function confirmAuctionWin(i){
   var a=AUCTION_LIST[i];if(!a||a.bidder!=='player'||a.sold)return;
   a.sold=true;a.playerBid=0;
-  if(a.itemType==='equip'){addToBagEquip(a.item);}
+  var gotMsg='';
+  if(a.itemType==='equip'){
+    // 拍賣得標強制保留，不受「自動賣出神品」影響；優先用 item，缺則用 equip
+    var eq=a.item||a.equip;
+    if(!eq){
+      gotMsg='得標失敗：拍賣品資料缺失';
+      toast(gotMsg,3500);
+      S.log.push('【拍賣】'+gotMsg+'「'+a.name+'」');
+    }else{
+      var rr=addToBagEquip(eq,{forceKeep:true});
+      gotMsg=rr.msg||('得標「'+a.name+'」');
+      if(rr.sold){
+        toast('得標「'+a.name+'」但背包已滿，折算 '+rr.price+' 兩',4000);
+        S.log.push('【拍賣得標】'+a.name+' → 背包已滿，折算 '+rr.price+' 兩');
+      }else{
+        toast('得標成功！裝備已放入背包：'+a.name,3500);
+        S.log.push('【拍賣得標】'+a.name+' 已放入背包');
+        if(S.autoEquipBest)tryAutoEquipFromBag();
+      }
+    }
+  }
   else if(a.itemType==='skill'){if(S.skills.length<30)S.skills.push(a.item);else{S.money+=a.currentBid;}}
   else{
     if(a.name==='攻擊強化符')S.martial+=5;
@@ -7932,7 +7955,7 @@ function confirmAuctionWin(i){
     else if(a.name==='天外隕鐵')S.bagItem.push({id:'it'+Date.now()+rnd(9999),type:'item',tier:'神品',name:'天外隕鐵',main:{name:'神秘材料',key:'mat',val:1},subs:[]});
     else if(a.name===AUCTION_TICKET_NAME)S.hasAuctionTicket=true;
   }
-  S.log.push('成功得標「'+a.name+'」！');
+  if(!gotMsg)S.log.push('成功得標「'+a.name+'」！');
   checkAchievements();
   renderAuction(document.getElementById('event'));render();saveGame();
 }
@@ -9333,27 +9356,30 @@ function tryAutoAuctionBuy(){
   // 買最需要的：優先指定套裝神品，其次評分最高且買得起
   var candidates=AUCTION_LIST.filter(function(it){
     if(!it||it.sold)return false;
-    var price=it.price||it.cost||0;
+    var price=it.price||it.cost||it.currentBid||0;
     if(S.money<price)return false;
     if(wantSet&&wantSet!=='any'&&it.equip&&it.equip.setId&&it.equip.setId!==wantSet)return false;
     return true;
   });
   if(!candidates.length)return;
   candidates.sort(function(a,b){
-    var sa=scoreEquipItem(a.equip||a)||0,sb=scoreEquipItem(b.equip||b)||0;
+    var sa=scoreEquipItem(a.equip||a.item||a)||0,sb=scoreEquipItem(b.equip||b.item||b)||0;
     return sb-sa;
   });
   var buy=candidates[0];
-  var price=buy.price||buy.cost||0;
+  var price=buy.price||buy.cost||buy.currentBid||0;
   if(S.money<price)return;
-  S.money-=price;
   var item=buy.equip||buy.item||buy;
-  if(item&&item.slot){
-    // 進背包再走自動裝備
-    if(!S.bagEquip)S.bagEquip=[];
-    S.bagEquip.push(item);
-    S.log.push('【自動拍賣】拍下 '+((item.name)||'物品')+'（-'+price+'兩）');
-    buy.sold=true;
+  if(!(item&&item.slot))return;
+  S.money-=price;
+  buy.sold=true;
+  buy.bidder='player';
+  // 與手動得標一致：強制保留，不受自動賣出影響
+  var rr=addToBagEquip(item,{forceKeep:true});
+  if(rr.sold){
+    S.log.push('【自動拍賣】拍下 '+((item.name)||'物品')+'（-'+price+'兩）→ 背包已滿，折算 '+rr.price+' 兩');
+  }else{
+    S.log.push('【自動拍賣】拍下 '+((item.name)||'物品')+'（-'+price+'兩）已放入背包');
     if(S.autoEquipBest)tryAutoEquipFromBag();
   }
 }
