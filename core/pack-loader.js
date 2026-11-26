@@ -27,7 +27,7 @@
     if (pack.content.glossary && (!Array.isArray(pack.content.glossary) || pack.content.glossary.length > 120)) return '詞彙表超出格式限制';
     if ((pack.content.glossary || []).some(function (row) { return !row || !validText(row.term, 60) || !validText(row.meaning, 240); })) return '詞彙表項目不正確';
     if (pack.content.examples && (!Array.isArray(pack.content.examples) || pack.content.examples.length > 80)) return '範例數量超出格式限制';
-    if ((pack.content.examples || []).some(function (row) { return !row || !validText(row.input, 240) || !validText(row.category, 20) || !validText(row.replyStyle, 240); })) return '對話範例格式錯誤';
+    if ((pack.content.examples || []).some(function (row) { return !row || !validText(row.input, 240) || !validText(row.category, 20) || !validText(row.replyStyle, 240) || (row.phenomenon !== undefined && !validText(row.phenomenon, 48)); })) return '對話範例格式錯誤';
     return '';
   }
   async function sha256Hex(buffer) {
