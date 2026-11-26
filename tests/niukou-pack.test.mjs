@@ -12,7 +12,7 @@ const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const manifest = await readJson('packs/manifest.json');
 
 assert.equal(manifest.schemaVersion, 1);
-assert.equal(manifest.packs.length, 6);
+assert.equal(manifest.packs.length, 7);
 const packBytes = new Map();
 const packs = [];
 for (const entry of manifest.packs) {
@@ -27,7 +27,7 @@ for (const entry of manifest.packs) {
 const persona = packs.find((p) => p.id === 'niukou-persona-zh-hant');
 assert.equal(persona.content.examples.length, 20);
 assert.ok(persona.content.examples.every((example) => example.phenomenon));
-for (const moduleName of ['language', 'emotion', 'judgement', 'response']) {
+for (const moduleName of ['language', 'emotion', 'judgement', 'response', 'lexicon']) {
   assert.ok(packs.some((p) => p.content.module === moduleName), `includes ${moduleName} module`);
 }
 
@@ -48,7 +48,13 @@ loaderSandbox.window = loaderSandbox;
 vm.runInNewContext(loaderSource, loaderSandbox, { filename: 'core/pack-loader.js' });
 await loaderSandbox.WulinPackRuntime.ready;
 assert.equal(loaderSandbox.WulinPackRuntime.status, 'ready');
-assert.equal(loaderSandbox.WulinPackRuntime.all().length, 6);
+assert.equal(loaderSandbox.WulinPackRuntime.all().length, 7);
+
+const vocabularySource = await readFile(path.join(root, 'core/niukou-vocabulary.js'), 'utf8');
+vm.runInNewContext(vocabularySource, loaderSandbox, { filename: 'core/niukou-vocabulary.js' });
+const vocabHits = loaderSandbox.NiukouVocabulary.match('我想與前輩切磋，但先談清楚規矩。');
+assert.ok(vocabHits.some((entry) => entry.term === '前輩'));
+assert.ok(vocabHits.some((entry) => entry.term === '切磋'));
 
 const cognitionSource = await readFile(path.join(root, 'core/niukou-cognition.js'), 'utf8');
 vm.runInNewContext(cognitionSource, loaderSandbox, { filename: 'core/niukou-cognition.js' });
@@ -57,10 +63,22 @@ assert.ok(cognition.emotions.some((emotion) => emotion.id === 'anger'));
 assert.ok(cognition.emotions.some((emotion) => emotion.id === 'sadness'));
 assert.ok(cognition.responsePlan.length > 0);
 assert.equal(cognition.isProposalOnly, true);
+const vocabularyCognition = loaderSandbox.NiukouCognition.inspect('我願與前輩切磋，但先談清楚規矩。', {});
+assert.ok(vocabularyCognition.vocabulary.some((entry) => entry.term === '前輩'));
+assert.ok(vocabularyCognition.vocabulary.some((entry) => entry.term === '切磋'));
 assert.equal(loaderSandbox.NiukouCognition.inspect('我不是生氣。', {}).emotions.some((e) => e.id === 'anger'), false,
   'emotion cue following a negation is not reported as positive anger');
 assert.equal(loaderSandbox.NiukouCognition.inspect('我不生氣。', {}).emotions.some((e) => e.id === 'anger'), false,
   'single-character negation is recognized');
+assert.equal(loaderSandbox.NiukouCognition.inspect('我不是孤單。', {}).emotions.some((e) => e.id === 'loneliness'), false,
+  'negation suppresses loneliness cue');
+const resolvedReference = loaderSandbox.NiukouCognition.inspect('他現在在哪裡？', {}, [{ who: 'npc', text: '掌門剛到大殿。' }]);
+assert.equal(resolvedReference.context.candidate, '掌門');
+assert.equal(resolvedReference.context.needsClarification, false);
+const ambiguousReference = loaderSandbox.NiukouCognition.inspect('他現在在哪裡？', {}, [{ who: 'npc', text: '掌門和師妹剛到大殿。' }]);
+assert.equal(ambiguousReference.context.candidate, null);
+assert.equal(ambiguousReference.context.needsClarification, true);
+assert.ok(ambiguousReference.responsePlan.some((strategy) => strategy.id === 'clarify-referent'));
 
 const neuralSource = await readFile(path.join(root, 'core/niukou-neural.js'), 'utf8');
 vm.runInNewContext(neuralSource, loaderSandbox, { filename: 'core/niukou-neural.js' });
@@ -83,9 +101,45 @@ assert.ok(uncertain && !uncertain.accepted, 'conflicting labels stay below confi
 const automaticOnly = twelve.map((sample) => ({ ...sample, src: 'auto' }));
 assert.equal(neural.classify('我願意出手相助', automaticOnly), null, 'automatic rows do not satisfy human-feedback threshold');
 
+let lookupCalls = 0;
+let lookupUrl = '';
+const localValues = new Map();
+const wordbankSandbox = {
+  URL, URLSearchParams, Date,
+  fetch: async (url) => {
+    lookupCalls++;
+    lookupUrl = String(url);
+    return { ok: true, status: 200, text: async () => JSON.stringify({ query: { pages: { '12': { pageid: 12, title: '切磋', fullurl: 'https://zh.wiktionary.org/wiki/%E5%88%87%E7%A3%8B', extract: '詞條摘錄' } } } }) };
+  },
+  localStorage: {
+    getItem: (key) => localValues.get(key) || null,
+    setItem: (key, value) => localValues.set(key, value)
+  }
+};
+wordbankSandbox.window = wordbankSandbox;
+const wordbankSource = await readFile(path.join(root, 'core/niukou-wordbank.js'), 'utf8');
+vm.runInNewContext(wordbankSource, wordbankSandbox, { filename: 'core/niukou-wordbank.js' });
+assert.equal(lookupCalls, 0, 'dictionary lookup does not run on module load');
+const candidate = await wordbankSandbox.NiukouWordbank.search('切磋');
+assert.equal(lookupCalls, 1, 'lookup is explicit and user-triggered');
+assert.equal(new URL(lookupUrl).searchParams.get('titles'), '切磋', 'only the requested term is sent');
+assert.equal(candidate.activeInJudgement, false);
+assert.equal(candidate.source.host, 'zh.wiktionary.org');
+const savedCandidate = wordbankSandbox.NiukouWordbank.saveCandidate(candidate);
+assert.equal(savedCandidate.items.length, 1);
+assert.equal(savedCandidate.items[0].status, 'unreviewed-candidate');
+assert.equal(savedCandidate.items[0].activeInJudgement, false);
+assert.equal(wordbankSandbox.NiukouWordbank.exportCandidates().entries.length, 1);
+assert.throws(() => wordbankSandbox.NiukouWordbank.saveCandidate({ ...candidate, source: { ...candidate.source, host: 'evil.example' } }));
+assert.equal(wordbankSandbox.NiukouWordbank.remove(candidate.id).length, 0);
+
 const html = await readFile(path.join(root, 'index.html'), 'utf8');
 assert.ok(html.indexOf('./core/pack-loader.js') < html.indexOf('./core/niukou-cognition.js'));
+assert.ok(html.indexOf('./core/niukou-vocabulary.js') < html.indexOf('./core/niukou-cognition.js'));
 assert.ok(html.indexOf('./core/niukou-cognition.js') < html.indexOf('./core/niukou-neural.js'));
+assert.ok(html.indexOf('./core/niukou-wordbank.js') < html.indexOf('function nkLookupWiktionary'));
+assert.match(html, /只把下方單一詞語送往中文 Wiktionary 查詢/);
+assert.match(html, /不會直接影響鈕釦判讀或遊戲狀態/);
 assert.match(html, /var protectedRule=prop\.source==='niukou'&&prop\.confidence>=0\.9/);
 assert.match(html, /!unsafeSignal&&prop\.source!=='niukou'/);
 assert.match(html, /prop\.cat==='evil'&&prop\.confidence>=0\.8/);

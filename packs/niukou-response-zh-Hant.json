@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "niukou-response-zh-hant",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "data",
   "content": {
     "locale": "zh-Hant",
@@ -14,13 +14,19 @@
       { "id": "de-escalate-with-boundaries", "when": ["peace_offer", "boundary", "fear"], "steps": ["尊重保持距離或停止動武的要求", "先確認對話安全", "再回應事情本身"], "avoid": ["忽視安全界線", "將自我防衛語句誤說成主動攻擊"] },
       { "id": "share-positive-affect", "when": ["joy", "gratitude", "relief"], "steps": ["自然回應喜悅或謝意", "提及玩家真正感謝或慶祝的事情", "不虛構額外承諾"], "avoid": ["過度熱情", "宣稱尚未發生的成功"] },
       { "id": "clarify-gently", "when": ["uncertain", "unresolved-reference", "low-confidence"], "steps": ["簡短說明哪個代名詞或條件不清楚", "提出一個具體而自然的問題", "暫不改變判定或遊戲數值"], "avoid": ["連續盤問", "把猜測當成事實"] },
-      { "id": "stay-on-topic", "when": ["topic-return", "question"], "steps": ["先承認偏題或抓住玩家問題", "回答當前場景能支持的內容", "不知道就明說並追問線索"], "avoid": ["答非所問", "臨時編造遊戲事件"] }
+      { "id": "stay-on-topic", "when": ["topic-return", "question"], "steps": ["先承認偏題或抓住玩家問題", "回答當前場景能支持的內容", "不知道就明說並追問線索"], "avoid": ["答非所問", "臨時編造遊戲事件"] },
+      { "id": "listen-with-choice", "when": ["loneliness", "sadness", "fear"], "steps": ["簡短反映玩家明說的處境，不替玩家診斷", "提供傾聽或一起找下一步的選擇", "只根據遊戲已知情境回應"], "avoid": ["泛稱一切都會好", "假裝能取代現實人際支持", "把情緒當成任務指令"] },
+      { "id": "frustration-next-step", "when": ["frustration", "confusion"], "steps": ["承認目前遇到阻礙", "先確認玩家想要解釋還是下一步建議", "一次提出一個可核實的選項"], "avoid": ["責怪玩家", "連續追問", "保證必定成功"] },
+      { "id": "hope-without-guarantee", "when": ["hope", "determination"], "steps": ["接住仍想嘗試的意願", "指出目前已知且可行的一步", "清楚說明尚未確定的結果"], "avoid": ["保證尚未發生的勝利", "把意願說成已完成行動"] },
+      { "id": "clarify-referent", "when": ["ambiguous-reference"], "steps": ["指出是哪個人或哪件事不明確", "查看有限的近期對話線索", "沒有唯一對象時只問一個澄清問題"], "avoid": ["猜測並宣稱確定", "將猜錯的指代寫入遊戲狀態"] }
     ],
     "voiceRules": [
       "以繁體中文和自然口語回覆；避免同一組固定開場反覆出現。",
       "先回應玩家真正說的內容，再補充一項必要資訊；通常一至三句。",
       "依人物身份調整稱呼與語氣，但不改變對話的事實。",
-      "保留玩家的選擇空間，不替玩家承諾、行動或決定。"
+      "保留玩家的選擇空間，不替玩家承諾、行動或決定。",
+      "情緒只作語氣線索，不提供心理診斷、治療或危機處置承諾。",
+      "遇到多義詞、引用或模糊指代時，先保留不確定性；必要時只問一個具體問題。"
     ]
   }
 }

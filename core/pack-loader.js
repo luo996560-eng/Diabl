@@ -34,9 +34,14 @@
     if (pack.content.persona && (!validText(pack.content.persona.name, 80) || !validText(pack.content.persona.voice, 1200))) return '人物設定超出格式限制';
     if (pack.content.glossary && (!Array.isArray(pack.content.glossary) || pack.content.glossary.length > 120)) return '詞彙表超出格式限制';
     if ((pack.content.glossary || []).some(function (row) { return !row || !validText(row.term, 60) || !validText(row.meaning, 240); })) return '詞彙表項目不正確';
+    if (pack.content.module === 'lexicon') {
+      if (!pack.content.provenance || pack.content.provenance.kind !== 'original-game-content' || !validText(pack.content.provenance.source, 120) || !validText(pack.content.provenance.license, 180)) return '詞彙來源聲明不正確';
+      if (!Array.isArray(pack.content.entries) || pack.content.entries.length > 120) return '詞彙模組超出格式限制';
+      if (pack.content.entries.some(function (row) { return !row || !validText(row.id, 48) || !validText(row.term, 48) || !stringList(row.aliases || [], 12, 48) || !validText(row.meaning, 240) || !validText(row.register || '', 64) || !stringList(row.useWhen || [], 12, 100) || !stringList(row.avoidWhen || [], 12, 100) || !validText(row.responseNeed || '', 240); })) return '詞彙模組欄位不正確';
+    }
     if (pack.content.examples && (!Array.isArray(pack.content.examples) || pack.content.examples.length > 80)) return '範例數量超出格式限制';
     if ((pack.content.examples || []).some(function (row) { return !row || !validText(row.input, 240) || !validText(row.category, 20) || !validText(row.replyStyle, 240) || (row.phenomenon !== undefined && !validText(row.phenomenon, 48)); })) return '對話範例格式錯誤';
-    if (pack.content.module && ['language', 'emotion', 'judgement', 'response'].indexOf(pack.content.module) < 0) return '未知的鈕釦模組類型';
+    if (pack.content.module && ['language', 'emotion', 'judgement', 'response', 'lexicon'].indexOf(pack.content.module) < 0) return '未知的鈕釦模組類型';
     if (pack.content.cues && !validCueRows(pack.content.cues, 80)) return '語言線索模組格式錯誤';
     if (pack.content.categories && (!Array.isArray(pack.content.categories) || pack.content.categories.length > 24 || pack.content.categories.some(function (row) {
       return !row || !validText(row.id, 40) || !validText(row.label, 80) || !Array.isArray(row.cues) || row.cues.length > 60 || row.cues.some(function (cue) { return !cue || !validText(cue.term, 48) || typeof cue.weight !== 'number' || cue.weight < 0 || cue.weight > 2; }) || !validText(row.responseNeed, 240);
