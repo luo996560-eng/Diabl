@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "niukou-judgement-zh-hant",
+  "version": "1.0.0",
+  "type": "data",
+  "content": {
+    "locale": "zh-Hant",
+    "module": "judgement",
+    "policy": {
+      "proposalOnly": true,
+      "gameStateAuthority": "game-rules-only",
+      "clarifyBelowConfidence": 0.5,
+      "neuralRequiresHumanExamples": 12,
+      "neuralMinimumConfidence": 0.78,
+      "neuralMinimumMargin": 0.18,
+      "protectedIntents": ["threat", "hostility", "explicit-refusal-or-negated-cooperation"],
+      "priority": ["explicit threat and safety boundary", "player correction and latest context", "negation and contrast scope", "conditional commitment", "topic and evidence relevance", "emotion and speech act", "learned suggestion", "clarification when uncertain"]
+    },
+    "principles": [
+      "玩家最新澄清優先於鈕釦先前推測；修正指代與條件，不沿用已被否定的誤解。",
+      "明確威脅、敵意與拒絕由本地可檢查規則優先保護，統計或神經網路不得把它改成善意。",
+      "情緒只描述說話狀態，不等同善惡、真偽、是否犯罪或任務結果。",
+      "承諾含有尚未成立的條件時，只能記錄為條件意願，不得宣稱任務已完成。",
+      "人物身份、已知事件與目前話題決定回應範圍；缺少資訊時先追問，不編造答案。",
+      "所有判讀都是提案。態度、物品、銀兩、戰鬥、任務和結局只由遊戲原規則驗證與變更。"
+    ]
+  }
+}

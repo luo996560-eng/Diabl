@@ -536,6 +536,9 @@ details.repeat-choices>summary{cursor:pointer;color:var(--muted);font-size:12px;
   <div id="log"></div>
 </div>
 <div id="toast"></div>
+<script src="./core/pack-loader.js"></script>
+<script src="./core/niukou-cognition.js"></script>
+<script src="./core/niukou-neural.js"></script>
 <script>
 /* ========== 全域錯誤攔截 ========== */
 window.onerror=function(msg,src,line,col,err){
@@ -6133,6 +6136,7 @@ function classifyDeepReply(text){
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   root.NiukouSemantic = api;
 })(typeof window !== 'undefined' ? window : globalThis);
+if(window.NiukouCognition)window.NiukouCognition.attach(window.NiukouSemantic);
 
 var NIUKOU_INTENT_LABEL={threat:'威脅',hostility:'敵意',apology:'道歉',gratitude:'感謝',peace_offer:'釋出善意',acceptance:'答應',promise:'承諾',defer:'暫緩',challenge:'質疑',deception:'提及欺瞞',refusal:'拒絕',negotiation:'談條件',conditional_cooperation:'條件合作',cooperation:'願意相助',emotion:'抒發情緒',question:'提問',statement:'陳述'};
 var DD_CAT_LABEL={good:'善意',neutral:'中立',evil:'算計',off:'文不對題'};
@@ -6346,6 +6350,14 @@ function nbRefine(text,prop,dd){
       if(nb&&nb.p>=0.62&&nb.cat!==prop.cat&&!(noFlipToGood&&nb.cat==='good')){out.cat=nb.cat;out.delta=null;out.source='learned';out.learn={kind:'bayes',p:nb.p};}
       else if(nb)out.learn={kind:'bayes-agree',p:nb.p,cat:nb.cat};
     }
+    // 小型本機 MLP 僅在人工回饋足夠且本地規則沒有明確結論時提供提案。
+    var unsafeSignal=prop.parse&&prop.parse.signals&&(prop.parse.signals.threat||prop.parse.signals.hostility);
+    if(!protectedRule&&!unsafeSignal&&prop.source!=='niukou'&&window.NiukouNeural){
+      var neural=window.NiukouNeural.classify(text,b.samples);
+      if(neural&&neural.accepted&&neural.cat!==out.cat&&!(noFlipToGood&&neural.cat==='good')){
+        out.cat=neural.cat;out.delta=null;out.source='neural';out.learn={kind:'neural',p:neural.p,margin:neural.margin,feedbackCount:neural.feedbackCount};
+      }
+    }
   }
   return out;
 }
@@ -6369,6 +6381,7 @@ function nbLearnTag(p){
   if(p.source==='repeat')return '鈕釦：這句你剛說過，對方不會再為同一句話動容';
   if(p.source==='memory')return '鈕釦記憶：你曾教過相似的話「'+String(p.learn&&p.learn.said||'').slice(0,14)+'」→ '+L[p.cat];
   if(p.source==='learned')return '鈕釦學習判讀 → '+L[p.cat]+'（'+Math.round((p.learn&&p.learn.p||0)*100)+'%，來自你的對話紀錄）';
+  if(p.source==='neural')return '鈕釦神經網路建議 → '+L[p.cat]+'（'+Math.round((p.learn&&p.learn.p||0)*100)+'%，基於 '+(p.learn&&p.learn.feedbackCount||0)+' 條人工回饋；仍待遊戲規則驗證）';
   return '';
 }
 
@@ -6414,6 +6427,10 @@ function renderNiukouLab(el){
   h+='目前能力：'+NIUKOU_LEVEL_DESC[lv-1]+(next?'<br><span style="color:var(--muted);font-size:12px">下一級：'+NIUKOU_LEVEL_DESC[lv]+'</span>':'')+'<br>';
   h+='已學句子 <b>'+b.samples.length+'</b>（你親自教的 '+human+'）・字詞片段 '+b.vocab+'<br>';
   h+='判讀 '+b.stats.judged+' 次・你確認 '+b.stats.confirmed+'・你修正 '+b.stats.corrected+(acc!==null?'・最近準確率 <b>'+Math.round(acc*100)+'%</b>':'');
+  var packRuntime=window.WulinPackRuntime,packStatus=packRuntime?packRuntime.status:'未啟用',packList=packRuntime?packRuntime.packs.map(function(x){return x.id+' v'+x.version;}).join('、'):'尚無';
+  h+='<br>認知模組：'+escapeEventHTML(packStatus)+'・'+escapeEventHTML(packList||'尚無資料包');
+  var neuralCount=b.samples.filter(function(x){return x.src!=='auto';}).length;
+  h+='<br>本機 MLP：'+(neuralCount>=12?'已達人工樣本門檻（'+neuralCount+'）':'收集人工回饋中（'+neuralCount+'/12）');
   h+='</div>';
   h+='<p style="font-size:13px;color:var(--muted);line-height:1.7">在這裡對鈕釦說話不會影響遊戲數值。鈕釦會說出它怎麼判讀，判錯了就教它；它會記住，在深度對話中派上用場。</p>';
   h+='<input id="nkInput" class="dd-input" type="text" maxlength="80" enterkeyhint="send" autocomplete="off" placeholder="例如：我雖然不喜歡你，但還是會幫你" onkeydown="if(event.key===\'Enter\'&&!event.isComposing)nkJudge()">';
@@ -6437,6 +6454,9 @@ function renderNiukouLab(el){
       if(pr.conditional)why.push('偵測到條件');
       if(pr.rhetorical)why.push('偵測到反問');
       if(pr.emotions&&pr.emotions.length)why.push('情緒：'+pr.emotions.join('、'));
+      if(pr.cognition&&pr.cognition.language&&pr.cognition.language.length)why.push('語言模組：'+pr.cognition.language.map(function(x){return x.label;}).join('、'));
+      if(pr.cognition&&pr.cognition.emotions&&pr.cognition.emotions.length){var em=pr.cognition.emotions[0];why.push('情感模組：'+em.label+'（線索 '+Math.round(em.score*100)+'%）—'+em.responseNeed);}
+      if(pr.cognition&&pr.cognition.responsePlan&&pr.cognition.responsePlan.length)why.push('對答策略：'+pr.cognition.responsePlan[0].steps.join('；'));
       h+='<div style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.7">'+why.map(function(x){return '・'+x;}).join('<br>')+'</div>';
       var partners=lv>=5?3:1,used={};
       for(var k=0;k<partners;k++){
@@ -6466,7 +6486,7 @@ function renderNiukouLab(el){
     h+='<h3 style="font-size:14px;margin:14px 0 6px">你教過鈕釦的句子</h3>';
     mine.forEach(function(x){h+='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:13px"><span>「'+escapeEventHTML(x.s.t)+'」→ '+L[x.s.c]+'</span><button type="button" class="ghost" style="width:auto;margin:0;padding:4px 8px;font-size:11px;min-height:30px" onclick="nkForget('+x.i+')">忘記</button></div>';});
   }
-  h+='<div class="note-card" style="margin-top:14px;font-size:12px;color:var(--muted);line-height:1.7;padding:10px;border:1px dashed var(--line-dk);border-radius:8px">鈕釦是離線的規則＋統計學習（樸素貝氏），不是大型語言模型，也不連網。學習只改變「判讀」；態度、獎勵與結局由遊戲規則決定。明確的威脅與敵意不會被學習結果推翻，判成算計的話也不會被教成善意。學習資料存在這台裝置，輪迴後仍保留，匯出存檔時會一併帶走。</div>';
+  h+='<div class="note-card" style="margin-top:14px;font-size:12px;color:var(--muted);line-height:1.7;padding:10px;border:1px dashed var(--line-dk);border-radius:8px">鈕釦使用可檢查的語意規則、江湖語言與情感資料包，以及本機統計學習。玩家人工回饋達 12 條、涵蓋至少兩類後，輕量多層感知器才會為低信心句子提供建議；高信心規則、明確威脅與敵意不會被它覆蓋。模型只提供判讀提案，不是大型生成式語言模型，也不會自行改變態度、獎勵、任務或結局。學習資料只留在這台裝置，仍可透過遊戲存檔匯出。</div>';
   h+='<button type="button" class="danger" onclick="nkReset()">重設鈕釦記憶</button>';
   h+='<button class="main" onclick="switchTab(\'main\')">返回主線</button>';
   el.innerHTML=h;
@@ -6475,7 +6495,7 @@ function renderNiukouLab(el){
 window.NiukouWuxiaBridge={
   version:'30.2.2',
   analyze:function(text){return niukouDDAnalyze(text,S&&S._dd);},
-  engineInfo:function(){return {engine:window.NiukouSemantic?window.NiukouSemantic.version:null,mode:'offline-rules',llm:false,proposalOnly:true};},
+  engineInfo:function(){return {engine:window.NiukouSemantic?window.NiukouSemantic.version:null,cognition:window.NiukouCognition?window.NiukouCognition.version:null,neural:window.NiukouNeural?window.NiukouNeural.version:null,packs:window.WulinPackRuntime?window.WulinPackRuntime.packs:[],mode:'offline-rules-and-local-mlp',llm:false,proposalOnly:true};},
   selfTest:niukouSelfTest
 };
 

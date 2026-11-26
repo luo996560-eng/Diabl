@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "id": "niukou-language-zh-hant",
+  "version": "1.0.0",
+  "type": "data",
+  "content": {
+    "locale": "zh-Hant",
+    "module": "language",
+    "description": "繁體中文江湖語用、條件、否定、反諷、修正與話題理解資料。",
+    "cues": [
+      { "id": "negation", "label": "否定範圍", "terms": ["不是", "並非", "沒有", "不曾", "不願", "不會", "不能", "不必", "未曾", "別"], "note": "否定只作用於其語意範圍；須與後續動詞和子句一併理解。" },
+      { "id": "double-negation", "label": "雙重否定", "terms": ["不是不", "並非不", "沒有不", "不能不"], "note": "常表示肯定或不得已，不能看到不字就判作拒絕。" },
+      { "id": "contrast", "label": "轉折焦點", "terms": ["但是", "可是", "然而", "不過", "只是", "卻", "但"], "note": "轉折後常包含補充條件或真正立場，仍需讀完整句。" },
+      { "id": "condition", "label": "條件與承諾", "terms": ["如果", "假如", "若是", "只要", "除非", "前提是", "得先", "先", "才", "否則"], "note": "條件尚未成立時，承諾不可當成已履行。" },
+      { "id": "repair", "label": "玩家修正", "terms": ["你聽錯了", "我說的是", "不是那個意思", "更正", "我指的是", "別誤會"], "note": "採納玩家最新澄清，更新指代和先前判讀。" },
+      { "id": "sarcasm", "label": "反諷與挖苦", "terms": ["可真是", "好本事", "真是多謝", "真有你的", "真了不起"], "note": "褒義表面詞可能承載不滿；結合後文與對話脈絡，不單靠詞面定性。" },
+      { "id": "topic-return", "label": "拉回話題", "terms": ["回答正題", "回到正事", "先說正事", "別岔開", "我問的是", "先回答"], "note": "辨認玩家要求回到當前問題。" },
+      { "id": "partial-assertion", "label": "分項承認與否認", "terms": ["這兩件事", "但沒有", "不是全部", "其中一件", "另當別論"], "note": "一項承認不得擴大成另一項承認。" },
+      { "id": "polite-refusal", "label": "婉拒與延後", "terms": ["改日再談", "容我考慮", "今日不便", "稍後再說", "另約時間"], "note": "表示目前不便或暫緩，不等於立即答應。" },
+      { "id": "boundary", "label": "界線與安全要求", "terms": ["別再靠近", "放下兵刃", "保持距離", "我們談", "不要動手"], "note": "先尊重明確界線；自我防衛語句不應自動視為主動挑釁。" },
+      { "id": "evidence-question", "label": "證據質疑", "terms": ["有何證據", "拿出證據", "如何證明", "你怎麼知道", "根據何在"], "note": "提出質疑或要求證據，不等於敵意或認罪。" },
+      { "id": "reassurance", "label": "安撫與保證", "terms": ["我在這裡", "不會丟下你", "我陪著你", "慢慢說", "我會聽"], "note": "傳達陪伴和安全感，回應時避免立即轉成任務命令。" }
+    ],
+    "examples": [
+      { "input": "我不是不肯幫你，只想先聽清楚真相。", "category": "neutral", "phenomenon": "雙重否定與條件", "intent": "conditional_cooperation", "replyStyle": "承認對方有意協助，但先回答真相疑問。" },
+      { "input": "若你肯替我作證，我便陪你去見掌門。", "category": "good", "phenomenon": "條件承諾", "intent": "conditional_cooperation", "replyStyle": "記住這是附帶條件的承諾，不宣稱已同行。" },
+      { "input": "把劍收起來，我們談；若再逼近，我就反抗。", "category": "neutral", "phenomenon": "談判與自我防衛", "intent": "peace_offer", "replyStyle": "先回應談判意願，也尊重安全界線。" },
+      { "input": "可真是多謝你，害我在雨裡等了一夜。", "category": "neutral", "phenomenon": "反諷與不滿", "intent": "complaint", "replyStyle": "聽出失望或挖苦，不當成真心感謝。" },
+      { "input": "我拿了藥，沒拿銀票，別混為一談。", "category": "neutral", "phenomenon": "分項承認與否認", "intent": "correction", "replyStyle": "只確認拿藥，不把銀票也算成承認。" },
+      { "input": "我說的是救人，你一直問酒樓在哪；先回答正題。", "category": "neutral", "phenomenon": "玩家修正與拉回話題", "intent": "correction", "replyStyle": "簡短承認偏題，直接回應救人的問題。" },
+      { "input": "今晚不便，改日再談。", "category": "neutral", "phenomenon": "婉拒與延後", "intent": "defer", "replyStyle": "尊重目前不便，詢問合適的改日安排。" },
+      { "input": "若你再傷一人，我便取你性命。", "category": "evil", "phenomenon": "條件式威脅", "intent": "threat", "replyStyle": "辨認威脅，不被條件句掩蓋。" },
+      { "input": "我不會騙你，密函確實在我手上。", "category": "neutral", "phenomenon": "否定欺瞞與事實陳述", "intent": "statement", "replyStyle": "分辨否認欺瞞與承認持有密函兩件事。" },
+      { "input": "你有何證據說我偷了藥？", "category": "neutral", "phenomenon": "要求證據", "intent": "challenge", "replyStyle": "回應證據或調查依據，不直接定罪。" },
+      { "input": "放下兵刃，我們還能好好說話。", "category": "good", "phenomenon": "降溫與談判", "intent": "peace_offer", "replyStyle": "回應停止衝突的提議。" },
+      { "input": "少廢話，交出解藥，否則你走不出此地。", "category": "evil", "phenomenon": "脅迫與威脅", "intent": "threat", "replyStyle": "人物應戒備或拒絕受脅迫。" },
+      { "input": "我很生氣，但我不會動手。", "category": "neutral", "phenomenon": "情緒與行為分離", "intent": "emotion", "replyStyle": "承認憤怒，同時辨明對方明確克制。" },
+      { "input": "我願陪你查案，只是你得先告訴我隱瞞了什麼。", "category": "good", "phenomenon": "合作意願與先決條件", "intent": "conditional_cooperation", "replyStyle": "回應合作意願並處理先說明的要求。" },
+      { "input": "這件事我還沒答應，等查明師兄下落再說。", "category": "neutral", "phenomenon": "否定承諾與時間條件", "intent": "defer", "replyStyle": "不得記作已答應；先聚焦查明師兄下落。" },
+      { "input": "你若肯放過無辜之人，我可以替你求情。", "category": "good", "phenomenon": "有條件的善意", "intent": "conditional_cooperation", "replyStyle": "承認願意求情，但條件是先放過無辜者。" },
+      { "input": "別再靠近，我只想知道我妹妹在哪裡。", "category": "neutral", "phenomenon": "安全界線與資訊需求", "intent": "question", "replyStyle": "保持距離，回答妹妹的去向或先澄清線索。" },
+      { "input": "你救我一命，這份恩情我記下了。", "category": "good", "phenomenon": "感謝與人情", "intent": "gratitude", "replyStyle": "回應感謝，不虛構已償還人情。" },
+      { "input": "我不是要推卸責任，只想知道當時誰在場。", "category": "neutral", "phenomenon": "否定與調查問題", "intent": "question", "replyStyle": "回答目擊者資訊，不把詢問當作逃避責任。" },
+      { "input": "我若交出劍譜，你便放我師妹離開嗎？", "category": "neutral", "phenomenon": "交換條件與確認", "intent": "negotiation", "replyStyle": "確認交換條件，不宣稱雙方已成交。" },
+      { "input": "真是好一個公正的掌門，連自己徒弟都能冤枉。", "category": "neutral", "phenomenon": "反諷與指控", "intent": "complaint", "replyStyle": "辨認不滿與指控，請對方說明事證。" },
+      { "input": "我答應陪你去，但不會替你殺人。", "category": "good", "phenomenon": "承諾與明確界線", "intent": "conditional_cooperation", "replyStyle": "接受同行承諾，同時尊重拒絕殺人的底線。" },
+      { "input": "嗯。", "category": "off", "phenomenon": "資訊不足", "intent": "uncertain", "replyStyle": "不要推斷立場；自然追問對方是否還有話要說。" },
+      { "input": "asdf123", "category": "off", "phenomenon": "無關或無法理解", "intent": "uncertain", "replyStyle": "簡短詢問是否輸入錯誤，不懲罰玩家。" }
+    ]
+  }
+}

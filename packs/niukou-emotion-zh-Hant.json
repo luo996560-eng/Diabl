@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "niukou-emotion-zh-hant",
+  "version": "1.0.0",
+  "type": "data",
+  "content": {
+    "locale": "zh-Hant",
+    "module": "emotion",
+    "description": "辨識玩家明示或常見的情緒線索；情緒只補充語氣，不決定善惡或遊戲結果。",
+    "categories": [
+      { "id": "anger", "label": "憤怒", "valence": -0.7, "arousal": 0.9, "cues": [{"term":"憤怒","weight":1.0},{"term":"生氣","weight":0.9},{"term":"惱火","weight":0.9},{"term":"受夠了","weight":1.0},{"term":"火大","weight":0.9},{"term":"氣死我","weight":1.0},{"term":"怒火","weight":1.0}], "responseNeed": "先承認對方正在生氣，再回應具體問題；不要把情緒表達本身當成威脅。" },
+      { "id": "sadness", "label": "悲傷", "valence": -0.8, "arousal": 0.3, "cues": [{"term":"傷心","weight":1.0},{"term":"難過","weight":0.9},{"term":"心寒","weight":1.0},{"term":"失望","weight":0.8},{"term":"委屈","weight":0.9},{"term":"痛苦","weight":1.0},{"term":"哭了","weight":0.8}], "responseNeed": "先給予理解與陪伴，再詢問對方需要什麼；避免急著說教。" },
+      { "id": "fear", "label": "恐懼與擔憂", "valence": -0.6, "arousal": 0.8, "cues": [{"term":"害怕","weight":0.9},{"term":"恐懼","weight":1.0},{"term":"擔心","weight":0.8},{"term":"不安","weight":0.8},{"term":"心慌","weight":0.9},{"term":"怕他出事","weight":1.0}], "responseNeed": "先確認安全與擔憂對象，提供可核實的資訊；不保證尚未發生的結果。" },
+      { "id": "joy", "label": "喜悅", "valence": 0.8, "arousal": 0.7, "cues": [{"term":"開心","weight":0.9},{"term":"高興","weight":0.9},{"term":"歡喜","weight":1.0},{"term":"欣慰","weight":0.8},{"term":"太好了","weight":0.9},{"term":"值得慶賀","weight":1.0}], "responseNeed": "自然分享喜悅，回應對方真正慶祝的事情。" },
+      { "id": "gratitude", "label": "感激", "valence": 0.7, "arousal": 0.4, "cues": [{"term":"謝謝","weight":0.7},{"term":"多謝","weight":0.8},{"term":"感激","weight":0.9},{"term":"承蒙相助","weight":1.0},{"term":"記下恩情","weight":0.9}], "responseNeed": "簡潔接住謝意，不把口頭感謝說成已完成報答。" },
+      { "id": "relief", "label": "安心與釋然", "valence": 0.6, "arousal": 0.3, "cues": [{"term":"放心了","weight":0.9},{"term":"鬆了口氣","weight":1.0},{"term":"總算安心","weight":1.0},{"term":"幸好","weight":0.7},{"term":"終於沒事","weight":0.9}], "responseNeed": "確認讓對方安心的事實，避免擴大成未經證實的保證。" },
+      { "id": "distrust", "label": "懷疑與不信任", "valence": -0.5, "arousal": 0.5, "cues": [{"term":"不相信","weight":0.9},{"term":"不信任","weight":1.0},{"term":"可疑","weight":0.8},{"term":"有何證據","weight":0.8},{"term":"你在隱瞞","weight":0.9}], "responseNeed": "回應證據或疑點，承認尚未確定的部分，不要求對方立刻信任。" },
+      { "id": "determination", "label": "堅定與決心", "valence": 0.2, "arousal": 0.8, "cues": [{"term":"我決不退讓","weight":1.0},{"term":"一定查明","weight":0.9},{"term":"絕不放棄","weight":0.9},{"term":"我會查到底","weight":0.9},{"term":"說到做到","weight":0.8}], "responseNeed": "辨認決心與承諾，但不把尚未完成的行動當成既成事實。" },
+      { "id": "embarrassment", "label": "歉疚與難為情", "valence": -0.3, "arousal": 0.4, "cues": [{"term":"愧疚","weight":0.9},{"term":"慚愧","weight":0.9},{"term":"不好意思","weight":0.6},{"term":"無地自容","weight":1.0},{"term":"心中有愧","weight":0.9}], "responseNeed": "區分歉意與責任承認；若需要，追問對方打算如何補救。" },
+      { "id": "sarcasm", "label": "挖苦或反諷", "valence": -0.4, "arousal": 0.5, "cues": [{"term":"可真是多謝","weight":1.0},{"term":"好本事","weight":0.7},{"term":"真了不起","weight":0.7},{"term":"真有你的","weight":0.7},{"term":"真是公正","weight":0.9}], "responseNeed": "結合語境確認是否反諷；若把握不高，先回應可能的不滿而不武斷下結論。" },
+      { "id": "confusion", "label": "困惑", "valence": 0.0, "arousal": 0.4, "cues": [{"term":"聽不懂","weight":0.9},{"term":"不明白","weight":0.8},{"term":"怎麼回事","weight":0.7},{"term":"這是何意","weight":0.8},{"term":"說清楚","weight":0.6}], "responseNeed": "換一種更清楚的說法，先補充關鍵資訊，不責怪對方。" }
+    ],
+    "negationCues": ["不再", "並不", "不是", "沒有", "不曾", "未曾", "不會", "不太", "未必", "不"],
+    "intensityCues": [{"term":"非常","factor":1.25},{"term":"極其","factor":1.3},{"term":"有些","factor":0.7},{"term":"稍微","factor":0.65},{"term":"實在太","factor":1.25}]
+  }
+}
