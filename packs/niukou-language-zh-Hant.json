@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "niukou-language-zh-hant",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "data",
   "content": {
     "locale": "zh-Hant",
@@ -19,7 +19,10 @@
       { "id": "polite-refusal", "label": "婉拒與延後", "terms": ["改日再談", "容我考慮", "今日不便", "稍後再說", "另約時間"], "note": "表示目前不便或暫緩，不等於立即答應。" },
       { "id": "boundary", "label": "界線與安全要求", "terms": ["別再靠近", "放下兵刃", "保持距離", "我們談", "不要動手"], "note": "先尊重明確界線；自我防衛語句不應自動視為主動挑釁。" },
       { "id": "evidence-question", "label": "證據質疑", "terms": ["有何證據", "拿出證據", "如何證明", "你怎麼知道", "根據何在"], "note": "提出質疑或要求證據，不等於敵意或認罪。" },
-      { "id": "reassurance", "label": "安撫與保證", "terms": ["我在這裡", "不會丟下你", "我陪著你", "慢慢說", "我會聽"], "note": "傳達陪伴和安全感，回應時避免立即轉成任務命令。" }
+      { "id": "reassurance", "label": "安撫與保證", "terms": ["我在這裡", "不會丟下你", "我陪著你", "慢慢說", "我會聽"], "note": "傳達陪伴和安全感，回應時避免立即轉成任務命令。" },
+      { "id": "reference-resolution", "label": "對話指代回溯", "terms": ["前面提到的", "剛才說的", "那件事", "那個人", "那位", "那封信", "那把劍"], "note": "只回看有限的近期對話；有唯一明確對象才提供候選，多個對象或沒有前文時先請玩家釐清。" },
+      { "id": "reported-speech", "label": "轉述與引用", "terms": ["他說", "她說", "聽說", "據說", "有人告訴我", "只是轉述"], "note": "先分清玩家是在轉述他人話語，不能只因引文含威脅或情緒詞就歸為玩家本人意圖。" },
+      { "id": "intent-repair", "label": "意圖澄清與修正", "terms": ["我的意思是", "我不是那個意思", "我只是想問", "不是要威脅", "我想表達的是"], "note": "採納玩家最新明確修正；若仍有歧義，詢問一個具體問題而非自行猜測。" }
     ],
     "examples": [
       { "input": "我不是不肯幫你，只想先聽清楚真相。", "category": "neutral", "phenomenon": "雙重否定與條件", "intent": "conditional_cooperation", "replyStyle": "承認對方有意協助，但先回答真相疑問。" },
@@ -45,7 +48,10 @@
       { "input": "真是好一個公正的掌門，連自己徒弟都能冤枉。", "category": "neutral", "phenomenon": "反諷與指控", "intent": "complaint", "replyStyle": "辨認不滿與指控，請對方說明事證。" },
       { "input": "我答應陪你去，但不會替你殺人。", "category": "good", "phenomenon": "承諾與明確界線", "intent": "conditional_cooperation", "replyStyle": "接受同行承諾，同時尊重拒絕殺人的底線。" },
       { "input": "嗯。", "category": "off", "phenomenon": "資訊不足", "intent": "uncertain", "replyStyle": "不要推斷立場；自然追問對方是否還有話要說。" },
-      { "input": "asdf123", "category": "off", "phenomenon": "無關或無法理解", "intent": "uncertain", "replyStyle": "簡短詢問是否輸入錯誤，不懲罰玩家。" }
+      { "input": "asdf123", "category": "off", "phenomenon": "無關或無法理解", "intent": "uncertain", "replyStyle": "簡短詢問是否輸入錯誤，不懲罰玩家。" },
+      { "input": "你剛才提到的那位掌門，現在在哪裡？", "category": "neutral", "phenomenon": "對話指代與近期人物回溯", "intent": "question", "replyStyle": "只在近期對話存在唯一掌門指涉時回答；沒有或有多位人物便先澄清。" },
+      { "input": "我不是要威脅你，只是轉述他方才說的話。", "category": "neutral", "phenomenon": "引用、否定與說話者歸屬", "intent": "correction", "replyStyle": "區分玩家的否認與被轉述的內容，不把引文自動算作玩家威脅。" },
+      { "input": "我先想一想再答覆，並不是拒絕你。", "category": "neutral", "phenomenon": "延後回答與否定修正", "intent": "defer", "replyStyle": "辨明目前只是暫緩，不宣稱對方已答應或拒絕。" }
     ]
   }
 }

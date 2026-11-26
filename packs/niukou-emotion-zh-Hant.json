@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "niukou-emotion-zh-hant",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "data",
   "content": {
     "locale": "zh-Hant",
@@ -18,7 +18,10 @@
       { "id": "determination", "label": "堅定與決心", "valence": 0.2, "arousal": 0.8, "cues": [{"term":"我決不退讓","weight":1.0},{"term":"一定查明","weight":0.9},{"term":"絕不放棄","weight":0.9},{"term":"我會查到底","weight":0.9},{"term":"說到做到","weight":0.8}], "responseNeed": "辨認決心與承諾，但不把尚未完成的行動當成既成事實。" },
       { "id": "embarrassment", "label": "歉疚與難為情", "valence": -0.3, "arousal": 0.4, "cues": [{"term":"愧疚","weight":0.9},{"term":"慚愧","weight":0.9},{"term":"不好意思","weight":0.6},{"term":"無地自容","weight":1.0},{"term":"心中有愧","weight":0.9}], "responseNeed": "區分歉意與責任承認；若需要，追問對方打算如何補救。" },
       { "id": "sarcasm", "label": "挖苦或反諷", "valence": -0.4, "arousal": 0.5, "cues": [{"term":"可真是多謝","weight":1.0},{"term":"好本事","weight":0.7},{"term":"真了不起","weight":0.7},{"term":"真有你的","weight":0.7},{"term":"真是公正","weight":0.9}], "responseNeed": "結合語境確認是否反諷；若把握不高，先回應可能的不滿而不武斷下結論。" },
-      { "id": "confusion", "label": "困惑", "valence": 0.0, "arousal": 0.4, "cues": [{"term":"聽不懂","weight":0.9},{"term":"不明白","weight":0.8},{"term":"怎麼回事","weight":0.7},{"term":"這是何意","weight":0.8},{"term":"說清楚","weight":0.6}], "responseNeed": "換一種更清楚的說法，先補充關鍵資訊，不責怪對方。" }
+      { "id": "confusion", "label": "困惑", "valence": 0.0, "arousal": 0.4, "cues": [{"term":"聽不懂","weight":0.9},{"term":"不明白","weight":0.8},{"term":"怎麼回事","weight":0.7},{"term":"這是何意","weight":0.8},{"term":"說清楚","weight":0.6}], "responseNeed": "換一種更清楚的說法，先補充關鍵資訊，不責怪對方。" },
+      { "id": "loneliness", "label": "孤單", "valence": -0.5, "arousal": 0.2, "cues": [{"term":"很孤單","weight":1.0},{"term":"沒人懂我","weight":1.0},{"term":"沒人陪我","weight":0.9},{"term":"孤零零","weight":0.9},{"term":"無人可說","weight":0.8}], "responseNeed": "先承認對方感到孤單，給予傾聽選項；不假裝能取代現實支持。" },
+      { "id": "frustration", "label": "受挫與無力", "valence": -0.5, "arousal": 0.5, "cues": [{"term":"卡住了","weight":0.8},{"term":"毫無進展","weight":1.0},{"term":"怎麼都不行","weight":0.9},{"term":"白費力氣","weight":0.9},{"term":"無計可施","weight":0.9}], "responseNeed": "承認事情不順，先確認玩家想要傾聽還是一起找下一步；不責怪或說教。" },
+      { "id": "hope", "label": "希望與期待", "valence": 0.7, "arousal": 0.4, "cues": [{"term":"還有希望","weight":1.0},{"term":"仍有機會","weight":0.9},{"term":"我想試試","weight":0.8},{"term":"總會有辦法","weight":0.9},{"term":"盼望","weight":0.8}], "responseNeed": "接住玩家仍願嘗試的心情，但不保證尚未發生的結果。" }
     ],
     "negationCues": ["不再", "並不", "不是", "沒有", "不曾", "未曾", "不會", "不太", "未必", "不"],
     "intensityCues": [{"term":"非常","factor":1.25},{"term":"極其","factor":1.3},{"term":"有些","factor":0.7},{"term":"稍微","factor":0.65},{"term":"實在太","factor":1.25}]

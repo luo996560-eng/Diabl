@@ -547,8 +547,10 @@ details.repeat-choices>summary{cursor:pointer;color:var(--muted);font-size:12px;
 </div>
 <div id="toast"></div>
 <script src="./core/pack-loader.js"></script>
+<script src="./core/niukou-vocabulary.js"></script>
 <script src="./core/niukou-cognition.js"></script>
 <script src="./core/niukou-neural.js"></script>
+<script src="./core/niukou-wordbank.js"></script>
 <script>
 /* ========== 全域錯誤攔截 ========== */
 window.onerror=function(msg,src,line,col,err){
@@ -6231,7 +6233,8 @@ function niukouDDAnalyze(text,dd){
   try{if(window.NiukouSemantic)a=window.NiukouSemantic.parse(text,hist,{intent:'statement',confidence:.42,signals:{},entities:niukouEntities(String(text||''))});}catch(e){a=null;}
   if(!a)return p;
   p.engine=a.engine;p.intent=a.intent;p.rule=a.rule;p.confidence=Number(a.confidence)||0;p.emotions=a.emotions||[];
-  p.parse={negated:!!a.negated,doubleNegation:!!a.doubleNegation,conditional:!!a.conditional,contrast:!!a.contrast,rhetorical:!!a.rhetorical,emotions:a.emotions||[]};
+  p.cognition=a.cognition||null;
+  p.parse={negated:!!a.negated,doubleNegation:!!a.doubleNegation,conditional:!!a.conditional,contrast:!!a.contrast,rhetorical:!!a.rhetorical,emotions:a.emotions||[],signals:a.signals||{},cognition:a.cognition||null,context:a.cognition&&a.cognition.context||null};
   if(a.unresolvedRef&&a.clarifyQuestion)p.clarify=a.clarifyQuestion;
   var rule=NIUKOU_DD_RULES[a.intent];
   // 文不對題由遊戲原規則判定；有明確立場且信心足夠時才採用鈕釦判讀
@@ -6442,6 +6445,32 @@ function ddFeedback(idx,correct){
 function ddFeedbackFix(idx){window._ddFixIdx=idx;renderDeepDialogue();}
 /* ========== 🧠 鈕釦對話練習場 ========== */
 function openNiukouLab(){TAB='niukou';document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});renderEvent();try{render();}catch(e){}}
+window._nkWordSearch={result:null,error:'',busy:false};
+async function nkLookupWiktionary(){
+  var field=document.getElementById('nkSearchTerm'),term=field?field.value.trim():'';
+  if(!term){toast('請只輸入一個想查的詞語');return;}
+  if(!window.NiukouWordbank){toast('本機詞彙模組尚未載入');return;}
+  window._nkWordSearch={result:null,error:'',busy:true};renderEvent();
+  try{window._nkWordSearch.result=await window.NiukouWordbank.search(term);}
+  catch(error){window._nkWordSearch.error=String(error&&error.message||'查詢失敗').slice(0,180);}
+  window._nkWordSearch.busy=false;renderEvent();
+}
+function nkSaveWiktionary(){
+  var state=window._nkWordSearch||{},item=state.result;if(!item||!window.NiukouWordbank)return;
+  try{var saved=window.NiukouWordbank.saveCandidate(item);state.saved=true;state.error='';toast(saved.added?'已存入本機待審清單；尚未加入判定':'這個詞已在本機待審清單');}
+  catch(error){state.error=String(error&&error.message||'保存失敗').slice(0,180);}
+  renderEvent();
+}
+function nkRemoveWiktionary(index){
+  if(!window.NiukouWordbank)return;var rows=window.NiukouWordbank.list(),item=rows[index];if(!item)return;
+  window.NiukouWordbank.remove(item.id);renderEvent();toast('已從本機待審清單移除');
+}
+function nkExportWiktionary(){
+  if(!window.NiukouWordbank)return;var data=window.NiukouWordbank.exportCandidates();
+  if(!data.entries.length){toast('待審清單目前沒有詞條');return;}
+  try{var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='niukou-wordbank-review.json';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},1000);}
+  catch(error){toast('無法匯出；請檢查瀏覽器下載設定');}
+}
 function nkJudge(){
   var inp=document.getElementById('nkInput'),t=inp?inp.value.trim():'';
   if(!t){toast('先輸入一句你想對江湖人物說的話');return;}
@@ -6515,6 +6544,18 @@ function renderNiukouLab(el){
   h+='<br>本機 MLP：'+(neuralCount>=12?'已達人工樣本門檻（'+neuralCount+'）':'收集人工回饋中（'+neuralCount+'/12）');
   h+='</div>';
   h+='<p style="font-size:13px;color:var(--muted);line-height:1.7">在這裡對鈕釦說話不會影響遊戲數值。鈕釦會說出它怎麼判讀，判錯了就教它；它會記住，在深度對話中派上用場。</p>';
+  h+='<section class="info-card" style="margin:12px 0;line-height:1.7"><b>自主詞彙查詢（玩家手動啟動）</b><p style="font-size:12px;color:var(--muted);margin:4px 0 8px">只把下方單一詞語送往中文 Wiktionary 查詢；不會送出你的對話或遊戲記憶。遠端結果是未審核候選，只保存在本機清單，不會直接影響鈕釦判讀或遊戲狀態。</p>';
+  h+='<input id="nkSearchTerm" class="dd-input" type="text" maxlength="32" autocomplete="off" placeholder="例如：以退為進" onkeydown="if(event.key===\'Enter\'&&!event.isComposing)nkLookupWiktionary()">';
+  h+='<button type="button" class="ghost" style="margin-top:6px" onclick="nkLookupWiktionary()">搜尋中文 Wiktionary</button>';
+  var ws=window._nkWordSearch||{};
+  if(ws.busy)h+='<div style="font-size:12px;color:var(--muted);margin-top:6px">正在查詢指定詞語…</div>';
+  if(ws.error)h+='<div role="status" style="font-size:12px;color:#a33;margin-top:6px">'+escapeEventHTML(ws.error)+'</div>';
+  if(ws.result){h+='<div style="margin-top:8px;padding:8px;border:1px solid var(--line);border-radius:8px"><b>'+escapeEventHTML(ws.result.term)+'</b><div style="font-size:12px;white-space:pre-wrap;max-height:180px;overflow:auto;margin:5px 0">'+escapeEventHTML(ws.result.excerpt)+'</div><a href="'+escapeEventHTML(ws.result.source.url)+'" target="_blank" rel="noopener noreferrer">查看詞典來源頁</a><div style="font-size:11px;color:var(--muted);margin-top:4px">授權提示：'+escapeEventHTML(ws.result.source.license)+'。正式收錄前仍須人工核實詞義與再散布條款。</div><button type="button" class="ghost" style="margin-top:6px" onclick="nkSaveWiktionary()">存入本機待審清單</button></div>';}
+  var savedWords=window.NiukouWordbank?window.NiukouWordbank.list():[];
+  if(savedWords.length){h+='<div style="margin-top:8px;font-size:12px"><b>本機待審詞條（'+savedWords.length+'）</b><button type="button" class="ghost" style="width:auto;margin:3px;padding:4px 8px;font-size:11px;min-height:30px" onclick="nkExportWiktionary()">匯出候選 JSON</button>';
+    savedWords.slice(-5).reverse().forEach(function(item,ri){var idx=savedWords.length-1-ri;h+='<div style="padding:6px 0;border-top:1px dashed var(--line)"><b>'+escapeEventHTML(item.term)+'</b><span style="color:var(--muted)">（未審核／不參與判定）</span><div style="white-space:pre-wrap;max-height:72px;overflow:auto">'+escapeEventHTML(item.excerpt)+'</div><a href="'+escapeEventHTML(item.source.url)+'" target="_blank" rel="noopener noreferrer">來源與版本歷史</a>　<button type="button" class="ghost" style="width:auto;margin:2px;padding:3px 7px;font-size:11px;min-height:28px" onclick="nkRemoveWiktionary('+idx+')">移除</button></div>';});
+    h+='</div>';}
+  h+='</section>';
   h+='<input id="nkInput" class="dd-input" type="text" maxlength="80" enterkeyhint="send" autocomplete="off" placeholder="例如：我雖然不喜歡你，但還是會幫你" onkeydown="if(event.key===\'Enter\'&&!event.isComposing)nkJudge()">';
   h+='<button class="main" style="margin-top:8px" onclick="nkJudge()">請鈕釦判讀</button>';
   var R=window._nkLast;
@@ -6540,6 +6581,8 @@ function renderNiukouLab(el){
       if(pr.emotions&&pr.emotions.length)why.push('情緒：'+pr.emotions.join('、'));
       if(pr.cognition&&pr.cognition.language&&pr.cognition.language.length)why.push('語言模組：'+pr.cognition.language.map(function(x){return x.label;}).join('、'));
       if(pr.cognition&&pr.cognition.emotions&&pr.cognition.emotions.length){var em=pr.cognition.emotions[0];why.push('情感模組：'+em.label+'（線索 '+Math.round(em.score*100)+'%）—'+em.responseNeed);}
+      if(pr.cognition&&pr.cognition.vocabulary&&pr.cognition.vocabulary.length){pr.cognition.vocabulary.slice(0,2).forEach(function(v){why.push('江湖詞彙「'+escapeEventHTML(v.term)+'」：'+escapeEventHTML(v.meaning)+(v.avoidWhen&&v.avoidWhen.length?'（避免：'+escapeEventHTML(v.avoidWhen[0])+'）':''));});}
+      if(pr.cognition&&pr.cognition.context){var cx=pr.cognition.context;why.push(cx.needsClarification?'指涉不明：近期對話未找到唯一對象，建議先澄清。':'依近期對話線索，可能指「'+escapeEventHTML(cx.candidate)+'」；這只是提示。');}
       if(pr.cognition&&pr.cognition.responsePlan&&pr.cognition.responsePlan.length)why.push('對答策略：'+pr.cognition.responsePlan[0].steps.join('；'));
       h+='<div style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.7">'+why.map(function(x){return '・'+x;}).join('<br>')+'</div>';
       var partners=lv>=5?3:1,used={};
@@ -6798,7 +6841,7 @@ function nhSelfTest(){
 window.NiukouWuxiaBridge={
   version:'30.2.2',
   analyze:function(text){return niukouDDAnalyze(text,S&&S._dd);},
-  engineInfo:function(){return {engine:window.NiukouSemantic?window.NiukouSemantic.version:null,cognition:window.NiukouCognition?window.NiukouCognition.version:null,neural:window.NiukouNeural?window.NiukouNeural.version:null,packs:window.WulinPackRuntime?window.WulinPackRuntime.packs:[],mode:'offline-rules-and-local-mlp',llm:false,proposalOnly:true};},
+  engineInfo:function(){return {engine:window.NiukouSemantic?window.NiukouSemantic.version:null,cognition:window.NiukouCognition?window.NiukouCognition.version:null,vocabulary:window.NiukouVocabulary?window.NiukouVocabulary.version:null,wordbank:window.NiukouWordbank?window.NiukouWordbank.version:null,neural:window.NiukouNeural?window.NiukouNeural.version:null,packs:window.WulinPackRuntime?window.WulinPackRuntime.packs:[],mode:'offline-rules-and-local-mlp-with-user-triggered-dictionary-lookup',llm:false,proposalOnly:true};},
   selfTest:niukouSelfTest
 };
 
