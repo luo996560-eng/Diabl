@@ -536,6 +536,8 @@ details.repeat-choices>summary{cursor:pointer;color:var(--muted);font-size:12px;
   <div id="log"></div>
 </div>
 <div id="toast"></div>
+<script src="./core/pack-loader.js"></script>
+<script src="./core/niukou-bridge.js"></script>
 <script>
 /* ========== 全域錯誤攔截 ========== */
 window.onerror=function(msg,src,line,col,err){
@@ -6201,6 +6203,7 @@ function validateDDProposal(p){
 function niukouTagText(p){
   if(!p)return '';
   if(p.source==='niukou')return '鈕釦判讀：'+(NIUKOU_INTENT_LABEL[p.intent]||p.intent)+' → '+DD_CAT_LABEL[p.cat]+'（'+Math.round(p.confidence*100)+'%）';
+  if(p.source==='ai-proposal')return '鈕釦雲端語意建議：'+DD_CAT_LABEL[p.cat]+'（'+Math.round(p.confidence*100)+'%）';
   return '關鍵字判讀：'+DD_CAT_LABEL[p.cat];
 }
 function niukouSelfTest(){
@@ -6386,12 +6389,39 @@ function ddFeedback(idx,correct){
 function ddFeedbackFix(idx){window._ddFixIdx=idx;renderDeepDialogue();}
 /* ========== 🧠 鈕釦對話練習場 ========== */
 function openNiukouLab(){TAB='niukou';document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});renderEvent();try{render();}catch(e){}}
-function nkJudge(){
+function applyNiukouRemoteProposal(localProposal,remote){
+  var p=Object.assign({},localProposal||{});
+  if(!remote||!['good','neutral','evil','off'].includes(remote.category)||remote.confidence<0.76)return p;
+  var humanLearned=p.source==='memory'||p.source==='learned';
+  var strongLocal=p.source==='niukou'&&Number(p.confidence)>=0.80;
+  if(!humanLearned&&!strongLocal){p.cat=remote.category;p.intent=remote.intent||p.intent;p.confidence=remote.confidence;p.source='ai-proposal';p.rule='雲端語意提案，經遊戲規則驗證';p.delta=null;}
+  if(remote.reply)p.aiReply=remote.reply;
+  if(remote.reason)p.aiReason=remote.reason;
+  return p;
+}
+function clearNiukouEndpoint(){var input=document.getElementById('nkApiEndpoint');if(input)input.value='';saveNiukouEndpoint();}
+function saveNiukouEndpoint(){
+  var input=document.getElementById('nkApiEndpoint'),value=input?input.value.trim():'';
+  try{if(!value){NiukouBridge.clear();toast('已關閉雲端對話，改用離線鈕釦');}else{NiukouBridge.configure(value);toast('鈕釦對話服務網址已儲存');}}
+  catch(e){toast(e.message||'網址格式不正確');return;}
+  renderEvent();
+}
+async function nkJudge(){
   var inp=document.getElementById('nkInput'),t=inp?inp.value.trim():'';
   if(!t){toast('先輸入一句你想對江湖人物說的話');return;}
+  if(window._nkBusy)return;
   var p=niukouDDAnalyze(t,null);
   if(p.clarify){window._nkLast={t:t,p:p,clarify:true};renderEvent();return;}
   p=nbRefine(t,p,null);
+  if(NiukouBridge.isConfigured()){
+    window._nkBusy=true;renderEvent();
+    try{
+      if(window.WulinPackRuntime)await window.WulinPackRuntime.ready;
+      var ai=await NiukouBridge.reply({text:t,history:[],npc:{name:'鈕釦',scene:'對話練習場',intro:'正在協助玩家理解一句江湖對話。'},judgement:p});
+      p=applyNiukouRemoteProposal(p,ai);
+    }catch(e){console.warn('鈕釦雲端服務暫不可用，使用離線判讀。',e);}
+    finally{window._nkBusy=false;}
+  }
   var v=validateDDProposal(p);p.cat=v.cat;
   nbAfterJudge(t,p);
   window._nkLast={t:t,p:p};
@@ -6416,6 +6446,12 @@ function renderNiukouLab(el){
   h+='判讀 '+b.stats.judged+' 次・你確認 '+b.stats.confirmed+'・你修正 '+b.stats.corrected+(acc!==null?'・最近準確率 <b>'+Math.round(acc*100)+'%</b>':'');
   h+='</div>';
   h+='<p style="font-size:13px;color:var(--muted);line-height:1.7">在這裡對鈕釦說話不會影響遊戲數值。鈕釦會說出它怎麼判讀，判錯了就教它；它會記住，在深度對話中派上用場。</p>';
+  var packState=window.WulinPackRuntime?window.WulinPackRuntime.status:'載入中';
+  var packNames=window.WulinPackRuntime?window.WulinPackRuntime.packs.map(function(x){return x.id+' v'+x.version;}).join('、'):'待載入';
+  h+='<div class="note-card" style="font-size:12px">擴充包：'+escapeEventHTML(packState)+'（'+escapeEventHTML(packNames||'目前沒有已載入套件')+'）</div>';
+  h+='<div class="ev-meta" style="font-size:12px">雲端對答：'+(NiukouBridge.isConfigured()?'網址已設定（實際連線時驗證）':'未設定，使用離線模式')+'</div>';
+  h+='<details class="note-card" style="margin:8px 0"><summary style="cursor:pointer;font-weight:700">⚙ 鈕釦雲端對答設定</summary><p style="font-size:12px">設定你部署的 HTTPS 對話代理網址。瀏覽器只保存網址；供應商 API 金鑰必須設在後端。未設定或連線失敗時會使用離線鈕釦。</p><input id="nkApiEndpoint" type="url" maxlength="500" autocomplete="url" placeholder="https://你的-worker.example.workers.dev" value="'+escapeEventHTML(NiukouBridge.endpoint())+'"><button type="button" class="ghost" onclick="saveNiukouEndpoint()">儲存網址</button><button type="button" class="ghost" onclick="clearNiukouEndpoint()">清除／關閉雲端對答</button></details>';
+  if(window._nkBusy)h+='<div class="ev-meta" role="status">鈕釦正在理解語意，稍候片刻…</div>';
   h+='<input id="nkInput" class="dd-input" type="text" maxlength="80" enterkeyhint="send" autocomplete="off" placeholder="例如：我雖然不喜歡你，但還是會幫你" onkeydown="if(event.key===\'Enter\'&&!event.isComposing)nkJudge()">';
   h+='<button class="main" style="margin-top:8px" onclick="nkJudge()">請鈕釦判讀</button>';
   var R=window._nkLast;
@@ -6425,7 +6461,7 @@ function renderNiukouLab(el){
     if(R.clarify){h+='<div style="margin-top:6px">鈕釦：「'+escapeEventHTML(R.p.clarify)+'」<br><span style="font-size:12px;color:var(--muted)">（指代不明時鈕釦會先請你說清楚，不急著判讀）</span></div>';}
     else{
       var p=R.p,pr=p.parse||{};
-      h+='<div style="margin-top:6px">判讀：<b>'+L[p.cat]+'</b>'+(p.source==='niukou'?'　意圖「'+(NIUKOU_INTENT_LABEL[p.intent]||p.intent)+'」・信心 '+Math.round(p.confidence*100)+'%':'')+'</div>';
+      h+='<div style="margin-top:6px">判讀：<b>'+L[p.cat]+'</b>'+(p.source==='niukou'?'　意圖「'+(NIUKOU_INTENT_LABEL[p.intent]||p.intent)+'」・信心 '+Math.round(p.confidence*100)+'%':p.source==='ai-proposal'?'　雲端提案・信心 '+Math.round(p.confidence*100)+'%':'')+'</div>';
       var why=[];
       if(p.source==='niukou')why.push('語意規則：'+escapeEventHTML(p.rule||''));
       if(p.source==='keyword')why.push('沒有明確立場，改用關鍵字表（已做否定修正）');
@@ -6438,6 +6474,7 @@ function renderNiukouLab(el){
       if(pr.rhetorical)why.push('偵測到反問');
       if(pr.emotions&&pr.emotions.length)why.push('情緒：'+pr.emotions.join('、'));
       h+='<div style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.7">'+why.map(function(x){return '・'+x;}).join('<br>')+'</div>';
+      if(p.aiReply)h+='<div class="ok-card" style="margin-top:8px"><b>鈕釦回應：</b>'+escapeEventHTML(p.aiReply)+(p.aiReason?'<div style="font-size:12px;margin-top:4px">判讀補充：'+escapeEventHTML(p.aiReason)+'</div>':'')+'</div>';
       var partners=lv>=5?3:1,used={};
       for(var k=0;k<partners;k++){
         var npc=pick(DEEP_DIALOGUE_NPCS);if(used[npc.id])continue;used[npc.id]=1;
@@ -6466,7 +6503,7 @@ function renderNiukouLab(el){
     h+='<h3 style="font-size:14px;margin:14px 0 6px">你教過鈕釦的句子</h3>';
     mine.forEach(function(x){h+='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:13px"><span>「'+escapeEventHTML(x.s.t)+'」→ '+L[x.s.c]+'</span><button type="button" class="ghost" style="width:auto;margin:0;padding:4px 8px;font-size:11px;min-height:30px" onclick="nkForget('+x.i+')">忘記</button></div>';});
   }
-  h+='<div class="note-card" style="margin-top:14px;font-size:12px;color:var(--muted);line-height:1.7;padding:10px;border:1px dashed var(--line-dk);border-radius:8px">鈕釦是離線的規則＋統計學習（樸素貝氏），不是大型語言模型，也不連網。學習只改變「判讀」；態度、獎勵與結局由遊戲規則決定。明確的威脅與敵意不會被學習結果推翻，判成算計的話也不會被教成善意。學習資料存在這台裝置，輪迴後仍保留，匯出存檔時會一併帶走。</div>';
+  h+='<div class="note-card" style="margin-top:14px;font-size:12px;color:var(--muted);line-height:1.7;padding:10px;border:1px dashed var(--line-dk);border-radius:8px">鈕釦以離線規則＋統計學習（樸素貝氏）作為基底；若你自行設定雲端對話服務，也可請模型提供語意分類與台詞草案。玩家確認／修正的學習資料仍只存在這台裝置，輪迴後保留並隨存檔匯出。AI 只提出建議；態度、獎勵與結局由遊戲規則決定，明確的威脅與敵意仍受本地規則保護。</div>';
   h+='<button type="button" class="danger" onclick="nkReset()">重設鈕釦記憶</button>';
   h+='<button class="main" onclick="switchTab(\'main\')">返回主線</button>';
   el.innerHTML=h;
@@ -6543,7 +6580,9 @@ function renderDeepDialogue(){
     }
   });
   h+='</div>';
-  if(!dd.resolved){
+  if(!dd.resolved&&dd._niukouPending){
+    h+='<div class="note-card" role="status" style="margin-top:12px">鈕釦正在斟酌你的話，離線遊戲規則仍會負責驗證結果…</div>';
+  }else if(!dd.resolved){
     h+='<div style="margin-top:12px"><input id="ddInput" class="dd-input" type="text" enterkeyhint="send" autocomplete="off" placeholder="輸入你想說的話…（自由回覆，將影響對方態度）" maxlength="80" onkeydown="if(event.key===\'Enter\'&&!event.isComposing)submitDeepReply()"></div>';
     h+='<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">';
     h+='<button class="main" onclick="submitDeepReply()" style="flex:1;min-width:80px;font-size:13px;padding:10px">✉️ 送出回覆</button>';
@@ -6552,7 +6591,7 @@ function renderDeepDialogue(){
     h+='<button class="option" onclick="quickDeepReply(\'打聽寶物與好處\')" style="flex:1;min-width:70px;font-size:12px;padding:9px">打聽好處</button>';
     h+='<button class="danger" onclick="endDeepDialogue(true)" style="flex:1;min-width:70px;font-size:12px;padding:9px">告辭離開</button>';
     h+='</div>';
-    h+='<div class="dd-hint">💡 你說的話由<b>鈕釦 AI</b>（離線語意核心）判讀為「善意／中立／算計／文不對題」，能分辨否定、轉折、條件與威脅；態度與結局仍由遊戲規則決定。文不對題太多次，對方會不耐煩離去。</div>';
+    h+='<div class="dd-hint">💡 你說的話由<b>鈕釦</b>（離線語意核心；設定雲端服務後可增加生成式理解）判讀為「善意／中立／算計／文不對題」，能分辨否定、轉折、條件與威脅；態度與結局仍由遊戲規則決定。文不對題太多次，對方會不耐煩離去。</div>';
   }
   h+='</div>';
   el.innerHTML=h;
@@ -6567,11 +6606,11 @@ function quickDeepReply(txt){
   submitDeepReply(txt);
 }
 
-function submitDeepReply(preset){
+async function submitDeepReply(preset){
   var inp=document.getElementById('ddInput');
   var txt=(typeof preset==='string'?preset:(inp?inp.value:'')).trim();
   if(!txt){toast('請先輸入你想說的話');return;}
-  var dd=S._dd;if(!dd||dd.resolved)return;
+  var dd=S._dd;if(!dd||dd.resolved||dd._niukouPending)return;
   var npc=getDDnpc();if(!npc)return;
   // 鈕釦 AI 先判讀（只產生提案，不改狀態）
   var prop=niukouDDAnalyze(txt,dd);
@@ -6588,7 +6627,19 @@ function submitDeepReply(preset){
   }
   // 鈕釦學習層：句子記憶、統計學習、重複偵測（仍只是提案）
   try{prop=nbRefine(txt,prop,{history:dd.history.slice(0,-1)});}catch(e){}
-  // 遊戲端驗證後才套用
+  // 雲端只回傳受限提案/台詞；玩家學習記憶與高信心本地語意規則優先。
+  var aiResponse=null;
+  if(NiukouBridge.isConfigured()){
+    dd._niukouPending=true;renderDeepDialogue();
+    try{
+      if(window.WulinPackRuntime)await window.WulinPackRuntime.ready;
+      aiResponse=await NiukouBridge.reply({text:txt,history:dd.history.slice(0,-1),npc:npc,judgement:prop});
+    }catch(e){console.warn('鈕釦雲端對答失敗，使用離線回覆。',e);}
+    if(!S||S._dd!==dd||dd.resolved)return;
+    dd._niukouPending=false;
+    prop=applyNiukouRemoteProposal(prop,aiResponse);
+  }
+  // 遊戲端驗證後才套用；模型永遠不能直接修改遊戲狀態。
   var v=validateDDProposal(prop);
   var cat=v.cat,resp;
   mine.judged=cat;
@@ -6597,6 +6648,7 @@ function submitDeepReply(preset){
   var said=dd.history.filter(function(m){return m.who==='npc';}).map(function(m){return m.text;});
   function freshResp(pool){var f=(pool||[]).filter(function(x){return said.indexOf(x)<0;});return pick(f.length?f:pool);}
   if(prop.source==='repeat')resp='（對方看了你一眼）「這話你方才已經說過了。」';
+  else if(aiResponse&&aiResponse.reply&&aiResponse.category===cat&&aiResponse.confidence>=0.55)resp=aiResponse.reply;
   else if(cat==='good')resp=freshResp(npc.respGood);
   else if(cat==='evil')resp=freshResp(npc.respEvil);
   else if(cat==='off'){dd.offCount+=1;resp=freshResp(npc.respOff);}
@@ -9698,7 +9750,7 @@ function render(){
     if(S.talent.talent.ability)tl+='<div style="font-size:10px;color:#b8860b;margin-top:2px">✦ '+S.talent.talent.ability+'</div>';
     tl+='</div>';
   }
-  
+
   var ac=0;ACHIEVEMENTS.forEach(function(a){if(hasAchievement(a.id))ac++;});
   var mh='無';
   if(S.master){var rk=['記名','親傳','關門'][S.master.rank];var mc=S.master.side==='正道'?'#2f7d4a':'#ef4444';mh='<span style="color:'+mc+';text-decoration:underline;cursor:pointer" onclick="switchTab(\'master\')">'+S.master.name+'('+rk+')</span>';}
