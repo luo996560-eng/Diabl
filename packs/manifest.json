@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "minCoreVersion": "1.0.0",
+  "packs": [
+    {
+      "id": "niukou-persona-zh-hant",
+      "name": "鈕釦繁體中文人格",
+      "version": "1.1.0",
+      "path": "niukou-persona-zh-Hant.json",
+      "sha256": "37e36727ca90720094deb767f8557c21c5dca521bae7dc2e53cb1c123f39392e"
+    },
+    {
+      "id": "jianghu-glossary-zh-hant",
+      "name": "江湖語境詞彙",
+      "version": "1.0.0",
+      "path": "jianghu-glossary-zh-Hant.json",
+      "sha256": "5f50f8ce3cb93bdfc2253dbab69a5ea79c9fb7f49282c6b6dfeb1e050ec6a47b"
+    },
+    {
+      "id": "niukou-language-zh-hant",
+      "name": "鈕釦繁體中文語言模組",
+      "version": "1.0.0",
+      "path": "niukou-language-zh-Hant.json",
+      "sha256": "b777644ab5755583761d6e3fb676b1d8e875ff1db15e61016bea4165a5adf1be"
+    },
+    {
+      "id": "niukou-emotion-zh-hant",
+      "name": "鈕釦江湖情感模組",
+      "version": "1.0.0",
+      "path": "niukou-emotion-zh-Hant.json",
+      "sha256": "649424e2874a935e2018c6cecc16b3e085d183d02d40de5d2c92975f69772630"
+    },
+    {
+      "id": "niukou-judgement-zh-hant",
+      "name": "鈕釦安全判定模組",
+      "version": "1.0.0",
+      "path": "niukou-judgement-zh-Hant.json",
+      "sha256": "833fe43f0cce610e507cc3f795cef7f7f343737d399ac9dc2cdcab76f54bbc7d"
+    },
+    {
+      "id": "niukou-response-zh-hant",
+      "name": "鈕釦人性化對答策略",
+      "version": "1.0.0",
+      "path": "niukou-response-zh-Hant.json",
+      "sha256": "cfe7874c8fbc560521c54d5208ad8efccf351f376295cb873edd10445321d8f4"
+    }
+  ]
+}
