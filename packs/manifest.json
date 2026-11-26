@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "minCoreVersion": "1.0.0",
+  "packs": [
+    {
+      "id": "niukou-persona-zh-hant",
+      "name": "鈕釦繁體中文人格",
+      "version": "1.1.0",
+      "path": "niukou-persona-zh-Hant.json",
+      "sha256": "37e36727ca90720094deb767f8557c21c5dca521bae7dc2e53cb1c123f39392e"
+    },
+    {
+      "id": "jianghu-glossary-zh-hant",
+      "name": "江湖語境詞彙",
+      "version": "1.0.0",
+      "path": "jianghu-glossary-zh-Hant.json",
+      "sha256": "5f50f8ce3cb93bdfc2253dbab69a5ea79c9fb7f49282c6b6dfeb1e050ec6a47b"
+    }
+  ]
+}
