@@ -10,8 +10,8 @@
   function link(url, text) { return /^https:\/\//.test(url || '') ? '<a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">' + esc(text) + '</a>' : esc(text); }
 
   function versions() {
-    var names = ['Text', 'Emotion', 'Empathy', 'Dialogue', 'VocabIntegration', 'VocabUsage', 'Imitation', 'Learning', 'WebSearch', 'Neural', 'Cognition'];
-    var labels = { Text: '語言詞彙', Emotion: '情感', Empathy: '共感', Dialogue: '對話', VocabIntegration: '詞彙整合', VocabUsage: '詞彙運用', Imitation: '模仿', Learning: '自主學習', WebSearch: '網路詞彙', Neural: '神經網絡', Cognition: '認知總成' };
+    var names = ['Guide', 'Text', 'Emotion', 'Empathy', 'Dialogue', 'VocabIntegration', 'VocabUsage', 'Imitation', 'Learning', 'WebSearch', 'Neural', 'Cognition'];
+    var labels = { Guide: '問答', Text: '語言詞彙', Emotion: '情感', Empathy: '共感', Dialogue: '對話', VocabIntegration: '詞彙整合', VocabUsage: '詞彙運用', Imitation: '模仿', Learning: '自主學習', WebSearch: '網路詞彙', Neural: '神經網絡', Cognition: '認知總成' };
     return names.map(function (n) { var m = root['Niukou' + n]; return labels[n] + (m ? ' v' + esc(m.version) : '（未載入）'); }).join('・');
   }
 
@@ -90,7 +90,38 @@
     return section('鈕釦模組總覽', h, false);
   }
 
-  function panel() { try { return modulesPanel() + learningPanel() + questionsPanel() + lexiconPanel() + imitationPanel(); } catch (e) { return ''; } }
+  /* ---- ask Niukou: game help, definitions, small utilities ---- */
+  var asked = null, askBusy = false;
+  function stateSnapshot() {
+    var S = root.S; if (!S || typeof S.age !== 'number') return null;
+    var n = function (v) { return typeof v === 'number' && isFinite(v) ? Math.round(v * 10) / 10 : undefined; };
+    var o = { '年齡': n(S.age), '月份': typeof S.month === 'number' ? S.month + 1 : undefined, '武力': n(S.martial), '內力': n(S.inner), '悟性': n(S.wisdom), '福緣': n(S.fortune), '靜': n(S.calm), '血量': n(S.hp), '血量上限': n(S.maxHp), '銀兩': n(S.money), '名聲': n(S.fame), '俠氣': n(S.righteous), '魔性': n(S.demonic), '壓力': n(S.stress) };
+    if (S.partner) o['伴侶'] = '有';
+    Object.keys(o).forEach(function (k) { if (o[k] === undefined) delete o[k]; });
+    return o;
+  }
+  function prepareGuide() { if (root.NiukouGuide && root.WIKI_DATA) root.NiukouGuide.setSources({ wiki: root.WIKI_DATA }); }
+  function askPanel() {
+    var G = root.NiukouGuide; if (!G) return '';
+    var h = '<p style="font-size:12px;color:var(--muted);margin:6px 0">可以問遊戲怎麼玩、鈕釦的功能、詞語的意思、簡單算數與日期，也可以說說心情。鈕釦不確定時會直說，不會亂答。讀取你的屬性只是唯讀快照。</p>';
+    h += '<input id="nkAsk" class="dd-input" type="text" maxlength="100" enterkeyhint="send" autocomplete="off" placeholder="例如：壓力滿了會怎樣？／什麼是以柔克剛／(12+8)*3" onkeydown="if(event.key===\'Enter\'&&!event.isComposing)nkLabAsk()"><button type="button" class="main" style="margin-top:6px" onclick="nkLabAsk()">問鈕釦</button>';
+    h += '<div style="margin-top:6px">' + ['怎麼存檔', '深度對話是什麼', '我現在該注意什麼', '鈕釦會連網嗎'].map(function (q) { return '<button type="button" ' + BTN + ' onclick="nkLabAsk(\'' + q + '\')">' + q + '</button>'; }).join('') + '</div>';
+    if (askBusy) h += '<div style="font-size:12px;color:var(--muted);margin-top:6px">查詢中…</div>';
+    if (asked) {
+      var r = asked.r;
+      h += '<div class="note-card" style="margin-top:8px;padding:10px;border:1px solid var(--line-dk);border-radius:10px"><div style="font-size:12px;color:var(--muted)">你問：' + esc(asked.q) + '</div><div style="margin-top:4px;white-space:pre-wrap;line-height:1.7">' + esc(r.text) + '</div>';
+      if (r.items && r.items.length > 1) { h += '<div style="font-size:12px;color:var(--muted);margin-top:6px">相關：</div>'; r.items.slice(1).forEach(function (it) { h += '<div style="font-size:12px;margin-top:3px"><b>' + esc(it.q) + '</b>（' + esc(it.cat) + '）<div style="white-space:pre-wrap">' + esc(it.a) + '</div></div>'; }); }
+      if (r.needsWeb) h += '<button type="button" ' + BTN + ' onclick="nkLabAskWeb()">上網查「' + esc(r.needsWeb) + '」（只送這個詞）</button>';
+      if (r.items && r.items.length) h += '<div style="margin-top:6px;font-size:12px">這個回答有幫助嗎？<button type="button" ' + BTN + ' onclick="nkLabAskFb(true)">有</button><button type="button" ' + BTN + ' onclick="nkLabAskFb(false)">沒有</button></div>';
+      if (r.domain === 'unknown' && r.followUps) h += '<div style="margin-top:6px">' + r.followUps.map(function (q) { return '<button type="button" ' + BTN + ' onclick="nkLabAsk(\'' + q + '\')">' + q + '</button>'; }).join('') + '</div>';
+      h += '</div>';
+    }
+    var un = G.unanswered();
+    if (un.length) h += '<div style="font-size:11px;color:var(--muted);margin-top:6px">未解答的問題 ' + un.length + ' 則（只存在本機）<button type="button" ' + BTN + ' onclick="nkLabExportUnanswered()">匯出</button></div>';
+    return section('問鈕釦（遊戲疑惑・詞語・小工具）', h, true);
+  }
+
+  function panel() { try { prepareGuide(); return askPanel() + modulesPanel() + learningPanel() + questionsPanel() + lexiconPanel() + imitationPanel(); } catch (e) { return ''; } }
 
   /* result details for the lab's "why" list */
   function whyLines(p, text) {
@@ -132,5 +163,20 @@
     try { var data = root.NiukouVocabIntegration.exportLocal(), blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }), url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = 'niukou-my-lexicon.json'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(url); }, 1000); } catch (e) { say('匯出失敗'); }
   };
 
-  root.NiukouLabUI = { version: '1.0.0', panel: panel, whyLines: whyLines, exclude: exclude };
+  root.nkLabAsk = function (preset) {
+    var el = document.getElementById('nkAsk'), q = typeof preset === 'string' ? preset : (el ? el.value.trim() : '');
+    if (!q) { say('先輸入想問的事'); return; }
+    prepareGuide(); asked = { q: q, r: root.NiukouGuide.ask(q, { state: stateSnapshot() }) }; redraw();
+    var again = document.getElementById('nkAsk'); if (again && typeof preset !== 'string') again.value = '';
+  };
+  root.nkLabAskFb = function (ok) { if (!asked || !asked.r.items || !asked.r.items[0]) return; root.NiukouGuide.feedback(asked.r.items[0].id, !!ok, asked.q); say(ok ? '謝謝，鈕釦記下了' : '已記下，這題會列入未解答清單'); redraw(); };
+  root.nkLabAskWeb = async function () {
+    if (!asked || !asked.r.needsWeb || askBusy) return; var term = asked.r.needsWeb; askBusy = true; redraw();
+    var r = await root.NiukouLearning.lookupTerm(term, { exclude: exclude(), force: true }); askBusy = false;
+    asked = { q: asked.q, r: { domain: 'definition', items: [], text: r.ok ? '查到「' + term + '」了：' + r.draft.meaning + '\n這是待審草稿，已放在下方「自主上網學習詞彙」，你採用後才會進入詞庫。' : '沒有查到可用的解釋：' + (r.reason || '') } }; redraw();
+  };
+  root.nkLabExportUnanswered = function () {
+    try { var blob = new Blob([JSON.stringify(root.NiukouGuide.exportUnanswered(), null, 2)], { type: 'application/json' }), url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = 'niukou-unanswered.json'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(url); }, 1000); } catch (e) { say('匯出失敗'); }
+  };
+  root.NiukouLabUI = { version: '1.0.0', panel: panel, stateSnapshot: stateSnapshot, whyLines: whyLines, exclude: exclude };
 })(typeof window !== 'undefined' ? window : globalThis);

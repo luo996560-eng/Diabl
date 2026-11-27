@@ -48,6 +48,10 @@
       if (!listOf(c.empathy, 40) || c.empathy.some(function (e) { return !e || !validText(e.emotion, 48) || !stringList(e.validate, 12, 120) || !stringList(e.ask || [], 8, 120); })) return '共感用語格式錯誤';
       if (!listOf(c.tones, 12) || c.tones.some(function (t) { return !t || !validText(t.id, 24) || !stringList(t.pre || [], 6, 24) || !stringList(t.post || [], 6, 24); })) return '語氣設定格式錯誤';
     }
+    if (c.module === 'guide') {
+      if (!c.provenance || c.provenance.kind !== 'original-game-content') return '問答來源聲明不正確';
+      if (!listOf(c.entries, 120) || c.entries.some(function (e) { return !e || !validText(e.id, 32) || !validText(e.cat, 40) || !validText(e.q, 80) || !validText(e.a, 700) || !stringList(e.keywords || [], 16, 24); })) return '問答資料格式錯誤';
+    }
     if (c.module === 'style') {
       if (!listOf(c.registers, 12) || c.registers.some(function (r) {
         var swapsOk = function (x) { return x === undefined || (listOf(x, 40) && x.every(function (pair) { return Array.isArray(pair) && pair.length === 2 && validText(pair[0], 16) && validText(pair[1], 16); })); };
@@ -70,7 +74,7 @@
     }
     if (pack.content.examples && (!Array.isArray(pack.content.examples) || pack.content.examples.length > 80)) return '範例數量超出格式限制';
     if ((pack.content.examples || []).some(function (row) { return !row || !validText(row.input, 240) || !validText(row.category, 20) || !validText(row.replyStyle, 240) || (row.phenomenon !== undefined && !validText(row.phenomenon, 48)); })) return '對話範例格式錯誤';
-    if (pack.content.module && ['language', 'emotion', 'judgement', 'response', 'lexicon', 'script', 'synonyms', 'dialogue', 'style'].indexOf(pack.content.module) < 0) return '未知的鈕釦模組類型';
+    if (pack.content.module && ['language', 'emotion', 'judgement', 'response', 'lexicon', 'script', 'synonyms', 'dialogue', 'style', 'guide'].indexOf(pack.content.module) < 0) return '未知的鈕釦模組類型';
     var extended = validateExtended(pack.content);
     if (extended) return extended;
     if (pack.content.cues && !validCueRows(pack.content.cues, 80)) return '語言線索模組格式錯誤';

@@ -558,6 +558,7 @@ details.repeat-choices>summary{cursor:pointer;color:var(--muted);font-size:12px;
 <script src="./core/niukou-neural.js"></script>
 <script src="./core/niukou-imitation.js"></script>
 <script src="./core/niukou-learning.js"></script>
+<script src="./core/niukou-guide.js"></script>
 <script src="./core/niukou-wordbank.js"></script>
 <script src="./core/niukou-websearch.js"></script>
 <script src="./core/niukou-lab-ui.js"></script>
@@ -6864,7 +6865,7 @@ function nhSelfTest(){
 window.NiukouWuxiaBridge={
   version:'30.2.2',
   analyze:function(text){return niukouDDAnalyze(text,S&&S._dd);},
-  engineInfo:function(){return {engine:window.NiukouSemantic?window.NiukouSemantic.version:null,cognition:window.NiukouCognition?window.NiukouCognition.version:null,vocabulary:window.NiukouVocabulary?window.NiukouVocabulary.version:null,wordbank:window.NiukouWordbank?window.NiukouWordbank.version:null,neural:window.NiukouNeural?window.NiukouNeural.version:null,modules:{text:window.NiukouText&&window.NiukouText.version,emotion:window.NiukouEmotion&&window.NiukouEmotion.version,empathy:window.NiukouEmpathy&&window.NiukouEmpathy.version,dialogue:window.NiukouDialogue&&window.NiukouDialogue.version,vocabIntegration:window.NiukouVocabIntegration&&window.NiukouVocabIntegration.version,vocabUsage:window.NiukouVocabUsage&&window.NiukouVocabUsage.version,imitation:window.NiukouImitation&&window.NiukouImitation.version,learning:window.NiukouLearning&&window.NiukouLearning.version,webSearch:window.NiukouWebSearch&&window.NiukouWebSearch.version},autonomousWebLookup:window.NiukouLearning?window.NiukouLearning.settings().autoWeb:false,packs:window.WulinPackRuntime?window.WulinPackRuntime.packs:[],mode:'offline-rules-and-local-mlp-with-opt-in-single-term-web-lookup',llm:false,proposalOnly:true};},
+  engineInfo:function(){return {engine:window.NiukouSemantic?window.NiukouSemantic.version:null,cognition:window.NiukouCognition?window.NiukouCognition.version:null,vocabulary:window.NiukouVocabulary?window.NiukouVocabulary.version:null,wordbank:window.NiukouWordbank?window.NiukouWordbank.version:null,neural:window.NiukouNeural?window.NiukouNeural.version:null,modules:{guide:window.NiukouGuide&&window.NiukouGuide.version,text:window.NiukouText&&window.NiukouText.version,emotion:window.NiukouEmotion&&window.NiukouEmotion.version,empathy:window.NiukouEmpathy&&window.NiukouEmpathy.version,dialogue:window.NiukouDialogue&&window.NiukouDialogue.version,vocabIntegration:window.NiukouVocabIntegration&&window.NiukouVocabIntegration.version,vocabUsage:window.NiukouVocabUsage&&window.NiukouVocabUsage.version,imitation:window.NiukouImitation&&window.NiukouImitation.version,learning:window.NiukouLearning&&window.NiukouLearning.version,webSearch:window.NiukouWebSearch&&window.NiukouWebSearch.version},autonomousWebLookup:window.NiukouLearning?window.NiukouLearning.settings().autoWeb:false,packs:window.WulinPackRuntime?window.WulinPackRuntime.packs:[],mode:'offline-rules-and-local-mlp-with-opt-in-single-term-web-lookup',llm:false,proposalOnly:true};},
   selfTest:niukouSelfTest
 };
 
@@ -12451,6 +12452,7 @@ function renderWiki(el){
   var h='<div class="wiki-wrap">';
   h+='<h2>📖 小百科</h2>';
   h+='<div class="wiki-intro"><b>時空武林</b> 江湖指南。先選下方分類，再點問題展開說明。數值以局內實際提示為準。</div>';
+  h+='<div style="margin:6px 0"><button type="button" class="ghost" style="width:auto;margin:0;padding:6px 12px;font-size:12px" onclick="openNiukouLab()">🧠 找不到答案？問問鈕釦</button></div>';
   h+='<div class="wiki-cats">';
   for(var cat in WIKI_DATA){
     h+='<span class="wikiCat'+(cat===WIKI_CAT?' on':'')+'" onclick="setWikiCat(\''+cat+'\')">'+cat+'</span>';

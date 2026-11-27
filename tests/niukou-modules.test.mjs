@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { boot, makeStorage } from './helpers.mjs';
+import { boot, loadWiki } from './helpers.mjs';
 
 const { sb, manifest, run } = await boot();
 const J = (v) => JSON.parse(JSON.stringify(v));
@@ -174,4 +174,36 @@ test('neural: gates and cross-validated accuracy on labelled examples', () => {
   const out = N.classify('這句話很含糊', conflict);
   assert.ok(!out || out.accepted === false);
   assert.equal(N.modelInfo().version, '0.2.0');
+});
+
+test('guide: game questions, state, definitions, utilities, honesty', async () => {
+  const G = sb.NiukouGuide;
+  G.clearAll();
+  G.setSources({ wiki: await loadWiki(sb) });
+  assert.ok(G.docCount() > 40);
+  const state = { 年齡: 25, 血量: 15, 血量上限: 100, 銀兩: 1200, 壓力: 85, 俠氣: 30, 魔性: 5, 伴侶: '有' };
+  const top = (q) => J(G.ask(q, { state }));
+  const expectQ = [['怎麼存檔', '如何存檔'], ['壓力滿了會怎樣', '屬性說明'], ['逃跑成功率多少', '逃跑'], ['死掉之後怎麼辦', '死亡後'], ['武林守衛是什麼', '武林守衛'], ['薛定諤機制', '標籤'], ['鈕釦會連網嗎', '連網']];
+  for (const [q, want] of expectQ) { const r = top(q); assert.equal(r.domain, 'game', q); assert.ok(r.matched.includes(want), `${q} -> ${r.matched}`); }
+  assert.match(top('我現在幾歲').text, /25/);
+  assert.match(top('我的血量多少').text, /15／100/);
+  assert.match(top('我現在該注意什麼').text, /壓力 85/);
+  assert.equal(top('(12+8)*3').text, '(12+8)*3 = 60');
+  assert.equal(top('2^10').text, '2^10 = 1024');
+  assert.match(top('1/0').text, /除數/);
+  assert.equal(top('2^1000').domain, 'utility');
+  assert.match(top('今天幾號').text, /星期/);
+  assert.equal(top('什麼是以退為進').domain, 'definition');
+  assert.ok(top('什麼是以退為進').confident);
+  const web = top('什麼是量子力學');
+  assert.equal(web.needsWeb, '量子力學');
+  const unknown = top('今天天氣如何');
+  assert.equal(unknown.domain, 'unknown');
+  assert.equal(unknown.confident, false);
+  assert.ok(G.unanswered().length >= 1);
+  assert.ok(!JSON.stringify(G.exportUnanswered()).includes('uploaded'));
+  assert.equal(top('我好難過').domain, 'chat');
+  assert.equal(top('').domain, 'none');
+  G.feedback(top('怎麼存檔').items[0].id, false, '怎麼存檔');
+  G.clearAll();
 });
