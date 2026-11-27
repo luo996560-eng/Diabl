@@ -26,7 +26,7 @@ jobs:
         run: node tools/update-manifest.mjs --check
 
       - name: Test data-pack loader and Niukou modules
-        run: node --test tests/
+        run: node --test tests/*.test.mjs
 
       - name: Configure GitHub Pages metadata
         uses: actions/configure-pages@v5
