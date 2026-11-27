@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>時空武林</title>
 <meta name="theme-color" content="#f2ece0">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -612,10 +612,11 @@ var _saveTimer=null;
 function scheduleSave(){if(_saveTimer)return;if(!S||S.gameOver)return;_saveTimer=setTimeout(function(){_saveTimer=null;if(S&&!S.gameOver)saveGame();},600);}
 
 /* ========== 江湖謠言（更新公告） ========== */
-var CHANGELOG_VERSION='v27.6';
+var CHANGELOG_VERSION='v27.7';
 var CHANGELOG_PAGE=0;
 var CHANGELOG_PER_PAGE=3;
 var CHANGELOG_ITEMS=[
+{cls:'red',t:'🔧 v27.7 斷線續玩與存檔救援',d:'・修復：事件看到一半重新整理，同一個月會換一則事件、原本的文字消失（等於可刷事件）。現在會還原你正在看的這一則，選項與文字都一樣。<br>・修復：<b>舊版存檔不再被直接刪除</b>。改版後會先備份、再以現行欄位預設值<b>軟升級</b>載入，這一生得以延續；只有來自更新版本的存檔會被擋下。<br>・成就列表不再出現兩項一模一樣的名稱（45 組重複已加序號，id 與解鎖條件不變）。<br>・移除手機的縮放限制，需要放大文字時可以雙指縮放。<br>・新增 6 項存檔完整性測試：事件還原、欄位齊備、舊檔軟升級、名稱唯一、可縮放。'},
 {cls:'purple',t:'🖌 v27.6 二百一十幅水墨：妻子、寵物、龍套',d:'・<b>妻子與紅顏 100 幅</b>：清冷俠女、溫婉閨秀、明豔歌姬、素雅醫女、江湖女盜、端莊夫人…各年齡、衣色與姿態，宣紙水墨寫意，右下角一枚朱紅小印。紅顏列表與詳情頁都會顯示。每一幅依名字固定綁定，換裝置或重開遊戲也不會換臉。<br>・<b>寵物 50 幅</b>：犬、貓、鷹、蛇、狼、蟲、鼠、蟻、猴、龜、鹿、狐各 4–5 張，同一物種在牠自己的圖裡輪替，進化換階也會換圖。<br>・<b>龍套 60 幅</b>：山賊 20、山賊首領 20、魔教爪牙 20，戰鬥畫面與事件都會顯示；依名稱自動分派派系。<br>・全部轉為 WebP（640px 長邊），總量 15MB，圖片延遲載入，不拖慢開場。<br>・材質、光線與筆觸統一為宣紙水墨，與原有場景、裝備、功法圖同一套語言。'},
 {cls:'gold',t:'✍ v27.5 鈕釦自由回應：自己說你要做什麼',d:'・事件畫面新增「鈕釦自由回應」。不必點選項，直接用一句話寫下你的行動，鈕釦判斷這句話偏<b>善／中立／為惡</b>，再對應到這個事件裡相符的抉擇。<br>・判定會顯示依據與信心百分比；信心不足、或那句話與眼前的事無關時，鈕釦<b>不會</b>替你決定，只會請你把話說清楚（不再已讀亂回、問A答B）。<br>・<b>獎勵與代價完全沿用原本選項</b>，數值平衡不變，也不是另一套規則；原本的五個選項全部保留，兩種玩法可隨時切換。<br>・否定語境會分辨：「不救他」判為冷淡，不會誤判成善行。<br>・目前為實驗階段：先驗證「用自由對答決定事件」的手感，下一階段才會把選項逐步交給鈕釦生成。'},
 {cls:'gold',t:'🧠 v27.4 鈕釦心網：情感與判斷大升級',d:'・鈕釦加入三個預先訓練的小型神經網路，能辨識善意／中立／算計／文不對題，以及喜怒哀懼敬厭疑愧八種情緒；與規則、統計學習、句子記憶一起投票，每位「評審」的可信度會依你的確認與修正調整。<br>・你教的每一句都會微調神經網路，相似的說法也會受益，不只是記住原句。<br>・話意模稜兩可時，人物會先問清楚（每場一次）。<br>・<b>情感網</b>：人物有心緒，會隨你的情緒起伏，影響回應與少量態度。<b>江湖人脈網</b>：你對誰好、對誰壞，會傳到認識他的人耳裡。<br>・🧠 頁面新增：判斷依據、情緒條、評審可信度、判斷力自我檢定、人脈網。'},
@@ -2021,6 +2022,8 @@ var ACHIEVEMENTS=[
 {id:'gen_events_seen_n_10_803',name:"落魄智者・10",desc:"經歷不重複事件達 10 則",icon:"⚙",check:'eventsSeen:10'},
 {id:'gen_tower_n_15_804',name:"化境俠客・15",desc:"時空之塔最高層達 15",icon:"💠",check:'tower:15'}
 ];
+// v27.7：45 組成就名稱重複，加上序號區分，避免列表出現看起來一模一樣的兩項（id 不變）。
+(function(){var seen=Object.create(null);ACHIEVEMENTS.forEach(function(a){if(!a||!a.name)return;var n=a.name;if(seen[n]){seen[n]++;a.name=n+'（'+(seen[n])+'）';}else seen[n]=1;});})();
 
 function initAchievements(){
   if(!S.achievements)S.achievements={};
@@ -7383,6 +7386,11 @@ function _pickEventInner(){
   markEventSeen(ev.id);
   return convertEvent(ev);
 }
+function findEventById(id){
+  if(!id)return null;
+  for(var i=0;i<GENERATED_EVENTS.length;i++){if(GENERATED_EVENTS[i]&&GENERATED_EVENTS[i].id===id)return convertEvent(GENERATED_EVENTS[i]);}
+  return null;
+}
 function pickEvent(){return _pickEventInner();}
 
 /* ========== 寵物系統 ========== */
@@ -7917,7 +7925,7 @@ function buildSaveObject(){
     partner:S.partner,partnerDead:S.partnerDead,pets:S.pets,children:S.children,
     childrenList:S.childrenList||[],confidantes:S.confidantes||[],
     inheritedFrom:S.inheritedFrom||null,inheritedDeeds:S.inheritedDeeds||[],
-    flags:S.flags,seen:S.seen,seenEventIds:S.seenEventIds||[],seenOptTexts:S.seenOptTexts||[],causal:S.causal||null,relations:S.relations||{},dynFollowup:S._dynFollowup||null,deepDialoguePending:!!S.deepDialoguePending,deepDialogue:S._dd||null,pendingResult:S.pendingResult||null,log:S.log.slice(-60),next:S.next,
+    flags:S.flags,seen:S.seen,seenEventIds:S.seenEventIds||[],seenOptTexts:S.seenOptTexts||[],causal:S.causal||null,relations:S.relations||{},dynFollowup:S._dynFollowup||null,deepDialoguePending:!!S.deepDialoguePending,deepDialogue:S._dd||null,pendingResult:S.pendingResult||null,log:S.log.slice(-60),next:S.next,eventId:(S.currentEvent&&S.currentEvent.id)||null,eventAge:S.age,eventMonth:S.month,eventSpecial:!!S._isSpecialEvent,
     equip:S.equip,bagEquip:S.bagEquip,bagItem:S.bagItem,skills:S.skills,battleRecords:(S.battleRecords||[]).slice(-10),
     bountyActive:S.bountyActive,riddleHistory:S.riddleHistory,riddleCorrect:S.riddleCorrect||0,
     master:S.master,exiledFrom:S.exiledFrom,master0Name:S.master0Name,
@@ -8014,10 +8022,13 @@ function loadGame(){
   var d;try{d=JSON.parse(raw);}catch(e){return false;}
   if(!d||!d.playerName)return false;
   if(d.version!==SAVE_VERSION){
+    // v27.7：舊版存檔改為「軟升級」——先備份，再以現行欄位預設值載入，不再一律刪檔。
     try{localStorage.setItem(SAVE_BAK_PREFIX+Date.now()+'_v'+(d.version||0),raw);}catch(e){}
-    try{localStorage.removeItem(SAVE_KEY);}catch(e){}
-    toast('偵測到舊版存檔，已備份並重新開始。',3600);
-    return false;
+    if(Number(d.version)>Number(SAVE_VERSION)){
+      toast('此存檔來自較新的版本，已備份並以相容模式載入。',4200);
+      return false;
+    }
+    toast('存檔已升級至 v'+SAVE_VERSION+'（已保留備份）。',3600);
   }
   var de=emptyEquipSlots();
   S={
@@ -8176,7 +8187,13 @@ function loadGame(){
   // v27.2：讀檔時若深度對話進行中，保留原對話（原本會被新抽的事件覆蓋，對話內容消失）。
   if(S.deepDialoguePending&&S._dd){/* 保留 */}
   else if(S.pendingResult)S.currentEvent={id:'_resume',t:'你從上次停下的地方繼續江湖路。上一回的抉擇結果如下：',o:[]};
-  else S.currentEvent=pickEvent();
+  else{
+    // v27.7：還原重新整理前正在顯示的事件，不再重抽（原本可藉由重新整理刷事件）
+    var restored=null;
+    if(d.eventId&&d.eventAge===S.age&&d.eventMonth===S.month)restored=findEventById(d.eventId);
+    if(restored){S.currentEvent=restored;S._isSpecialEvent=!!d.eventSpecial;}
+    else{S.currentEvent=pickEvent();S._isSpecialEvent=false;}
+  }
   sanitizeLoadedNames();
   render();renderEvent();
   return true;
@@ -10306,6 +10323,7 @@ function renderEvent(){
   var el=document.getElementById('event');
   if(!el)return;
   if(!S){el.innerHTML='';return;}
+  if(S.currentEvent&&!S.gameOver)scheduleSave();
   if(S.gameOver){renderEnding(el);return;}
   if(TAB==='niukou'){renderNiukouLab(el);return;}
   if(S.deepDialoguePending){renderDeepDialogue();return;}
