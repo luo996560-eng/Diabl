@@ -26,9 +26,9 @@
     {
       "id": "niukou-emotion-zh-hant",
       "name": "鈕釦江湖情感模組",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "path": "niukou-emotion-zh-Hant.json",
-      "sha256": "f29bfd3f3ac5a506eed0c6848dc280a10f601893bbfca3bf1cce1a63a91227a5"
+      "sha256": "fc0791a659e5f214efa26e16af602002f2547c8be60ebe052ff297a52676708b"
     },
     {
       "id": "niukou-judgement-zh-hant",
@@ -50,6 +50,62 @@
       "version": "1.0.0",
       "path": "niukou-lexicon-zh-Hant.json",
       "sha256": "8aa4f63b4e694f2bbf884b1e7680163464ad40cfab8377b750261166363047d7"
+    },
+    {
+      "id": "niukou-script-zh-hant",
+      "name": "鈕釦簡繁字形對照（OpenCC 字級資料）",
+      "version": "1.0.0",
+      "path": "niukou-script-zh-Hant.json",
+      "sha256": "4bef76e1d90bf04b08295c9fa5d0ab6910e91149bd97cf9ff4f4468e2b57bb57"
+    },
+    {
+      "id": "niukou-synonyms-zh-hant",
+      "name": "鈕釦近義詞群",
+      "version": "1.0.0",
+      "path": "niukou-synonyms-zh-Hant.json",
+      "sha256": "c296e492ba1b16410fb840aac52d751a8689c498d79488d7990f11f9fb3fbeb5"
+    },
+    {
+      "id": "niukou-lexicon-martial-zh-hant",
+      "name": "鈕釦江湖武學與門派語彙",
+      "version": "1.0.0",
+      "path": "niukou-lexicon-martial-zh-Hant.json",
+      "sha256": "3889f3f634c6f2c7d2b1c08f6671453a7375b9ba7708604634fa3553b74a4549"
+    },
+    {
+      "id": "niukou-lexicon-social-zh-hant",
+      "name": "鈕釦人情策略與情感語彙",
+      "version": "1.0.0",
+      "path": "niukou-lexicon-social-zh-Hant.json",
+      "sha256": "228532d8b1de07b39f83f8cef76ca85b441326644f6b13965d57bcc1c0b158b7"
+    },
+    {
+      "id": "niukou-dialogue-zh-hant",
+      "name": "鈕釦對話狀態與共感用語",
+      "version": "1.0.0",
+      "path": "niukou-dialogue-zh-Hant.json",
+      "sha256": "d2cb2995a2d0544ce3fd61898902f673fd5883fd1e0fc3167cfbf5834711e701"
+    },
+    {
+      "id": "niukou-style-zh-hant",
+      "name": "鈕釦語氣觀察與模仿資料",
+      "version": "1.0.0",
+      "path": "niukou-style-zh-Hant.json",
+      "sha256": "a6ebe444d1f69810932f24f70cdbbf231f93c25598c9e461eb3f69a671728810"
+    },
+    {
+      "id": "niukou-examples-a-zh-hant",
+      "name": "鈕釦原創分類示例（甲）",
+      "version": "1.0.0",
+      "path": "niukou-examples-a-zh-Hant.json",
+      "sha256": "ab8755656433dbfa82a2f28f6ea987cfea7e7425489c309c09b6f24898af042a"
+    },
+    {
+      "id": "niukou-examples-b-zh-hant",
+      "name": "鈕釦原創分類示例（乙）",
+      "version": "1.0.0",
+      "path": "niukou-examples-b-zh-Hant.json",
+      "sha256": "dbbafd7ba8c3d0d5cef3a34d2b6bbe173f1f8fc1f7da3c10d37727e7cfa51682"
     }
   ]
 }

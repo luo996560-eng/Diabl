@@ -1,0 +1,16 @@
+Third-party material used by Diabl
+
+OpenCC (https://github.com/BYVoid/OpenCC)
+  Source: data/dictionary/STCharacters.txt
+  License: Apache License 2.0
+  Use: character-level Simplified-to-Traditional table in packs/niukou-script-zh-Hant.json
+  (rare characters outside the Basic Multilingual Plane were omitted; ambiguity rules were written for this project).
+
+Concept references only (no code or data copied): jieba (MIT) for DAG dynamic-programming segmentation,
+fastText (MIT) for hashed n-gram bag-of-features classification, SnowNLP (MIT) for naive-Bayes text classification.
+
+Optional online lookups made at the player's request (content stays on the player's device, source URL and licence are kept with each entry):
+  zh.wiktionary.org and zh.wikipedia.org text: CC BY-SA 4.0 / GNU FDL
+  wikidata.org structured data: CC0 1.0
+
+All other packs (lexicon, examples, synonyms, dialogue, style, emotion) are original content written for this project.

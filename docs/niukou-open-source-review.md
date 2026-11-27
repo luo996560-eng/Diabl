@@ -22,6 +22,28 @@
 
 ## 參考來源
 
+## v2 擴充評估（情感、對話、共感、神經網絡、自主學習、模仿）
+
+授權均以 GitHub 儲存庫資訊核對。
+
+| 專案 | 授權 | 結論 |
+| --- | --- | --- |
+| BYVoid/OpenCC | Apache-2.0 | 採用：以 STCharacters 字表產生簡轉繁資料包，附 NOTICE |
+| fxsjy/jieba | MIT | 借用概念：詞典 DAG 加動態規劃斷詞；不下載其詞典 |
+| facebookresearch/fastText | MIT（已封存） | 借用概念：雜湊 n-gram 特徵＋小型分類器 |
+| isnowfy/snownlp | MIT | 僅參考：遊戲已有貝氏分類 |
+| tatuylonen/wiktextract | 未明確聲明 | 僅參考：離線 dump 處理，不放進遊戲端 |
+| ckiptagger／ckip-transformers | GPL-3.0 | 不採用：授權與遊戲不相容 |
+| hankcs/HanLP | Apache-2.0 | 不採用：模型過大，不適合網頁遊戲 |
+| TensorFlow.js／brain.js | Apache-2.0／MIT | 不採用：體積與必要性，現有 MLP 已足夠 |
+| chatopera/Synonyms | 授權不明 | 不採用：改以原創近義詞群 |
+| g0v/moedict-data | 無授權檔，原資料 CC BY-ND | 不採用：不可衍生 |
+| NTUSD／NRC／DUTIR 情感詞典 | 非商用或授權不清 | 不採用：改以原創 24 類情緒線索 |
+| OpenHowNet | 程式 MIT，資料體積大 | 不採用 |
+| 維基詞典／維基百科／維基數據 | CC BY-SA／GFDL／CC0 | 採用於玩家端查詢：不內建、不再散布，保留來源與授權 |
+
+自主上網的設計邊界：預設關閉、單一詞語、白名單網域、可檢視的紀錄、結果為待審草稿、不參與判定。
+
 [1]: https://zh.wiktionary.org/w/api.php "中文 Wiktionary API"
 [2]: https://en.wiktionary.org/wiki/Wiktionary:Copyrights "Wiktionary 著作權與授權說明"
 [3]: https://github.com/RemiMFB/Taiwan-Financial-Sentiment-Dictionary "Taiwan Financial Sentiment Dictionary"

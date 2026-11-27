@@ -12,7 +12,7 @@ const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const manifest = await readJson('packs/manifest.json');
 
 assert.equal(manifest.schemaVersion, 1);
-assert.equal(manifest.packs.length, 7);
+assert.equal(manifest.packs.length, 15);
 const packBytes = new Map();
 const packs = [];
 for (const entry of manifest.packs) {
@@ -48,7 +48,7 @@ loaderSandbox.window = loaderSandbox;
 vm.runInNewContext(loaderSource, loaderSandbox, { filename: 'core/pack-loader.js' });
 await loaderSandbox.WulinPackRuntime.ready;
 assert.equal(loaderSandbox.WulinPackRuntime.status, 'ready');
-assert.equal(loaderSandbox.WulinPackRuntime.all().length, 7);
+assert.equal(loaderSandbox.WulinPackRuntime.all().length, manifest.packs.length);
 
 const vocabularySource = await readFile(path.join(root, 'core/niukou-vocabulary.js'), 'utf8');
 vm.runInNewContext(vocabularySource, loaderSandbox, { filename: 'core/niukou-vocabulary.js' });

@@ -547,10 +547,20 @@ details.repeat-choices>summary{cursor:pointer;color:var(--muted);font-size:12px;
 </div>
 <div id="toast"></div>
 <script src="./core/pack-loader.js"></script>
+<script src="./core/niukou-text.js"></script>
 <script src="./core/niukou-vocabulary.js"></script>
+<script src="./core/niukou-emotion.js"></script>
+<script src="./core/niukou-empathy.js"></script>
+<script src="./core/niukou-dialogue.js"></script>
+<script src="./core/niukou-vocab-integration.js"></script>
+<script src="./core/niukou-vocab-usage.js"></script>
 <script src="./core/niukou-cognition.js"></script>
 <script src="./core/niukou-neural.js"></script>
+<script src="./core/niukou-imitation.js"></script>
+<script src="./core/niukou-learning.js"></script>
 <script src="./core/niukou-wordbank.js"></script>
+<script src="./core/niukou-websearch.js"></script>
+<script src="./core/niukou-lab-ui.js"></script>
 <script>
 /* ========== 全域錯誤攔截 ========== */
 window.onerror=function(msg,src,line,col,err){
@@ -6225,6 +6235,7 @@ function classifyDeepReplyNegationAware(text){
 }
 /* 鈕釦 AI 判讀：回傳 proposal_only 提案，不修改任何遊戲狀態 */
 function niukouDDAnalyze(text,dd){
+  try{if(window.NiukouText)text=window.NiukouText.normalize(text);}catch(e){}
   var hist=((dd&&dd.history)||[]).map(function(m){return String(m&&m.text||'');}).filter(Boolean);
   var legacyCat;
   try{legacyCat=classifyDeepReplyNegationAware(text);}catch(e){legacyCat=classifyDeepReply(text);}
@@ -6409,6 +6420,16 @@ function nbRefine(text,prop,dd){
 /* 每次判讀後的學習：自我訓練（只收高信心規則判讀，權重低）＋風格觀察＋經驗 */
 function nbAfterJudge(text,prop){
   var b=nbLoad();b.stats.judged++;
+  try{
+    if(window.NiukouImitation)window.NiukouImitation.observe(text);
+    if(window.NiukouVocabUsage)window.NiukouVocabUsage.observePlayer(text);
+    if(window.NiukouLearning){
+      var nkEx=window.NiukouLabUI?window.NiukouLabUI.exclude():[];
+      window.NiukouLearning.observe(text,{exclude:nkEx});
+      window.NiukouLearning.noteJudgement(text,prop.cat,typeof prop.conf==='number'?prop.conf:(prop.confidence||0),prop.source);
+      if(window.NiukouLearning.settings().autoWeb)setTimeout(function(){try{window.NiukouLearning.tick({exclude:nkEx}).then(function(r){if(r&&r.ran&&r.ok)toast('鈕釦查到新詞「'+r.term+'」，已放入待審草稿');}).catch(function(){});}catch(e){}},1500);
+    }
+  }catch(e){}
   nbObserveStyle(text);
   if(prop.source==='niukou'&&prop.confidence>=0.84)nbAddSample(text,prop.cat,'auto',nbLevel(b)>=5?0.8:0.5);
   nbGainXP(1,'judge');nbSave();
@@ -6556,6 +6577,7 @@ function renderNiukouLab(el){
     savedWords.slice(-5).reverse().forEach(function(item,ri){var idx=savedWords.length-1-ri;h+='<div style="padding:6px 0;border-top:1px dashed var(--line)"><b>'+escapeEventHTML(item.term)+'</b><span style="color:var(--muted)">（未審核／不參與判定）</span><div style="white-space:pre-wrap;max-height:72px;overflow:auto">'+escapeEventHTML(item.excerpt)+'</div><a href="'+escapeEventHTML(item.source.url)+'" target="_blank" rel="noopener noreferrer">來源與版本歷史</a>　<button type="button" class="ghost" style="width:auto;margin:2px;padding:3px 7px;font-size:11px;min-height:28px" onclick="nkRemoveWiktionary('+idx+')">移除</button></div>';});
     h+='</div>';}
   h+='</section>';
+  try{if(window.NiukouLabUI)h+=window.NiukouLabUI.panel();}catch(e){}
   h+='<input id="nkInput" class="dd-input" type="text" maxlength="80" enterkeyhint="send" autocomplete="off" placeholder="例如：我雖然不喜歡你，但還是會幫你" onkeydown="if(event.key===\'Enter\'&&!event.isComposing)nkJudge()">';
   h+='<button class="main" style="margin-top:8px" onclick="nkJudge()">請鈕釦判讀</button>';
   var R=window._nkLast;
@@ -6584,6 +6606,7 @@ function renderNiukouLab(el){
       if(pr.cognition&&pr.cognition.vocabulary&&pr.cognition.vocabulary.length){pr.cognition.vocabulary.slice(0,2).forEach(function(v){why.push('江湖詞彙「'+escapeEventHTML(v.term)+'」：'+escapeEventHTML(v.meaning)+(v.avoidWhen&&v.avoidWhen.length?'（避免：'+escapeEventHTML(v.avoidWhen[0])+'）':''));});}
       if(pr.cognition&&pr.cognition.context){var cx=pr.cognition.context;why.push(cx.needsClarification?'指涉不明：近期對話未找到唯一對象，建議先澄清。':'依近期對話線索，可能指「'+escapeEventHTML(cx.candidate)+'」；這只是提示。');}
       if(pr.cognition&&pr.cognition.responsePlan&&pr.cognition.responsePlan.length)why.push('對答策略：'+pr.cognition.responsePlan[0].steps.join('；'));
+      try{if(window.NiukouLabUI)window.NiukouLabUI.whyLines(p,R.t).forEach(function(x){why.push(x);});}catch(e){}
       h+='<div style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.7">'+why.map(function(x){return '・'+x;}).join('<br>')+'</div>';
       var partners=lv>=5?3:1,used={};
       for(var k=0;k<partners;k++){
@@ -6841,7 +6864,7 @@ function nhSelfTest(){
 window.NiukouWuxiaBridge={
   version:'30.2.2',
   analyze:function(text){return niukouDDAnalyze(text,S&&S._dd);},
-  engineInfo:function(){return {engine:window.NiukouSemantic?window.NiukouSemantic.version:null,cognition:window.NiukouCognition?window.NiukouCognition.version:null,vocabulary:window.NiukouVocabulary?window.NiukouVocabulary.version:null,wordbank:window.NiukouWordbank?window.NiukouWordbank.version:null,neural:window.NiukouNeural?window.NiukouNeural.version:null,packs:window.WulinPackRuntime?window.WulinPackRuntime.packs:[],mode:'offline-rules-and-local-mlp-with-user-triggered-dictionary-lookup',llm:false,proposalOnly:true};},
+  engineInfo:function(){return {engine:window.NiukouSemantic?window.NiukouSemantic.version:null,cognition:window.NiukouCognition?window.NiukouCognition.version:null,vocabulary:window.NiukouVocabulary?window.NiukouVocabulary.version:null,wordbank:window.NiukouWordbank?window.NiukouWordbank.version:null,neural:window.NiukouNeural?window.NiukouNeural.version:null,modules:{text:window.NiukouText&&window.NiukouText.version,emotion:window.NiukouEmotion&&window.NiukouEmotion.version,empathy:window.NiukouEmpathy&&window.NiukouEmpathy.version,dialogue:window.NiukouDialogue&&window.NiukouDialogue.version,vocabIntegration:window.NiukouVocabIntegration&&window.NiukouVocabIntegration.version,vocabUsage:window.NiukouVocabUsage&&window.NiukouVocabUsage.version,imitation:window.NiukouImitation&&window.NiukouImitation.version,learning:window.NiukouLearning&&window.NiukouLearning.version,webSearch:window.NiukouWebSearch&&window.NiukouWebSearch.version},autonomousWebLookup:window.NiukouLearning?window.NiukouLearning.settings().autoWeb:false,packs:window.WulinPackRuntime?window.WulinPackRuntime.packs:[],mode:'offline-rules-and-local-mlp-with-opt-in-single-term-web-lookup',llm:false,proposalOnly:true};},
   selfTest:niukouSelfTest
 };
 
@@ -6983,7 +7006,18 @@ function submitDeepReply(preset){
   else if(cat==='evil')resp=freshResp(npc.respEvil);
   else if(cat==='off'){dd.offCount+=1;resp=freshResp(npc.respOff);}
   else resp=freshResp(npc.respNeutral);
-  if(mr.top&&prop.source!=='repeat'&&NH_REACT[mr.top]&&Math.random()<0.75)resp=pick(NH_REACT[mr.top])+resp;
+  var nkReacted=false;
+  if(mr.top&&prop.source!=='repeat'&&NH_REACT[mr.top]&&Math.random()<0.75){resp=pick(NH_REACT[mr.top])+resp;nkReacted=true;}
+  try{
+    if(!nkReacted&&prop.source!=='repeat'&&cat!=='evil'&&window.NiukouEmpathy&&window.NiukouEmotion){
+      if(window._nkEmpDD!==dd){window._nkEmpDD=dd;window._nkEmpCount=0;window._nkEmpUsed=[];}
+      var NK_TONE={oldwoman:'gentle',swordsman:'proud',scholar:'guarded',lady:'cunning',innkeeper:'cunning',taoist:'neutral',hunter:'guarded',performer:'warm'};
+      var emoA=window.NiukouEmotion.analyze(window.NiukouText?window.NiukouText.normalize(txt):txt,[]);
+      var plan=window.NiukouEmpathy.plan(emoA,{persona:NK_TONE[npc.id]||'neutral',count:window._nkEmpCount,used:window._nkEmpUsed,seed:txt+dd.turns,unsafe:prop.source==='heart'&&prop.sarcasm&&cat!=='good'});
+      var empLine=window.NiukouEmpathy.compose(plan);
+      if(empLine){var em=empLine.match(/^（([^）]*)）(.*)$/);resp=(em?'（'+em[1]+'）「'+em[2]+'」':'「'+empLine+'」')+resp;window._nkEmpCount++;window._nkEmpUsed.push(empLine);mine.tag=(mine.tag||'')+'　共感：'+plan.label;}
+    }
+  }catch(e){}
   try{nbAfterJudge(txt,prop);nbPendingAdd(txt,cat,prop.votes,prop.conf);nbSave();}catch(e){}
   dd.lastPlayerText=txt.slice(0,30);
   dd.history.push({who:'npc',text:resp});

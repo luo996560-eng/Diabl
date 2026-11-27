@@ -22,8 +22,11 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v6
 
-      - name: Test data-pack loader and Niukou bridge
-        run: node --test tests/niukou-pack.test.mjs
+      - name: Verify pack manifest hashes
+        run: node tools/update-manifest.mjs --check
+
+      - name: Test data-pack loader and Niukou modules
+        run: node --test tests/
 
       - name: Configure GitHub Pages metadata
         uses: actions/configure-pages@v5

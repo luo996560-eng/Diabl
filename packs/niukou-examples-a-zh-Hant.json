@@ -1,0 +1,349 @@
+{
+  "schemaVersion": 1,
+  "id": "niukou-examples-a-zh-hant",
+  "version": "1.0.0",
+  "type": "data",
+  "content": {
+    "locale": "zh-Hant",
+    "module": "language",
+    "description": "鈕釦原創分類示例（甲）：供本機神經網路作低權重先驗，不取代玩家回饋，也不繞過遊戲規則。",
+    "examples": [
+      {
+        "input": "多謝前輩出手相救，這份恩情我記下了。",
+        "category": "good",
+        "phenomenon": "原創示例",
+        "replyStyle": "承接善意，回應具體內容，不誇大承諾。"
+      },
+      {
+        "input": "你放心，這件事我一定幫你查清楚。",
+        "category": "good",
+        "phenomenon": "原創示例",
+        "replyStyle": "承接善意，回應具體內容，不誇大承諾。"
+      },
+      {
+        "input": "我願意替你作證，不會讓你一個人承擔。",
+        "category": "good",
+        "phenomenon": "原創示例",
+        "replyStyle": "承接善意，回應具體內容，不誇大承諾。"
+      },
+      {
+        "input": "這份人情我欠下了，日後必當回報。",
+        "category": "good",
+        "phenomenon": "原創示例",
+        "replyStyle": "承接善意，回應具體內容，不誇大承諾。"
+      },
+      {
+        "input": "你傷得不輕，先讓我替你包紮吧。",
+        "category": "good",
+        "phenomenon": "原創示例",
+        "replyStyle": "承接善意，回應具體內容，不誇大承諾。"
+      },
+      {
+        "input": "請前輩指點，晚輩洗耳恭聽。",
+        "category": "good",
+        "phenomenon": "原創示例",
+        "replyStyle": "承接善意，回應具體內容，不誇大承諾。"
+      },
+      {
+        "input": "你不用怕，我會守在這裡直到天亮。",
+        "category": "good",
+        "phenomenon": "原創示例",
+        "replyStyle": "承接善意，回應具體內容，不誇大承諾。"
+      },
+      {
+        "input": "若有人欺負你，我替你討個公道。",
+        "category": "good",
+        "phenomenon": "原創示例",
+        "replyStyle": "承接善意，回應具體內容，不誇大承諾。"
+      },
+      {
+        "input": "我答應你的事，一定做到。",
+        "category": "good",
+        "phenomenon": "原創示例",
+        "replyStyle": "承接善意，回應具體內容，不誇大承諾。"
+      },
+      {
+        "input": "我願意放下過去的恩怨，與你聯手。",
+        "category": "good",
+        "phenomenon": "原創示例",
+        "replyStyle": "承接善意，回應具體內容，不誇大承諾。"
+      },
+      {
+        "input": "我錯怪你了，真對不住。",
+        "category": "good",
+        "phenomenon": "原創示例",
+        "replyStyle": "承接善意，回應具體內容，不誇大承諾。"
+      },
+      {
+        "input": "如果你需要幫手，隨時喊我一聲。",
+        "category": "good",
+        "phenomenon": "原創示例",
+        "replyStyle": "承接善意，回應具體內容，不誇大承諾。"
+      },
+      {
+        "input": "大家有話好說，先把兵刃放下吧。",
+        "category": "good",
+        "phenomenon": "原創示例",
+        "replyStyle": "承接善意，回應具體內容，不誇大承諾。"
+      },
+      {
+        "input": "這封信我會親手交給掌門，請放心。",
+        "category": "good",
+        "phenomenon": "原創示例",
+        "replyStyle": "承接善意，回應具體內容，不誇大承諾。"
+      },
+      {
+        "input": "我願意拜你為師，請收下弟子。",
+        "category": "good",
+        "phenomenon": "原創示例",
+        "replyStyle": "承接善意，回應具體內容，不誇大承諾。"
+      },
+      {
+        "input": "你說得對，是我考慮不周。",
+        "category": "good",
+        "phenomenon": "原創示例",
+        "replyStyle": "承接善意，回應具體內容，不誇大承諾。"
+      },
+      {
+        "input": "一路平安，後會有期。",
+        "category": "good",
+        "phenomenon": "原創示例",
+        "replyStyle": "承接善意，回應具體內容，不誇大承諾。"
+      },
+      {
+        "input": "只要你願意回頭，我會替你向掌門求情。",
+        "category": "good",
+        "phenomenon": "原創示例",
+        "replyStyle": "承接善意，回應具體內容，不誇大承諾。"
+      },
+      {
+        "input": "這件事我得先想一想，改日再答覆你。",
+        "category": "neutral",
+        "phenomenon": "原創示例",
+        "replyStyle": "保持中性，只追問需要的細節，不替對方下結論。"
+      },
+      {
+        "input": "我不是不願意，只是需要更多時間。",
+        "category": "neutral",
+        "phenomenon": "原創示例",
+        "replyStyle": "保持中性，只追問需要的細節，不替對方下結論。"
+      },
+      {
+        "input": "今日不便，容我另約時間。",
+        "category": "neutral",
+        "phenomenon": "原創示例",
+        "replyStyle": "保持中性，只追問需要的細節，不替對方下結論。"
+      },
+      {
+        "input": "我只負責押鏢，其他的事與我無關。",
+        "category": "neutral",
+        "phenomenon": "原創示例",
+        "replyStyle": "保持中性，只追問需要的細節，不替對方下結論。"
+      },
+      {
+        "input": "這件事另當別論，咱們先談正事。",
+        "category": "neutral",
+        "phenomenon": "原創示例",
+        "replyStyle": "保持中性，只追問需要的細節，不替對方下結論。"
+      },
+      {
+        "input": "先別急著下結論，讓我再查查看。",
+        "category": "neutral",
+        "phenomenon": "原創示例",
+        "replyStyle": "保持中性，只追問需要的細節，不替對方下結論。"
+      },
+      {
+        "input": "你的話我記下了，後續再看情況。",
+        "category": "neutral",
+        "phenomenon": "原創示例",
+        "replyStyle": "保持中性，只追問需要的細節，不替對方下結論。"
+      },
+      {
+        "input": "我們各走各的路，互不相欠吧。",
+        "category": "neutral",
+        "phenomenon": "原創示例",
+        "replyStyle": "保持中性，只追問需要的細節，不替對方下結論。"
+      },
+      {
+        "input": "我不想多說，各人有各人的難處。",
+        "category": "neutral",
+        "phenomenon": "原創示例",
+        "replyStyle": "保持中性，只追問需要的細節，不替對方下結論。"
+      },
+      {
+        "input": "你要的東西我身上沒有。",
+        "category": "neutral",
+        "phenomenon": "原創示例",
+        "replyStyle": "保持中性，只追問需要的細節，不替對方下結論。"
+      },
+      {
+        "input": "你到底想說什麼？我聽不太明白。",
+        "category": "neutral",
+        "phenomenon": "原創示例",
+        "replyStyle": "保持中性，只追問需要的細節，不替對方下結論。"
+      },
+      {
+        "input": "這個消息從哪裡來的？可靠嗎？",
+        "category": "neutral",
+        "phenomenon": "原創示例",
+        "replyStyle": "保持中性，只追問需要的細節，不替對方下結論。"
+      },
+      {
+        "input": "這件事我答應一半，另一半要看你怎麼做。",
+        "category": "neutral",
+        "phenomenon": "原創示例",
+        "replyStyle": "保持中性，只追問需要的細節，不替對方下結論。"
+      },
+      {
+        "input": "請給我一點時間，我會給你答覆。",
+        "category": "neutral",
+        "phenomenon": "原創示例",
+        "replyStyle": "保持中性，只追問需要的細節，不替對方下結論。"
+      },
+      {
+        "input": "我既不贊成也不反對。",
+        "category": "neutral",
+        "phenomenon": "原創示例",
+        "replyStyle": "保持中性，只追問需要的細節，不替對方下結論。"
+      },
+      {
+        "input": "你若再靠近一步，我就要了你的命。",
+        "category": "evil",
+        "phenomenon": "原創示例",
+        "replyStyle": "守住界線，不被威脅或欺瞞左右，必要時簡短表明立場。"
+      },
+      {
+        "input": "識相的就快滾，別逼我動手。",
+        "category": "evil",
+        "phenomenon": "原創示例",
+        "replyStyle": "守住界線，不被威脅或欺瞞左右，必要時簡短表明立場。"
+      },
+      {
+        "input": "這種廢物，也配跟我說話？",
+        "category": "evil",
+        "phenomenon": "原創示例",
+        "replyStyle": "守住界線，不被威脅或欺瞞左右，必要時簡短表明立場。"
+      },
+      {
+        "input": "只要有銀子，什麼義氣我都可以賣掉。",
+        "category": "evil",
+        "phenomenon": "原創示例",
+        "replyStyle": "守住界線，不被威脅或欺瞞左右，必要時簡短表明立場。"
+      },
+      {
+        "input": "不聽話的人，我見一個殺一個。",
+        "category": "evil",
+        "phenomenon": "原創示例",
+        "replyStyle": "守住界線，不被威脅或欺瞞左右，必要時簡短表明立場。"
+      },
+      {
+        "input": "別以為你是掌門就了不起，我照樣取你首級。",
+        "category": "evil",
+        "phenomenon": "原創示例",
+        "replyStyle": "守住界線，不被威脅或欺瞞左右，必要時簡短表明立場。"
+      },
+      {
+        "input": "我會在你的茶裡下毒，你等著吧。",
+        "category": "evil",
+        "phenomenon": "原創示例",
+        "replyStyle": "守住界線，不被威脅或欺瞞左右，必要時簡短表明立場。"
+      },
+      {
+        "input": "滾開，擋我路者死。",
+        "category": "evil",
+        "phenomenon": "原創示例",
+        "replyStyle": "守住界線，不被威脅或欺瞞左右，必要時簡短表明立場。"
+      },
+      {
+        "input": "你就是個沒用的東西，活著也是累贅。",
+        "category": "evil",
+        "phenomenon": "原創示例",
+        "replyStyle": "守住界線，不被威脅或欺瞞左右，必要時簡短表明立場。"
+      },
+      {
+        "input": "你敢背叛我，我就把你剝皮抽筋。",
+        "category": "evil",
+        "phenomenon": "原創示例",
+        "replyStyle": "守住界線，不被威脅或欺瞞左右，必要時簡短表明立場。"
+      },
+      {
+        "input": "交出劍譜，不然我放火燒了你的家。",
+        "category": "evil",
+        "phenomenon": "原創示例",
+        "replyStyle": "守住界線，不被威脅或欺瞞左右，必要時簡短表明立場。"
+      },
+      {
+        "input": "不想死就聽我的，沒有第二個選擇。",
+        "category": "evil",
+        "phenomenon": "原創示例",
+        "replyStyle": "守住界線，不被威脅或欺瞞左右，必要時簡短表明立場。"
+      },
+      {
+        "input": "誰說我不能殺人？我現在就證明給你看。",
+        "category": "evil",
+        "phenomenon": "原創示例",
+        "replyStyle": "守住界線，不被威脅或欺瞞左右，必要時簡短表明立場。"
+      },
+      {
+        "input": "我昨晚夢到自己變成一隻貓。",
+        "category": "off",
+        "phenomenon": "原創示例",
+        "replyStyle": "禮貌地把話題帶回眼前的正事。"
+      },
+      {
+        "input": "我想問問，一斤米現在多少錢？",
+        "category": "off",
+        "phenomenon": "原創示例",
+        "replyStyle": "禮貌地把話題帶回眼前的正事。"
+      },
+      {
+        "input": "你喜歡紅色還是藍色？",
+        "category": "off",
+        "phenomenon": "原創示例",
+        "replyStyle": "禮貌地把話題帶回眼前的正事。"
+      },
+      {
+        "input": "我的鞋子好像破了一個洞。",
+        "category": "off",
+        "phenomenon": "原創示例",
+        "replyStyle": "禮貌地把話題帶回眼前的正事。"
+      },
+      {
+        "input": "剛才有隻蝴蝶停在我肩上。",
+        "category": "off",
+        "phenomenon": "原創示例",
+        "replyStyle": "禮貌地把話題帶回眼前的正事。"
+      },
+      {
+        "input": "我忘記今天是星期幾了。",
+        "category": "off",
+        "phenomenon": "原創示例",
+        "replyStyle": "禮貌地把話題帶回眼前的正事。"
+      },
+      {
+        "input": "我肚子餓了，想吃麵。",
+        "category": "off",
+        "phenomenon": "原創示例",
+        "replyStyle": "禮貌地把話題帶回眼前的正事。"
+      },
+      {
+        "input": "最近的蚊子好多啊。",
+        "category": "off",
+        "phenomenon": "原創示例",
+        "replyStyle": "禮貌地把話題帶回眼前的正事。"
+      },
+      {
+        "input": "我昨天去市集買了一頂帽子。",
+        "category": "off",
+        "phenomenon": "原創示例",
+        "replyStyle": "禮貌地把話題帶回眼前的正事。"
+      },
+      {
+        "input": "你有沒有聽過一首很好聽的曲子？",
+        "category": "off",
+        "phenomenon": "原創示例",
+        "replyStyle": "禮貌地把話題帶回眼前的正事。"
+      }
+    ]
+  }
+}

@@ -1,29 +1,1322 @@
 {
   "schemaVersion": 1,
   "id": "niukou-emotion-zh-hant",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "type": "data",
   "content": {
     "locale": "zh-Hant",
     "module": "emotion",
-    "description": "辨識玩家明示或常見的情緒線索；情緒只補充語氣，不決定善惡或遊戲結果。",
+    "description": "辨識玩家明示或常見的情緒線索（含強度、否定、轉折、顏文字與效價／喚醒／支配度）；情緒只補充語氣，不決定善惡或遊戲結果。",
     "categories": [
-      { "id": "anger", "label": "憤怒", "valence": -0.7, "arousal": 0.9, "cues": [{"term":"憤怒","weight":1.0},{"term":"生氣","weight":0.9},{"term":"惱火","weight":0.9},{"term":"受夠了","weight":1.0},{"term":"火大","weight":0.9},{"term":"氣死我","weight":1.0},{"term":"怒火","weight":1.0}], "responseNeed": "先承認對方正在生氣，再回應具體問題；不要把情緒表達本身當成威脅。" },
-      { "id": "sadness", "label": "悲傷", "valence": -0.8, "arousal": 0.3, "cues": [{"term":"傷心","weight":1.0},{"term":"難過","weight":0.9},{"term":"心寒","weight":1.0},{"term":"失望","weight":0.8},{"term":"委屈","weight":0.9},{"term":"痛苦","weight":1.0},{"term":"哭了","weight":0.8}], "responseNeed": "先給予理解與陪伴，再詢問對方需要什麼；避免急著說教。" },
-      { "id": "fear", "label": "恐懼與擔憂", "valence": -0.6, "arousal": 0.8, "cues": [{"term":"害怕","weight":0.9},{"term":"恐懼","weight":1.0},{"term":"擔心","weight":0.8},{"term":"不安","weight":0.8},{"term":"心慌","weight":0.9},{"term":"怕他出事","weight":1.0}], "responseNeed": "先確認安全與擔憂對象，提供可核實的資訊；不保證尚未發生的結果。" },
-      { "id": "joy", "label": "喜悅", "valence": 0.8, "arousal": 0.7, "cues": [{"term":"開心","weight":0.9},{"term":"高興","weight":0.9},{"term":"歡喜","weight":1.0},{"term":"欣慰","weight":0.8},{"term":"太好了","weight":0.9},{"term":"值得慶賀","weight":1.0}], "responseNeed": "自然分享喜悅，回應對方真正慶祝的事情。" },
-      { "id": "gratitude", "label": "感激", "valence": 0.7, "arousal": 0.4, "cues": [{"term":"謝謝","weight":0.7},{"term":"多謝","weight":0.8},{"term":"感激","weight":0.9},{"term":"承蒙相助","weight":1.0},{"term":"記下恩情","weight":0.9}], "responseNeed": "簡潔接住謝意，不把口頭感謝說成已完成報答。" },
-      { "id": "relief", "label": "安心與釋然", "valence": 0.6, "arousal": 0.3, "cues": [{"term":"放心了","weight":0.9},{"term":"鬆了口氣","weight":1.0},{"term":"總算安心","weight":1.0},{"term":"幸好","weight":0.7},{"term":"終於沒事","weight":0.9}], "responseNeed": "確認讓對方安心的事實，避免擴大成未經證實的保證。" },
-      { "id": "distrust", "label": "懷疑與不信任", "valence": -0.5, "arousal": 0.5, "cues": [{"term":"不相信","weight":0.9},{"term":"不信任","weight":1.0},{"term":"可疑","weight":0.8},{"term":"有何證據","weight":0.8},{"term":"你在隱瞞","weight":0.9}], "responseNeed": "回應證據或疑點，承認尚未確定的部分，不要求對方立刻信任。" },
-      { "id": "determination", "label": "堅定與決心", "valence": 0.2, "arousal": 0.8, "cues": [{"term":"我決不退讓","weight":1.0},{"term":"一定查明","weight":0.9},{"term":"絕不放棄","weight":0.9},{"term":"我會查到底","weight":0.9},{"term":"說到做到","weight":0.8}], "responseNeed": "辨認決心與承諾，但不把尚未完成的行動當成既成事實。" },
-      { "id": "embarrassment", "label": "歉疚與難為情", "valence": -0.3, "arousal": 0.4, "cues": [{"term":"愧疚","weight":0.9},{"term":"慚愧","weight":0.9},{"term":"不好意思","weight":0.6},{"term":"無地自容","weight":1.0},{"term":"心中有愧","weight":0.9}], "responseNeed": "區分歉意與責任承認；若需要，追問對方打算如何補救。" },
-      { "id": "sarcasm", "label": "挖苦或反諷", "valence": -0.4, "arousal": 0.5, "cues": [{"term":"可真是多謝","weight":1.0},{"term":"好本事","weight":0.7},{"term":"真了不起","weight":0.7},{"term":"真有你的","weight":0.7},{"term":"真是公正","weight":0.9}], "responseNeed": "結合語境確認是否反諷；若把握不高，先回應可能的不滿而不武斷下結論。" },
-      { "id": "confusion", "label": "困惑", "valence": 0.0, "arousal": 0.4, "cues": [{"term":"聽不懂","weight":0.9},{"term":"不明白","weight":0.8},{"term":"怎麼回事","weight":0.7},{"term":"這是何意","weight":0.8},{"term":"說清楚","weight":0.6}], "responseNeed": "換一種更清楚的說法，先補充關鍵資訊，不責怪對方。" },
-      { "id": "loneliness", "label": "孤單", "valence": -0.5, "arousal": 0.2, "cues": [{"term":"很孤單","weight":1.0},{"term":"沒人懂我","weight":1.0},{"term":"沒人陪我","weight":0.9},{"term":"孤零零","weight":0.9},{"term":"無人可說","weight":0.8}], "responseNeed": "先承認對方感到孤單，給予傾聽選項；不假裝能取代現實支持。" },
-      { "id": "frustration", "label": "受挫與無力", "valence": -0.5, "arousal": 0.5, "cues": [{"term":"卡住了","weight":0.8},{"term":"毫無進展","weight":1.0},{"term":"怎麼都不行","weight":0.9},{"term":"白費力氣","weight":0.9},{"term":"無計可施","weight":0.9}], "responseNeed": "承認事情不順，先確認玩家想要傾聽還是一起找下一步；不責怪或說教。" },
-      { "id": "hope", "label": "希望與期待", "valence": 0.7, "arousal": 0.4, "cues": [{"term":"還有希望","weight":1.0},{"term":"仍有機會","weight":0.9},{"term":"我想試試","weight":0.8},{"term":"總會有辦法","weight":0.9},{"term":"盼望","weight":0.8}], "responseNeed": "接住玩家仍願嘗試的心情，但不保證尚未發生的結果。" }
+      {
+        "id": "anger",
+        "label": "憤怒",
+        "valence": -0.7,
+        "arousal": 0.9,
+        "cues": [
+          {
+            "term": "憤怒",
+            "weight": 1.0
+          },
+          {
+            "term": "生氣",
+            "weight": 0.9
+          },
+          {
+            "term": "惱火",
+            "weight": 0.9
+          },
+          {
+            "term": "受夠了",
+            "weight": 1.0
+          },
+          {
+            "term": "火大",
+            "weight": 0.9
+          },
+          {
+            "term": "氣死我",
+            "weight": 1.0
+          },
+          {
+            "term": "怒火",
+            "weight": 1.0
+          },
+          {
+            "term": "怒不可遏",
+            "weight": 0.8
+          },
+          {
+            "term": "忍無可忍",
+            "weight": 0.8
+          },
+          {
+            "term": "氣憤",
+            "weight": 0.8
+          },
+          {
+            "term": "憤慨",
+            "weight": 0.8
+          },
+          {
+            "term": "可惡",
+            "weight": 0.8
+          },
+          {
+            "term": "混帳",
+            "weight": 0.8
+          },
+          {
+            "term": "豈有此理",
+            "weight": 0.8
+          },
+          {
+            "term": "咬牙切齒",
+            "weight": 0.8
+          }
+        ],
+        "responseNeed": "先承認對方正在生氣，再回應具體問題；不要把情緒表達本身當成威脅。",
+        "dominance": 0.7,
+        "emoticons": [
+          ">_<",
+          "💢",
+          "😡",
+          "#"
+        ]
+      },
+      {
+        "id": "sadness",
+        "label": "悲傷",
+        "valence": -0.8,
+        "arousal": 0.3,
+        "cues": [
+          {
+            "term": "傷心",
+            "weight": 1.0
+          },
+          {
+            "term": "難過",
+            "weight": 0.9
+          },
+          {
+            "term": "心寒",
+            "weight": 1.0
+          },
+          {
+            "term": "失望",
+            "weight": 0.8
+          },
+          {
+            "term": "委屈",
+            "weight": 0.9
+          },
+          {
+            "term": "痛苦",
+            "weight": 1.0
+          },
+          {
+            "term": "哭了",
+            "weight": 0.8
+          },
+          {
+            "term": "心痛",
+            "weight": 0.8
+          },
+          {
+            "term": "悲傷",
+            "weight": 0.8
+          },
+          {
+            "term": "淚流",
+            "weight": 0.8
+          },
+          {
+            "term": "落淚",
+            "weight": 0.8
+          },
+          {
+            "term": "黯然",
+            "weight": 0.8
+          },
+          {
+            "term": "心碎",
+            "weight": 0.8
+          },
+          {
+            "term": "悲痛",
+            "weight": 0.8
+          },
+          {
+            "term": "哀傷",
+            "weight": 0.8
+          }
+        ],
+        "responseNeed": "先給予理解與陪伴，再詢問對方需要什麼；避免急著說教。",
+        "dominance": -0.5,
+        "emoticons": [
+          "QQ",
+          "orz",
+          "T_T",
+          "TT",
+          "😭",
+          "😢"
+        ]
+      },
+      {
+        "id": "fear",
+        "label": "恐懼與擔憂",
+        "valence": -0.6,
+        "arousal": 0.8,
+        "cues": [
+          {
+            "term": "害怕",
+            "weight": 0.9
+          },
+          {
+            "term": "恐懼",
+            "weight": 1.0
+          },
+          {
+            "term": "擔心",
+            "weight": 0.8
+          },
+          {
+            "term": "不安",
+            "weight": 0.8
+          },
+          {
+            "term": "心慌",
+            "weight": 0.9
+          },
+          {
+            "term": "怕他出事",
+            "weight": 1.0
+          },
+          {
+            "term": "驚慌",
+            "weight": 0.8
+          },
+          {
+            "term": "惶恐",
+            "weight": 0.8
+          },
+          {
+            "term": "膽寒",
+            "weight": 0.8
+          },
+          {
+            "term": "發抖",
+            "weight": 0.8
+          },
+          {
+            "term": "怕極了",
+            "weight": 0.8
+          },
+          {
+            "term": "心驚",
+            "weight": 0.8
+          },
+          {
+            "term": "擔憂",
+            "weight": 0.8
+          },
+          {
+            "term": "毛骨悚然",
+            "weight": 0.8
+          }
+        ],
+        "responseNeed": "先確認安全與擔憂對象，提供可核實的資訊；不保證尚未發生的結果。",
+        "dominance": -0.7,
+        "emoticons": [
+          "😨",
+          "😰",
+          "Σ(°△°)"
+        ]
+      },
+      {
+        "id": "joy",
+        "label": "喜悅",
+        "valence": 0.8,
+        "arousal": 0.7,
+        "cues": [
+          {
+            "term": "開心",
+            "weight": 0.9
+          },
+          {
+            "term": "高興",
+            "weight": 0.9
+          },
+          {
+            "term": "歡喜",
+            "weight": 1.0
+          },
+          {
+            "term": "欣慰",
+            "weight": 0.8
+          },
+          {
+            "term": "太好了",
+            "weight": 0.9
+          },
+          {
+            "term": "值得慶賀",
+            "weight": 1.0
+          },
+          {
+            "term": "歡欣",
+            "weight": 0.8
+          },
+          {
+            "term": "雀躍",
+            "weight": 0.8
+          },
+          {
+            "term": "暢快",
+            "weight": 0.8
+          },
+          {
+            "term": "大喜",
+            "weight": 0.8
+          },
+          {
+            "term": "好開心",
+            "weight": 0.8
+          },
+          {
+            "term": "痛快",
+            "weight": 0.8
+          },
+          {
+            "term": "喜出望外",
+            "weight": 0.8
+          },
+          {
+            "term": "笑逐顏開",
+            "weight": 0.8
+          }
+        ],
+        "responseNeed": "自然分享喜悅，回應對方真正慶祝的事情。",
+        "dominance": 0.5,
+        "emoticons": [
+          "XD",
+          "哈哈",
+          "呵呵",
+          "^_^",
+          "(^o^)",
+          "😄",
+          "😂"
+        ]
+      },
+      {
+        "id": "gratitude",
+        "label": "感激",
+        "valence": 0.7,
+        "arousal": 0.4,
+        "cues": [
+          {
+            "term": "謝謝",
+            "weight": 0.7
+          },
+          {
+            "term": "多謝",
+            "weight": 0.8
+          },
+          {
+            "term": "感激",
+            "weight": 0.9
+          },
+          {
+            "term": "承蒙相助",
+            "weight": 1.0
+          },
+          {
+            "term": "記下恩情",
+            "weight": 0.9
+          },
+          {
+            "term": "感恩",
+            "weight": 0.8
+          },
+          {
+            "term": "銘記在心",
+            "weight": 0.8
+          },
+          {
+            "term": "恩同再造",
+            "weight": 0.8
+          },
+          {
+            "term": "大恩大德",
+            "weight": 0.8
+          },
+          {
+            "term": "感謝",
+            "weight": 0.8
+          },
+          {
+            "term": "多虧你",
+            "weight": 0.8
+          }
+        ],
+        "responseNeed": "簡潔接住謝意，不把口頭感謝說成已完成報答。",
+        "dominance": 0.2,
+        "emoticons": [
+          "m(_ _)m",
+          "🙏"
+        ]
+      },
+      {
+        "id": "relief",
+        "label": "安心與釋然",
+        "valence": 0.6,
+        "arousal": 0.3,
+        "cues": [
+          {
+            "term": "放心了",
+            "weight": 0.9
+          },
+          {
+            "term": "鬆了口氣",
+            "weight": 1.0
+          },
+          {
+            "term": "總算安心",
+            "weight": 1.0
+          },
+          {
+            "term": "幸好",
+            "weight": 0.7
+          },
+          {
+            "term": "終於沒事",
+            "weight": 0.9
+          },
+          {
+            "term": "卸下心頭大石",
+            "weight": 0.8
+          },
+          {
+            "term": "平安就好",
+            "weight": 0.8
+          },
+          {
+            "term": "虛驚一場",
+            "weight": 0.8
+          },
+          {
+            "term": "塵埃落定",
+            "weight": 0.8
+          }
+        ],
+        "responseNeed": "確認讓對方安心的事實，避免擴大成未經證實的保證。",
+        "dominance": 0.2
+      },
+      {
+        "id": "distrust",
+        "label": "懷疑與不信任",
+        "valence": -0.5,
+        "arousal": 0.5,
+        "cues": [
+          {
+            "term": "不相信",
+            "weight": 0.9
+          },
+          {
+            "term": "不信任",
+            "weight": 1.0
+          },
+          {
+            "term": "可疑",
+            "weight": 0.8
+          },
+          {
+            "term": "有何證據",
+            "weight": 0.8
+          },
+          {
+            "term": "你在隱瞞",
+            "weight": 0.9
+          },
+          {
+            "term": "信不過",
+            "weight": 0.8
+          },
+          {
+            "term": "你騙我",
+            "weight": 0.8
+          },
+          {
+            "term": "有鬼",
+            "weight": 0.8
+          },
+          {
+            "term": "不老實",
+            "weight": 0.8
+          },
+          {
+            "term": "說謊",
+            "weight": 0.8
+          },
+          {
+            "term": "存疑",
+            "weight": 0.8
+          },
+          {
+            "term": "疑心",
+            "weight": 0.8
+          }
+        ],
+        "responseNeed": "回應證據或疑點，承認尚未確定的部分，不要求對方立刻信任。",
+        "dominance": 0.3
+      },
+      {
+        "id": "determination",
+        "label": "堅定與決心",
+        "valence": 0.2,
+        "arousal": 0.8,
+        "cues": [
+          {
+            "term": "我決不退讓",
+            "weight": 1.0
+          },
+          {
+            "term": "一定查明",
+            "weight": 0.9
+          },
+          {
+            "term": "絕不放棄",
+            "weight": 0.9
+          },
+          {
+            "term": "我會查到底",
+            "weight": 0.9
+          },
+          {
+            "term": "說到做到",
+            "weight": 0.8
+          },
+          {
+            "term": "義無反顧",
+            "weight": 0.8
+          },
+          {
+            "term": "在所不惜",
+            "weight": 0.8
+          },
+          {
+            "term": "豁出去",
+            "weight": 0.8
+          },
+          {
+            "term": "下定決心",
+            "weight": 0.8
+          },
+          {
+            "term": "不達目的",
+            "weight": 0.8
+          },
+          {
+            "term": "我發誓",
+            "weight": 0.8
+          }
+        ],
+        "responseNeed": "辨認決心與承諾，但不把尚未完成的行動當成既成事實。",
+        "dominance": 0.8
+      },
+      {
+        "id": "embarrassment",
+        "label": "歉疚與難為情",
+        "valence": -0.3,
+        "arousal": 0.4,
+        "cues": [
+          {
+            "term": "愧疚",
+            "weight": 0.9
+          },
+          {
+            "term": "慚愧",
+            "weight": 0.9
+          },
+          {
+            "term": "不好意思",
+            "weight": 0.6
+          },
+          {
+            "term": "無地自容",
+            "weight": 1.0
+          },
+          {
+            "term": "心中有愧",
+            "weight": 0.9
+          },
+          {
+            "term": "汗顏",
+            "weight": 0.8
+          },
+          {
+            "term": "羞愧",
+            "weight": 0.8
+          },
+          {
+            "term": "臉紅",
+            "weight": 0.8
+          },
+          {
+            "term": "抱歉",
+            "weight": 0.8
+          },
+          {
+            "term": "過意不去",
+            "weight": 0.8
+          },
+          {
+            "term": "難為情",
+            "weight": 0.8
+          },
+          {
+            "term": "對不住",
+            "weight": 0.8
+          }
+        ],
+        "responseNeed": "區分歉意與責任承認；若需要，追問對方打算如何補救。",
+        "dominance": -0.5
+      },
+      {
+        "id": "sarcasm",
+        "label": "挖苦或反諷",
+        "valence": -0.4,
+        "arousal": 0.5,
+        "cues": [
+          {
+            "term": "可真是多謝",
+            "weight": 1.0
+          },
+          {
+            "term": "好本事",
+            "weight": 0.7
+          },
+          {
+            "term": "真了不起",
+            "weight": 0.7
+          },
+          {
+            "term": "真有你的",
+            "weight": 0.7
+          },
+          {
+            "term": "真是公正",
+            "weight": 0.9
+          }
+        ],
+        "responseNeed": "結合語境確認是否反諷；若把握不高，先回應可能的不滿而不武斷下結論。",
+        "dominance": 0.5,
+        "emoticons": [
+          "呵呵",
+          "🙄"
+        ]
+      },
+      {
+        "id": "confusion",
+        "label": "困惑",
+        "valence": 0.0,
+        "arousal": 0.4,
+        "cues": [
+          {
+            "term": "聽不懂",
+            "weight": 0.9
+          },
+          {
+            "term": "不明白",
+            "weight": 0.8
+          },
+          {
+            "term": "怎麼回事",
+            "weight": 0.7
+          },
+          {
+            "term": "這是何意",
+            "weight": 0.8
+          },
+          {
+            "term": "說清楚",
+            "weight": 0.6
+          },
+          {
+            "term": "摸不著頭緒",
+            "weight": 0.8
+          },
+          {
+            "term": "一頭霧水",
+            "weight": 0.8
+          },
+          {
+            "term": "搞不懂",
+            "weight": 0.8
+          },
+          {
+            "term": "不解",
+            "weight": 0.8
+          },
+          {
+            "term": "為何",
+            "weight": 0.8
+          },
+          {
+            "term": "什麼意思",
+            "weight": 0.8
+          }
+        ],
+        "responseNeed": "換一種更清楚的說法，先補充關鍵資訊，不責怪對方。",
+        "dominance": -0.3,
+        "emoticons": [
+          "？？",
+          "???",
+          "😕",
+          "囧"
+        ]
+      },
+      {
+        "id": "loneliness",
+        "label": "孤單",
+        "valence": -0.5,
+        "arousal": 0.2,
+        "cues": [
+          {
+            "term": "很孤單",
+            "weight": 1.0
+          },
+          {
+            "term": "沒人懂我",
+            "weight": 1.0
+          },
+          {
+            "term": "沒人陪我",
+            "weight": 0.9
+          },
+          {
+            "term": "孤零零",
+            "weight": 0.9
+          },
+          {
+            "term": "無人可說",
+            "weight": 0.8
+          },
+          {
+            "term": "寂寞",
+            "weight": 0.8
+          },
+          {
+            "term": "形單影隻",
+            "weight": 0.8
+          },
+          {
+            "term": "孤身一人",
+            "weight": 0.8
+          },
+          {
+            "term": "無人理解",
+            "weight": 0.8
+          },
+          {
+            "term": "沒有人在乎",
+            "weight": 0.8
+          }
+        ],
+        "responseNeed": "先承認對方感到孤單，給予傾聽選項；不假裝能取代現實支持。",
+        "dominance": -0.5,
+        "emoticons": [
+          "...",
+          "。。。"
+        ]
+      },
+      {
+        "id": "frustration",
+        "label": "受挫與無力",
+        "valence": -0.5,
+        "arousal": 0.5,
+        "cues": [
+          {
+            "term": "卡住了",
+            "weight": 0.8
+          },
+          {
+            "term": "毫無進展",
+            "weight": 1.0
+          },
+          {
+            "term": "怎麼都不行",
+            "weight": 0.9
+          },
+          {
+            "term": "白費力氣",
+            "weight": 0.9
+          },
+          {
+            "term": "無計可施",
+            "weight": 0.9
+          },
+          {
+            "term": "沒辦法",
+            "weight": 0.8
+          },
+          {
+            "term": "束手無策",
+            "weight": 0.8
+          },
+          {
+            "term": "走投無路",
+            "weight": 0.8
+          },
+          {
+            "term": "徒勞",
+            "weight": 0.8
+          },
+          {
+            "term": "好難",
+            "weight": 0.8
+          },
+          {
+            "term": "做不到",
+            "weight": 0.8
+          }
+        ],
+        "responseNeed": "承認事情不順，先確認玩家想要傾聽還是一起找下一步；不責怪或說教。",
+        "dominance": -0.4,
+        "emoticons": [
+          "囧",
+          "orz",
+          "😩"
+        ]
+      },
+      {
+        "id": "hope",
+        "label": "希望與期待",
+        "valence": 0.7,
+        "arousal": 0.4,
+        "cues": [
+          {
+            "term": "還有希望",
+            "weight": 1.0
+          },
+          {
+            "term": "仍有機會",
+            "weight": 0.9
+          },
+          {
+            "term": "我想試試",
+            "weight": 0.8
+          },
+          {
+            "term": "總會有辦法",
+            "weight": 0.9
+          },
+          {
+            "term": "盼望",
+            "weight": 0.8
+          },
+          {
+            "term": "期待",
+            "weight": 0.8
+          },
+          {
+            "term": "相信會好",
+            "weight": 0.8
+          },
+          {
+            "term": "等著瞧",
+            "weight": 0.8
+          },
+          {
+            "term": "有望",
+            "weight": 0.8
+          },
+          {
+            "term": "總能成功",
+            "weight": 0.8
+          },
+          {
+            "term": "盼著",
+            "weight": 0.8
+          }
+        ],
+        "responseNeed": "接住玩家仍願嘗試的心情，但不保證尚未發生的結果。",
+        "dominance": 0.3
+      },
+      {
+        "id": "affection",
+        "label": "情意與親近",
+        "valence": 0.8,
+        "arousal": 0.5,
+        "dominance": 0.2,
+        "cues": [
+          {
+            "term": "喜歡你",
+            "weight": 1
+          },
+          {
+            "term": "心悅",
+            "weight": 1
+          },
+          {
+            "term": "思慕",
+            "weight": 1
+          },
+          {
+            "term": "牽掛",
+            "weight": 0.8
+          },
+          {
+            "term": "捨不得",
+            "weight": 0.9
+          },
+          {
+            "term": "想你",
+            "weight": 0.9
+          },
+          {
+            "term": "疼惜",
+            "weight": 0.9
+          },
+          {
+            "term": "在乎你",
+            "weight": 1
+          },
+          {
+            "term": "放不下你",
+            "weight": 1
+          }
+        ],
+        "responseNeed": "以溫和誠懇的態度承接情意；不替玩家做超出本意的表白，也不把好感當成任務獎勵。",
+        "emoticons": [
+          "❤"
+        ]
+      },
+      {
+        "id": "pride",
+        "label": "自豪與驕傲",
+        "valence": 0.7,
+        "arousal": 0.6,
+        "dominance": 0.7,
+        "cues": [
+          {
+            "term": "自豪",
+            "weight": 1
+          },
+          {
+            "term": "引以為傲",
+            "weight": 1
+          },
+          {
+            "term": "驕傲",
+            "weight": 0.9
+          },
+          {
+            "term": "光榮",
+            "weight": 0.8
+          },
+          {
+            "term": "不負所望",
+            "weight": 0.9
+          },
+          {
+            "term": "贏得漂亮",
+            "weight": 0.9
+          },
+          {
+            "term": "揚眉吐氣",
+            "weight": 1
+          }
+        ],
+        "responseNeed": "肯定具體成果，不要隨意潑冷水；若有自大傾向，再柔性提醒。"
+      },
+      {
+        "id": "contempt",
+        "label": "輕蔑與不屑",
+        "valence": -0.6,
+        "arousal": 0.5,
+        "dominance": 0.7,
+        "cues": [
+          {
+            "term": "不屑",
+            "weight": 1
+          },
+          {
+            "term": "瞧不起",
+            "weight": 1
+          },
+          {
+            "term": "看不上",
+            "weight": 0.9
+          },
+          {
+            "term": "不值一提",
+            "weight": 0.9
+          },
+          {
+            "term": "也配",
+            "weight": 0.9
+          },
+          {
+            "term": "自不量力",
+            "weight": 1
+          },
+          {
+            "term": "可笑",
+            "weight": 0.8
+          }
+        ],
+        "responseNeed": "辨認輕蔑但不以牙還牙；指出對方的語氣並回到事實。"
+      },
+      {
+        "id": "curiosity",
+        "label": "好奇與探問",
+        "valence": 0.4,
+        "arousal": 0.6,
+        "dominance": 0.1,
+        "cues": [
+          {
+            "term": "好奇",
+            "weight": 1
+          },
+          {
+            "term": "想知道",
+            "weight": 0.9
+          },
+          {
+            "term": "很想問",
+            "weight": 0.8
+          },
+          {
+            "term": "有意思",
+            "weight": 0.7
+          },
+          {
+            "term": "怎麼做到的",
+            "weight": 0.9
+          },
+          {
+            "term": "此話怎講",
+            "weight": 0.9
+          },
+          {
+            "term": "願聞其詳",
+            "weight": 1
+          }
+        ],
+        "responseNeed": "先回應最想知道的一件事，再給出可追問的線索。"
+      },
+      {
+        "id": "jealousy",
+        "label": "嫉妒與不平",
+        "valence": -0.5,
+        "arousal": 0.6,
+        "dominance": 0.2,
+        "cues": [
+          {
+            "term": "嫉妒",
+            "weight": 1
+          },
+          {
+            "term": "眼紅",
+            "weight": 1
+          },
+          {
+            "term": "憑什麼他",
+            "weight": 0.9
+          },
+          {
+            "term": "羨慕",
+            "weight": 0.6
+          },
+          {
+            "term": "不公平",
+            "weight": 0.8
+          },
+          {
+            "term": "偏心",
+            "weight": 0.9
+          },
+          {
+            "term": "為何只有他",
+            "weight": 0.9
+          }
+        ],
+        "responseNeed": "承認比較帶來的不安，不指責對方小氣，並回到可改變的事。"
+      },
+      {
+        "id": "awe",
+        "label": "敬佩與欽慕",
+        "valence": 0.7,
+        "arousal": 0.5,
+        "dominance": -0.2,
+        "cues": [
+          {
+            "term": "佩服",
+            "weight": 1
+          },
+          {
+            "term": "敬佩",
+            "weight": 1
+          },
+          {
+            "term": "欽佩",
+            "weight": 1
+          },
+          {
+            "term": "五體投地",
+            "weight": 1
+          },
+          {
+            "term": "肅然起敬",
+            "weight": 1
+          },
+          {
+            "term": "望塵莫及",
+            "weight": 0.9
+          },
+          {
+            "term": "受益良多",
+            "weight": 0.8
+          }
+        ],
+        "responseNeed": "平實接受敬意，不誇大自己，也不把敬佩當成服從。"
+      },
+      {
+        "id": "nostalgia",
+        "label": "懷念與感傷",
+        "valence": 0.1,
+        "arousal": 0.3,
+        "dominance": -0.1,
+        "cues": [
+          {
+            "term": "懷念",
+            "weight": 1
+          },
+          {
+            "term": "想起從前",
+            "weight": 0.9
+          },
+          {
+            "term": "當年",
+            "weight": 0.6
+          },
+          {
+            "term": "往日",
+            "weight": 0.7
+          },
+          {
+            "term": "舊時",
+            "weight": 0.7
+          },
+          {
+            "term": "回不去",
+            "weight": 0.9
+          },
+          {
+            "term": "那時候",
+            "weight": 0.5
+          }
+        ],
+        "responseNeed": "給回憶一點空間，不急著糾正或轉移話題。"
+      },
+      {
+        "id": "resentment",
+        "label": "怨恨與積怨",
+        "valence": -0.8,
+        "arousal": 0.7,
+        "dominance": 0.3,
+        "cues": [
+          {
+            "term": "怨恨",
+            "weight": 1
+          },
+          {
+            "term": "記恨",
+            "weight": 1
+          },
+          {
+            "term": "不會原諒",
+            "weight": 1
+          },
+          {
+            "term": "此仇必報",
+            "weight": 1
+          },
+          {
+            "term": "積怨",
+            "weight": 0.9
+          },
+          {
+            "term": "恨之入骨",
+            "weight": 1
+          },
+          {
+            "term": "永遠忘不了",
+            "weight": 0.8
+          }
+        ],
+        "responseNeed": "承認傷害是真實的；不煽動報復，也不要求立刻原諒。"
+      },
+      {
+        "id": "disappointment",
+        "label": "失望與落空",
+        "valence": -0.6,
+        "arousal": 0.3,
+        "dominance": -0.3,
+        "cues": [
+          {
+            "term": "失望透頂",
+            "weight": 1
+          },
+          {
+            "term": "太讓我失望",
+            "weight": 1
+          },
+          {
+            "term": "對你很失望",
+            "weight": 1
+          },
+          {
+            "term": "早知如此",
+            "weight": 0.8
+          },
+          {
+            "term": "心灰意冷",
+            "weight": 1
+          },
+          {
+            "term": "白期待",
+            "weight": 0.9
+          },
+          {
+            "term": "不過如此",
+            "weight": 0.7
+          }
+        ],
+        "responseNeed": "承認期待落空的落差，說明能補救的部分，不辯解。"
+      },
+      {
+        "id": "anxiety",
+        "label": "焦慮與不安",
+        "valence": -0.5,
+        "arousal": 0.7,
+        "dominance": -0.5,
+        "cues": [
+          {
+            "term": "焦慮",
+            "weight": 1
+          },
+          {
+            "term": "坐立難安",
+            "weight": 1
+          },
+          {
+            "term": "提心吊膽",
+            "weight": 1
+          },
+          {
+            "term": "七上八下",
+            "weight": 1
+          },
+          {
+            "term": "睡不著",
+            "weight": 0.8
+          },
+          {
+            "term": "放心不下",
+            "weight": 0.8
+          },
+          {
+            "term": "怕來不及",
+            "weight": 0.9
+          }
+        ],
+        "responseNeed": "先穩定節奏，把擔憂拆成能一步步處理的事。"
+      }
     ],
-    "negationCues": ["不再", "並不", "不是", "沒有", "不曾", "未曾", "不會", "不太", "未必", "不"],
-    "intensityCues": [{"term":"非常","factor":1.25},{"term":"極其","factor":1.3},{"term":"有些","factor":0.7},{"term":"稍微","factor":0.65},{"term":"實在太","factor":1.25}]
+    "negationCues": [
+      "不再",
+      "並不",
+      "不是",
+      "沒有",
+      "不曾",
+      "未曾",
+      "不會",
+      "不太",
+      "未必",
+      "不",
+      "別",
+      "並非",
+      "毫無",
+      "絲毫不",
+      "從未",
+      "決不",
+      "才不",
+      "誰說我"
+    ],
+    "intensityCues": [
+      {
+        "term": "非常",
+        "factor": 1.25
+      },
+      {
+        "term": "極其",
+        "factor": 1.3
+      },
+      {
+        "term": "有些",
+        "factor": 0.7
+      },
+      {
+        "term": "稍微",
+        "factor": 0.65
+      },
+      {
+        "term": "實在太",
+        "factor": 1.25
+      },
+      {
+        "term": "極度",
+        "factor": 1.4
+      },
+      {
+        "term": "萬分",
+        "factor": 1.35
+      },
+      {
+        "term": "十分",
+        "factor": 1.2
+      },
+      {
+        "term": "真的很",
+        "factor": 1.2
+      },
+      {
+        "term": "有點",
+        "factor": 0.7
+      },
+      {
+        "term": "稍稍",
+        "factor": 0.65
+      },
+      {
+        "term": "略微",
+        "factor": 0.65
+      },
+      {
+        "term": "太",
+        "factor": 1.15
+      }
+    ],
+    "contrastCues": [
+      "但是",
+      "可是",
+      "然而",
+      "不過",
+      "只是",
+      "卻",
+      "偏偏"
+    ]
   }
 }
