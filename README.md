@@ -54,7 +54,7 @@ node --check core/niukou-wordbank.js
 ```sh
 node tools/update-manifest.mjs          # 修改任何資料包後重新計算版本與 SHA-256
 node tools/update-manifest.mjs --check  # 檢查 manifest 是否與檔案一致
-node --test tests/                      # 所有測試
+node --test tests/*.test.mjs                      # 所有測試
 ```
 
 第三方資料與授權請見 [`NOTICE`](NOTICE)。
