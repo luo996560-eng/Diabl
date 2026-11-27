@@ -12,7 +12,7 @@ const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const manifest = await readJson('packs/manifest.json');
 
 assert.equal(manifest.schemaVersion, 1);
-assert.equal(manifest.packs.length, 15);
+assert.equal(manifest.packs.length, 16);
 const packBytes = new Map();
 const packs = [];
 for (const entry of manifest.packs) {

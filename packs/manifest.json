@@ -63,7 +63,7 @@
       "name": "鈕釦近義詞群",
       "version": "1.0.0",
       "path": "niukou-synonyms-zh-Hant.json",
-      "sha256": "c296e492ba1b16410fb840aac52d751a8689c498d79488d7990f11f9fb3fbeb5"
+      "sha256": "c2211fc5423039ba0352fa943caa9f19b8175fe89fcdd21e448cfef6700d50be"
     },
     {
       "id": "niukou-lexicon-martial-zh-hant",
@@ -106,6 +106,13 @@
       "version": "1.0.0",
       "path": "niukou-examples-b-zh-Hant.json",
       "sha256": "dbbafd7ba8c3d0d5cef3a34d2b6bbe173f1f8fc1f7da3c10d37727e7cfa51682"
+    },
+    {
+      "id": "niukou-guide-zh-hant",
+      "name": "鈕釦功能與一般協助問答",
+      "version": "1.0.0",
+      "path": "niukou-guide-zh-Hant.json",
+      "sha256": "a5204fba734bbd96c1dde3a19b4e270a2b5e8a69a14fa4c883217f6abbc48891"
     }
   ]
 }

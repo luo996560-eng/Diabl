@@ -5,7 +5,7 @@ import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 
 export const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-export const CORE = ['niukou-text', 'niukou-vocabulary', 'niukou-emotion', 'niukou-empathy', 'niukou-dialogue', 'niukou-vocab-integration', 'niukou-vocab-usage', 'niukou-cognition', 'niukou-neural', 'niukou-imitation', 'niukou-learning', 'niukou-wordbank', 'niukou-websearch'];
+export const CORE = ['niukou-text', 'niukou-vocabulary', 'niukou-emotion', 'niukou-empathy', 'niukou-dialogue', 'niukou-vocab-integration', 'niukou-vocab-usage', 'niukou-cognition', 'niukou-neural', 'niukou-imitation', 'niukou-learning', 'niukou-guide', 'niukou-wordbank', 'niukou-websearch'];
 
 export function makeStorage() {
   const m = new Map();
@@ -30,4 +30,11 @@ export async function boot() {
   await sb.WulinPackRuntime.ready;
   for (const name of CORE) vm.runInContext(await readFile(path.join(root, `core/${name}.js`), 'utf8'), sb, { filename: `${name}.js` });
   return { sb, manifest, run: (code) => vm.runInContext(code, sb) };
+}
+
+export async function loadWiki(sb) {
+  const html = await readFile(path.join(root, 'index.html'), 'utf8');
+  const a = html.indexOf('var WIKI_DATA={'), b = html.indexOf('function masterPortraitHTML', a);
+  if (a < 0 || b < 0) throw new Error('WIKI_DATA not found');
+  return vm.runInNewContext('(' + html.slice(a + 'var WIKI_DATA='.length, b).trim().replace(/\/\*[\s\S]*$/, '').replace(/;\s*$/, '') + ')', {});
 }
