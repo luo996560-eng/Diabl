@@ -489,6 +489,16 @@ details.repeat-choices>summary{cursor:pointer;color:var(--muted);font-size:12px;
 .masterCard::after{content:'';display:block;clear:both}
 
 .wg-box .inner{max-width:420px}
+/* v27.5 鈕釦自由回應 */
+.nk-free{margin-top:14px;border-top:1px dashed rgba(120,90,60,.35);padding-top:12px}
+.nk-free-toggle{font-size:13px}
+.nk-free-box{margin-top:10px}
+.nk-free-hint{font-size:12px;color:var(--muted);line-height:1.75;margin:0 0 8px}
+.nk-free-text{width:100%;box-sizing:border-box;min-height:64px;padding:10px;border:1px solid rgba(120,90,60,.35);border-radius:8px;background:rgba(255,255,255,.62);font-size:14px;font-family:inherit;color:#2b2118;resize:vertical;line-height:1.6}
+.nk-free-row{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap}
+.nk-free-judge{font-size:12px;color:#6b5b45;line-height:1.6}
+.nk-free-judge.bad{color:#a1561c}
+.nk-verdict{margin:0 0 10px;padding:10px 12px;border-left:3px solid #8b5e34;background:rgba(139,94,52,.09);font-size:13px;color:#4a3a28;border-radius:6px;line-height:1.7}
 </style>
 </head>
 <body>
@@ -562,6 +572,7 @@ details.repeat-choices>summary{cursor:pointer;color:var(--muted);font-size:12px;
 <script src="./core/niukou-wordbank.js"></script>
 <script src="./core/niukou-websearch.js"></script>
 <script src="./core/niukou-lab-ui.js"></script>
+<script src="./core/niukou-choice.js"></script>
 <script>
 /* ========== 全域錯誤攔截 ========== */
 window.onerror=function(msg,src,line,col,err){
@@ -593,10 +604,11 @@ var _saveTimer=null;
 function scheduleSave(){if(_saveTimer)return;if(!S||S.gameOver)return;_saveTimer=setTimeout(function(){_saveTimer=null;if(S&&!S.gameOver)saveGame();},600);}
 
 /* ========== 江湖謠言（更新公告） ========== */
-var CHANGELOG_VERSION='v27.4';
+var CHANGELOG_VERSION='v27.5';
 var CHANGELOG_PAGE=0;
 var CHANGELOG_PER_PAGE=3;
 var CHANGELOG_ITEMS=[
+{cls:'gold',t:'✍ v27.5 鈕釦自由回應：自己說你要做什麼',d:'・事件畫面新增「鈕釦自由回應」。不必點選項，直接用一句話寫下你的行動，鈕釦判斷這句話偏<b>善／中立／為惡</b>，再對應到這個事件裡相符的抉擇。<br>・判定會顯示依據與信心百分比；信心不足、或那句話與眼前的事無關時，鈕釦<b>不會</b>替你決定，只會請你把話說清楚（不再已讀亂回、問A答B）。<br>・<b>獎勵與代價完全沿用原本選項</b>，數值平衡不變，也不是另一套規則；原本的五個選項全部保留，兩種玩法可隨時切換。<br>・否定語境會分辨：「不救他」判為冷淡，不會誤判成善行。<br>・目前為實驗階段：先驗證「用自由對答決定事件」的手感，下一階段才會把選項逐步交給鈕釦生成。'},
 {cls:'gold',t:'🧠 v27.4 鈕釦心網：情感與判斷大升級',d:'・鈕釦加入三個預先訓練的小型神經網路，能辨識善意／中立／算計／文不對題，以及喜怒哀懼敬厭疑愧八種情緒；與規則、統計學習、句子記憶一起投票，每位「評審」的可信度會依你的確認與修正調整。<br>・你教的每一句都會微調神經網路，相似的說法也會受益，不只是記住原句。<br>・話意模稜兩可時，人物會先問清楚（每場一次）。<br>・<b>情感網</b>：人物有心緒，會隨你的情緒起伏，影響回應與少量態度。<b>江湖人脈網</b>：你對誰好、對誰壞，會傳到認識他的人耳裡。<br>・🧠 頁面新增：判斷依據、情緒條、評審可信度、判斷力自我檢定、人脈網。'},
 {cls:'red',t:'💕 v27.4 伴侶與子女',d:'・30 則伴侶事件全部改寫：每則 3 種開場、每個結果 2 種敘述，並修正男女代稱（原本會對男性伴侶說「讓她靜養」）。效果完全不變。<br>・成親後也會有伴侶日常。<br>・修正：原本一生只會懷孕一次，子女上限 6 名達不到；現在每次生產後隔 24 個月（伴侶表達想要孩子後 12 個月）可再有身孕。<br>・子女頁新增「子女條件」清單，告訴你還差哪一步。自動歷練在相戀期間會先存下 999 兩彩禮。'},
 {cls:'purple',t:'🖌 v27.4 神話師父水墨肖像',d:'・27 位神話師父各有一幅水墨肖像，出現在師門、奇遇、宿命相遇、初次拜師與小百科。<br>・小百科新增「神話師父」分類：出身、兵器、各階可學功法。'},
@@ -10207,6 +10219,52 @@ var SEEN_OPT_LIMIT=4000;
 function rememberChoiceText(key){if(!key||!S)return;if(!Array.isArray(S.seenOptTexts))S.seenOptTexts=[];if(S.seenOptTexts.indexOf(key)>=0)return;S.seenOptTexts.push(key);
   // v27.2：限制已見選項數量，避免存檔無限增長（超過上限時捨棄最舊的並重建索引）。
   if(S.seenOptTexts.length>SEEN_OPT_LIMIT){S.seenOptTexts.splice(0,S.seenOptTexts.length-SEEN_OPT_LIMIT);S._choiceSimilarityIndex=null;return;}var ix=ensureChoiceSimilarityIndex();choiceBigrams(key).forEach(function(g){if(!ix[g])ix[g]=Object.create(null);ix[g][key]=1;});}
+/* ---------- v27.5 鈕釦・自由回應 ---------- */
+var FREE_CHOICE_OPEN=false,FREE_CHOICE_TEXT='',PENDING_VERDICT='';
+function optPlainText(o){
+  var t='';
+  try{t=formatOptLabel(o)||'';}catch(e){t='';}
+  if(!t&&o)t=o.text||o.t||o.label||'';
+  return String(t).replace(/【[^】]*】/g,'').replace(/\s+/g,' ').trim();
+}
+function freeChoiceHTML(oa){
+  var h='<div class="nk-free">';
+  h+='<button type="button" class="ghost nk-free-toggle" onclick="toggleFreeChoice()">'+(FREE_CHOICE_OPEN?'收起自由回應':'✍ 鈕釦自由回應・自己說你要做什麼')+'</button>';
+  if(FREE_CHOICE_OPEN){
+    h+='<div class="nk-free-box">';
+    h+='<p class="nk-free-hint">用你自己的話寫下此刻的行動。鈕釦會判斷這句話偏善、中立或為惡，再對應到這個事件裡相符的抉擇；效果、獎勵與代價都和原本的選項完全相同。若這句話與眼前的事無關，鈕釦不會替你決定。</p>';
+    h+='<textarea id="nkFreeText" class="nk-free-text" maxlength="120" placeholder="例如：先扶他起來，再帶他去鎮上請大夫">'+escapeEventHTML(FREE_CHOICE_TEXT)+'</textarea>';
+    h+='<div class="nk-free-row"><button type="button" class="main nk-free-send" onclick="submitFreeChoice()">交給鈕釦判定</button><span id="nkFreeJudge" class="nk-free-judge"></span></div>';
+    h+='</div>';
+  }
+  return h+'</div>';
+}
+function toggleFreeChoice(){
+  var ta=document.getElementById('nkFreeText');
+  if(ta)FREE_CHOICE_TEXT=ta.value;
+  FREE_CHOICE_OPEN=!FREE_CHOICE_OPEN;
+  renderEvent();
+  if(FREE_CHOICE_OPEN){var box=document.getElementById('nkFreeText');if(box&&box.focus)box.focus();}
+}
+function submitFreeChoice(){
+  if(!S||!S.currentEvent||S.pendingResult)return;
+  var ta=document.getElementById('nkFreeText'), text=ta?ta.value:'';
+  FREE_CHOICE_TEXT=text;
+  var judgeEl=document.getElementById('nkFreeJudge');
+  function say(msg,bad){if(judgeEl){judgeEl.className='nk-free-judge'+(bad?' bad':'');judgeEl.textContent=msg;}}
+  if(!text||!text.trim()){say('先寫下你要做的事。',true);return;}
+  if(!window.NiukouChoice){say('鈕釦判定模組未載入，請重新整理。',true);return;}
+  var ev=S.currentEvent, raw=ev.options||ev.opts||[];
+  var oa=prepareUniqueChoices(ev,raw);
+  var pack=oa.map(function(o,i){return {index:i,path:resolveOptPath(o),text:optPlainText(o)};});
+  var j=NiukouChoice.judge(text,{options:pack});
+  if(!j.relevant){say(NiukouChoice.explain(j),true);return;}
+  var idx=NiukouChoice.pickIndex(j);
+  if(idx<0||!oa[idx]){say('鈕釦找不到對應的抉擇，換個說法試試。',true);return;}
+  PENDING_VERDICT=NiukouChoice.explain(j)+'；對應抉擇：'+optPlainText(oa[idx]);
+  FREE_CHOICE_OPEN=false;FREE_CHOICE_TEXT='';
+  choose(idx);
+}
 function prepareUniqueChoices(ev,options){
   if(!S||!options||!options.length)return options;
   // v27.3：只有一個選項的事件（如師父追殺），以及伴侶日常互動（選項各有固定代價），不做相似收合
@@ -10270,7 +10328,8 @@ function renderEvent(){
   else text=text.replace(/\{partner\}/g,'伴侶');
   if(ev.id==='ml'){text=S.playerGender==='男'?'你在旅途中遇見一位氣質不凡的女子，對方也正看著你。':'你在旅途中遇見一位風度翩翩的男子，對方也正看著你。';}
   if(S.pendingResult){
-    var resExtra='<p style="color:#92400e;background:#fef3c7;padding:12px;border-radius:8px;border:1px solid #f0d48a">'+S.pendingResult+'</p><button class="main" onclick="afterChoice()">繼續江湖</button>';
+    var verdictExtra=PENDING_VERDICT?'<p class="nk-verdict">'+escapeEventHTML(PENDING_VERDICT)+'</p>':'';
+    var resExtra=verdictExtra+'<p style="color:#92400e;background:#fef3c7;padding:12px;border-radius:8px;border:1px solid #f0d48a">'+S.pendingResult+'</p><button class="main" onclick="afterChoice()">繼續江湖</button>';
     el.innerHTML=VISUAL.wrapEventVisual('結果',text,resExtra,ev);
     return;
   }
@@ -10294,6 +10353,7 @@ function renderEvent(){
         optsHTML+='<details class="repeat-choices"><summary>曾見過的相似抉擇（'+repeatCount+'）・仍可選擇</summary>'+repeatHTML+'</details>';
       }
     }
+    optsHTML+=freeChoiceHTML(oa);
   }else{
     optsHTML+='<button class="main" onclick="nextMonth()">繼續</button>';
   }
@@ -11609,6 +11669,7 @@ function needsAutoFillSlots(){
 }
 function afterChoice(){
   clampMoney();
+  PENDING_VERDICT='';
   S.pendingResult=null;
   var wasSpecial=S._isSpecialEvent;S._isSpecialEvent=false;
   var wasPartnerEv=!!(S._wasPartnerEvent);S._wasPartnerEvent=false;
