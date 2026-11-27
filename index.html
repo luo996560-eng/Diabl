@@ -499,6 +499,13 @@ details.repeat-choices>summary{cursor:pointer;color:var(--muted);font-size:12px;
 .nk-free-judge{font-size:12px;color:#6b5b45;line-height:1.6}
 .nk-free-judge.bad{color:#a1561c}
 .nk-verdict{margin:0 0 10px;padding:10px 12px;border-left:3px solid #8b5e34;background:rgba(139,94,52,.09);font-size:13px;color:#4a3a28;border-radius:6px;line-height:1.7}
+/* v27.6 水墨素材 */
+.portrait-frame.ink-photo{padding:0;overflow:hidden;background:linear-gradient(145deg,#fffdf9,#e8dfd0)}
+.portrait-frame.ink-photo .ink-photo-img{width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit}
+.portrait-frame.ink-photo{border-color:rgba(120,95,60,.55)}
+.portrait-frame.xl{width:200px;height:260px;border-radius:16px}
+.ink-hero{display:flex;justify-content:center;margin:8px 0 12px}
+.ink-hero .portrait-frame{box-shadow:0 8px 22px rgba(60,45,25,.18)}
 </style>
 </head>
 <body>
@@ -573,6 +580,7 @@ details.repeat-choices>summary{cursor:pointer;color:var(--muted);font-size:12px;
 <script src="./core/niukou-websearch.js"></script>
 <script src="./core/niukou-lab-ui.js"></script>
 <script src="./core/niukou-choice.js"></script>
+<script src="./core/ink-art.js"></script>
 <script>
 /* ========== 全域錯誤攔截 ========== */
 window.onerror=function(msg,src,line,col,err){
@@ -604,10 +612,11 @@ var _saveTimer=null;
 function scheduleSave(){if(_saveTimer)return;if(!S||S.gameOver)return;_saveTimer=setTimeout(function(){_saveTimer=null;if(S&&!S.gameOver)saveGame();},600);}
 
 /* ========== 江湖謠言（更新公告） ========== */
-var CHANGELOG_VERSION='v27.5';
+var CHANGELOG_VERSION='v27.6';
 var CHANGELOG_PAGE=0;
 var CHANGELOG_PER_PAGE=3;
 var CHANGELOG_ITEMS=[
+{cls:'purple',t:'🖌 v27.6 二百一十幅水墨：妻子、寵物、龍套',d:'・<b>妻子與紅顏 100 幅</b>：清冷俠女、溫婉閨秀、明豔歌姬、素雅醫女、江湖女盜、端莊夫人…各年齡、衣色與姿態，宣紙水墨寫意，右下角一枚朱紅小印。紅顏列表與詳情頁都會顯示。每一幅依名字固定綁定，換裝置或重開遊戲也不會換臉。<br>・<b>寵物 50 幅</b>：犬、貓、鷹、蛇、狼、蟲、鼠、蟻、猴、龜、鹿、狐各 4–5 張，同一物種在牠自己的圖裡輪替，進化換階也會換圖。<br>・<b>龍套 60 幅</b>：山賊 20、山賊首領 20、魔教爪牙 20，戰鬥畫面與事件都會顯示；依名稱自動分派派系。<br>・全部轉為 WebP（640px 長邊），總量 15MB，圖片延遲載入，不拖慢開場。<br>・材質、光線與筆觸統一為宣紙水墨，與原有場景、裝備、功法圖同一套語言。'},
 {cls:'gold',t:'✍ v27.5 鈕釦自由回應：自己說你要做什麼',d:'・事件畫面新增「鈕釦自由回應」。不必點選項，直接用一句話寫下你的行動，鈕釦判斷這句話偏<b>善／中立／為惡</b>，再對應到這個事件裡相符的抉擇。<br>・判定會顯示依據與信心百分比；信心不足、或那句話與眼前的事無關時，鈕釦<b>不會</b>替你決定，只會請你把話說清楚（不再已讀亂回、問A答B）。<br>・<b>獎勵與代價完全沿用原本選項</b>，數值平衡不變，也不是另一套規則；原本的五個選項全部保留，兩種玩法可隨時切換。<br>・否定語境會分辨：「不救他」判為冷淡，不會誤判成善行。<br>・目前為實驗階段：先驗證「用自由對答決定事件」的手感，下一階段才會把選項逐步交給鈕釦生成。'},
 {cls:'gold',t:'🧠 v27.4 鈕釦心網：情感與判斷大升級',d:'・鈕釦加入三個預先訓練的小型神經網路，能辨識善意／中立／算計／文不對題，以及喜怒哀懼敬厭疑愧八種情緒；與規則、統計學習、句子記憶一起投票，每位「評審」的可信度會依你的確認與修正調整。<br>・你教的每一句都會微調神經網路，相似的說法也會受益，不只是記住原句。<br>・話意模稜兩可時，人物會先問清楚（每場一次）。<br>・<b>情感網</b>：人物有心緒，會隨你的情緒起伏，影響回應與少量態度。<b>江湖人脈網</b>：你對誰好、對誰壞，會傳到認識他的人耳裡。<br>・🧠 頁面新增：判斷依據、情緒條、評審可信度、判斷力自我檢定、人脈網。'},
 {cls:'red',t:'💕 v27.4 伴侶與子女',d:'・30 則伴侶事件全部改寫：每則 3 種開場、每個結果 2 種敘述，並修正男女代稱（原本會對男性伴侶說「讓她靜養」）。效果完全不變。<br>・成親後也會有伴侶日常。<br>・修正：原本一生只會懷孕一次，子女上限 6 名達不到；現在每次生產後隔 24 個月（伴侶表達想要孩子後 12 個月）可再有身孕。<br>・子女頁新增「子女條件」清單，告訴你還差哪一步。自動歷練在相戀期間會先存下 999 兩彩禮。'},
@@ -879,10 +888,14 @@ var VISUAL={
     if(name&&/女|娘|妹|姐|妃|姬|仙|紅|雪|月|花|婉|煙|婷|薇|瑤|柔|清|香|蓮/.test(name))return '女';
     return '男';
   },
-  portraitHTML:function(name,kind,size){
+  portraitHTML:function(name,kind,size,ctx){
     size=size||'';
     var cls='portrait-frame '+(kind||'')+(size?' '+size:'');
     if(name&&PORTRAIT_MAP[name])return '<div class="'+cls+'" title="'+name+'" style="background-image:url(\''+PORTRAIT_MAP[name]+'\')"></div>';
+    if(window.InkArt){
+      var inkSrc=InkArt.pick(kind,name,ctx);
+      if(inkSrc)return '<div class="'+cls+' ink-photo" title="'+String(name||'').replace(/"/g,'')+'">'+InkArt.html(kind,name,ctx,'ink-photo-img')+'</div>';
+    }
     var g=this.genderFromName(name,kind),hue=this.nameHue(name||'俠');
     var bg='linear-gradient(160deg,hsl('+hue+',48%,90%) 0%,hsl('+((hue+35)%360)+',42%,70%) 100%)';
     var sil='⚔️';
@@ -901,7 +914,7 @@ var VISUAL={
     var labels={'scene-pharmacy':'藥館','scene-inn':'客棧','scene-market':'街市','scene-wild':'山野','scene-sect':'門派','scene-tower':'時空之塔','scene-battle':'戰場','scene-palace':'官府','scene-home':'居所','scene-city':'江湖','scene-river':'水畔','scene-bamboo':'竹林','scene-temple':'古廟'};
     var por=this.portraitHTML((S&&S.playerName)||'俠客','player');
     if(ev&&ev.id==='ml')por=this.portraitHTML('有緣人','partner');
-    if(ev&&(ev.id==='pf'||ev.id==='pa'))por=this.portraitHTML('靈獸','pet');
+    if(ev&&(ev.id==='pf'||ev.id==='pa'))por=this.portraitHTML('靈獸','pet','',{species:(S&&S.pets&&S.pets[0]&&S.pets[0].species)||'狗',stage:(S&&S.pets&&S.pets[0]&&S.pets[0].stage)||0});
     if(S&&S.masterEncounterPending)por=this.portraitHTML(S.masterEncounterPending.name||'宗師','master');
     var place=(ev&&ev.scene&&!/^(market|inn|sect|wild|jianghu|fate|followup)$/.test(ev.scene))?ev.scene:(labels[scene]||'江湖');
     var h='<div class="scene-bg '+scene+'"><div class="ink-banner" role="img" aria-label="水墨：'+(labels[scene]||'江湖')+'"></div><div class="scene-tag">📍 '+escapeEventHTML(place)+'</div>';
@@ -9259,7 +9272,7 @@ function renderBattle(){
   h+=VISUAL.portraitHTML(b.player.name,'player','sm');
   if(b.partner&&b.partner.hp>0)h+=VISUAL.portraitHTML(b.partner.name,'partner','sm');
   h+='<div style="flex:1;text-align:center;font-size:22px;color:var(--crimson);font-weight:700">⚔</div>';
-  h+=VISUAL.portraitHTML(b.enemy.name,'enemy','sm');
+  h+=VISUAL.portraitHTML(b.enemy.name,'enemy','sm',{enemy:b.enemy.name});
   h+='</div>';
   h+='<div class="battleChar enemy"><div class="charName">'+b.enemy.name+(b.isHunt?'（追殺）':'')+(b.isAbandonedRevenge?'（棄子復仇）':'')+'</div>';
   h+='<div class="charHpBar"><div style="width:'+ehpP+'%"></div></div>';
@@ -11741,6 +11754,7 @@ function showConfidante(idx){
   var c=S.confidantes[idx];var el=document.getElementById('event');
   var apt=c.aptitude||'凡品';
   var h='<h2>💐 紅顏知己資訊</h2><div class="card">';
+  h+='<div class="ink-hero">'+VISUAL.portraitHTML(c.name,'confidante','xl')+'</div>';
   h+='<div class="pn" style="color:#7c4bb0">'+c.name+'</div>';
   h+='<div class="pp">性別：'+(c.gender||'—')+'　個性：'+(c.personality||'神秘')+'</div>';
   if(c.desc)h+='<div class="pd">「'+c.desc+'」</div>';
@@ -11766,7 +11780,7 @@ function showPartner(){
     h+='<div style="color:var(--muted);font-size:12px;margin:4px 0">享年 '+((p.deathAge||S.age))+' 歲</div>';
     h+='<div style="color:var(--muted);font-size:13px;font-style:italic">「'+p.deathReason+'」</div></div>';
   }else{
-    h+='<div class="card"><div class="pn">'+p.name+'</div>';
+    h+='<div class="card"><div class="ink-hero">'+VISUAL.portraitHTML(p.name,'partner','xl',{wife:p.name})+'</div><div class="pn">'+p.name+'</div>';
     h+='<div class="pp">性別：'+p.gender+'　個性：'+p.personality+'　資質：<span style="color:'+TIERS[p.aptitude||'凡品'].c+'">'+(p.aptitude||'凡品')+' ×'+getAptMult(p.aptitude)+'</span></div>';
     if(p.desc)h+='<div class="pd">「'+p.desc+'」</div>';
     if(p.destinyTalent)h+='<div class="destinyCard"><div class="dt">✦ 天命天賦：'+p.destinyTalent.icon+' '+p.destinyTalent.name+' ✦</div><div class="dd">'+p.destinyTalent.desc+'</div></div>';
@@ -11911,7 +11925,7 @@ function renderPetTab(el){
     if(!tree||!tree.stages[p.stage])return;
     var cur=tree.stages[p.stage];var apt=p.aptitude||'凡品';
     h+='<div class="petListCard visual-card" style="border-color:'+TIERS[cur.tier].c+'" onclick="showPet('+i+')">';
-    h+=VISUAL.portraitHTML(p.n,'pet','sm');
+    h+=VISUAL.portraitHTML(p.n,'pet','sm',{species:p.species,stage:p.stage});
     h+='<div class="info"><div class="pn" style="color:'+TIERS[cur.tier].c+'">'+p.n+'（'+p.species+'）</div>';
     h+='<div style="font-size:11px;color:var(--muted)">階段 '+(p.stage+1)+'/'+tree.stages.length+'　'+cur.tier+'　年齡 '+petAge(p)+'歲　資質 <b style="color:'+TIERS[apt].c+'">'+apt+'</b></div>';
     if(p.destinyTalent)h+='<div style="color:#b7791f;font-size:10px">✦ 天命：'+p.destinyTalent.icon+' '+p.destinyTalent.name+'</div>';
@@ -11930,6 +11944,7 @@ function showPet(idx){
   var cur=tree.stages[p.stage];var apt=p.aptitude||'凡品';
   var el=document.getElementById('event');
   var h='<h2>🐾 寵物資訊</h2><div class="card">';
+  h+='<div class="ink-hero">'+VISUAL.portraitHTML(p.n,'pet','xl',{species:p.species,stage:p.stage})+'</div>';
   h+='<div class="pn" style="color:'+TIERS[cur.tier].c+'">'+p.n+'</div>';
   h+='<div class="pp">種族：'+p.species+'　階段：'+(p.stage+1)+'/'+tree.stages.length+'　品階：<span style="color:'+TIERS[cur.tier].c+'">'+cur.tier+'</span>　資質：<span style="color:'+TIERS[apt].c+'">'+apt+' ×'+getAptMult(apt)+'</span></div>';
   h+='<div class="pd">「'+cur.n+'」</div>';
