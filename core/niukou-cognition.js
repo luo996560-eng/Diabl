@@ -74,17 +74,27 @@
     return candidates.slice(0, 2);
   }
   function enrich(parsed, rawText, history) {
-    var out = Object.assign({}, parsed || {}), text = String(rawText == null ? out.raw || '' : rawText);
-    var emotionPacks = byModule('emotion'), emotions = [];
-    emotionPacks.forEach(function (pack) { emotions = emotions.concat(scoreEmotions(text, pack)); });
-    emotions.sort(function (a, b) { return b.score - a.score; });
-    emotions = emotions.slice(0, 3);
+    var out = Object.assign({}, parsed || {}), original = String(rawText == null ? out.raw || '' : rawText);
+    var text = root.NiukouText && root.NiukouText.normalize ? root.NiukouText.normalize(original) : original;
+    var emotionPacks = byModule('emotion'), emotions = [], emo = null;
+    if (root.NiukouEmotion && root.NiukouEmotion.analyze) { try { emo = root.NiukouEmotion.analyze(text, history); emotions = emo.emotions.slice(0, 3); } catch (e) { emo = null; } }
+    if (!emo) {
+      emotionPacks.forEach(function (pack) { emotions = emotions.concat(scoreEmotions(text, pack)); });
+      emotions.sort(function (a, b) { return b.score - a.score; });
+      emotions = emotions.slice(0, 3);
+    }
     var language = matchLanguage(text), context = inspectReferences(text, history), plans = responsePlan(out, emotions, language, context);
     var vocabulary = root.NiukouVocabulary && typeof root.NiukouVocabulary.match === 'function' ? root.NiukouVocabulary.match(text, 4) : [];
     var prior = Array.isArray(out.emotions) ? out.emotions.slice() : [];
     emotions.forEach(function (emotion) { if (prior.indexOf(emotion.label) < 0) prior.push(emotion.label); });
     out.emotions = prior;
+    var tags = root.NiukouText && root.NiukouText.synonymTags ? root.NiukouText.synonymTags(text).slice(0, 6) : [];
+    var acts = root.NiukouDialogue ? root.NiukouDialogue.detectActs(text).map(function (a) { return a.id; }) : [];
+    var topics = root.NiukouDialogue ? root.NiukouDialogue.detectTopics(text).map(function (t) { return t.id; }) : [];
     out.cognition = {
+      normalized: text !== original ? text : '',
+      emotion: emo ? { vad: emo.vad, intensity: emo.intensity, mixed: emo.mixed, sarcasm: emo.sarcasm, dominant: emo.dominant } : null,
+      synonymTags: tags, acts: acts, topics: topics,
       language: language,
       emotions: emotions,
       vocabulary: vocabulary,
@@ -98,9 +108,12 @@
   function attach(engine) {
     if (!engine || typeof engine.parse !== 'function' || engine.__cognitionAttached) return engine;
     var original = engine.parse;
-    engine.parse = function (text, history, legacy) { return enrich(original.call(engine, text, history, legacy), text, history); };
+    engine.parse = function (text, history, legacy) {
+      var t = root.NiukouText && root.NiukouText.normalize ? root.NiukouText.normalize(text) : text;
+      return enrich(original.call(engine, t, history, legacy), t, history);
+    };
     engine.__cognitionAttached = true;
     return engine;
   }
-  root.NiukouCognition = { version: '0.2.0', enrich: enrich, attach: attach, inspect: function (text, parsed, history) { return enrich(parsed || {}, text, history).cognition; } };
+  root.NiukouCognition = { version: '0.3.0', enrich: enrich, attach: attach, inspect: function (text, parsed, history) { return enrich(parsed || {}, text, history).cognition; } };
 })(typeof window !== 'undefined' ? window : globalThis);

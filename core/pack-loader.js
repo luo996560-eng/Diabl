@@ -27,6 +27,35 @@
       return row && validText(row.id, 48) && validText(row.label, 80) && stringList(row.terms, 40, 48) && validText(row.note || '', 240);
     });
   }
+  function listOf(value, maxItems) { return Array.isArray(value) && value.length <= maxItems; }
+  function validateExtended(c) {
+    var i, row;
+    if (c.contrastCues !== undefined && !stringList(c.contrastCues, 24, 16)) return '情緒轉折線索格式錯誤';
+    if (c.categories && c.categories.some(function (cat) { return (cat.dominance !== undefined && (typeof cat.dominance !== 'number' || cat.dominance < -1 || cat.dominance > 1)) || (cat.emoticons !== undefined && !stringList(cat.emoticons, 16, 16)); })) return '情緒支配度或顏文字格式錯誤';
+    if (c.module === 'script') {
+      var p = c.provenance;
+      if (!p || ['original-game-content', 'third-party-open-source'].indexOf(p.kind) < 0 || !validText(p.source, 240) || !validText(p.license, 120)) return '字形對照來源聲明不正確';
+      if (!validText(c.s2t, 24000) || c.s2t.length % 2 !== 0 || !validText(c.simplifiedOnly, 12000)) return '字形對照表格式錯誤';
+      if (!listOf(c.ambiguous || [], 40) || (c.ambiguous || []).some(function (a) { return !a || !validText(a.ch, 2) || !validText(a.default, 2) || !listOf(a.rules, 6) || a.rules.some(function (r) { return !r || !validText(r.to, 2) || !stringList(r.near, 30, 4); }); })) return '字形歧義規則格式錯誤';
+    }
+    if (c.module === 'synonyms') {
+      if (!c.provenance || ['original-game-content', 'third-party-open-source'].indexOf(c.provenance.kind) < 0) return '近義詞來源聲明不正確';
+      if (!listOf(c.groups, 120) || c.groups.some(function (g) { return !g || !validText(g.id, 48) || !validText(g.label, 40) || !stringList(g.members, 40, 24); })) return '近義詞群格式錯誤';
+    }
+    if (c.module === 'dialogue') {
+      if (!listOf(c.acts, 40) || c.acts.some(function (a) { return !a || !validText(a.id, 48) || !validText(a.label, 40) || !stringList(a.cues, 40, 24) || !stringList(a.followUps || [], 12, 120); })) return '對話行為格式錯誤';
+      if (!listOf(c.topics, 40) || c.topics.some(function (t) { return !t || !validText(t.id, 48) || !validText(t.label, 40) || !stringList(t.terms, 40, 24) || !stringList(t.followUps || [], 12, 120); })) return '對話話題格式錯誤';
+      if (!listOf(c.empathy, 40) || c.empathy.some(function (e) { return !e || !validText(e.emotion, 48) || !stringList(e.validate, 12, 120) || !stringList(e.ask || [], 8, 120); })) return '共感用語格式錯誤';
+      if (!listOf(c.tones, 12) || c.tones.some(function (t) { return !t || !validText(t.id, 24) || !stringList(t.pre || [], 6, 24) || !stringList(t.post || [], 6, 24); })) return '語氣設定格式錯誤';
+    }
+    if (c.module === 'style') {
+      if (!listOf(c.registers, 12) || c.registers.some(function (r) {
+        var swapsOk = function (x) { return x === undefined || (listOf(x, 40) && x.every(function (pair) { return Array.isArray(pair) && pair.length === 2 && validText(pair[0], 16) && validText(pair[1], 16); })); };
+        return !r || !validText(r.id, 24) || !validText(r.label, 40) || !stringList(r.cues || [], 40, 16) || !stringList(r.particles || [], 12, 8) || !swapsOk(r.toClassical) || !swapsOk(r.toPlain);
+      })) return '語氣風格資料格式錯誤';
+    }
+    return '';
+  }
   function validatePack(pack, entry) {
     if (!pack || pack.schemaVersion !== 1 || pack.id !== entry.id || pack.version !== entry.version || pack.type !== 'data') return '套件標頭或版本不符';
     if (!pack.content || typeof pack.content !== 'object' || Array.isArray(pack.content)) return '套件內容格式錯誤';
@@ -41,14 +70,19 @@
     }
     if (pack.content.examples && (!Array.isArray(pack.content.examples) || pack.content.examples.length > 80)) return '範例數量超出格式限制';
     if ((pack.content.examples || []).some(function (row) { return !row || !validText(row.input, 240) || !validText(row.category, 20) || !validText(row.replyStyle, 240) || (row.phenomenon !== undefined && !validText(row.phenomenon, 48)); })) return '對話範例格式錯誤';
-    if (pack.content.module && ['language', 'emotion', 'judgement', 'response', 'lexicon'].indexOf(pack.content.module) < 0) return '未知的鈕釦模組類型';
+    if (pack.content.module && ['language', 'emotion', 'judgement', 'response', 'lexicon', 'script', 'synonyms', 'dialogue', 'style'].indexOf(pack.content.module) < 0) return '未知的鈕釦模組類型';
+    var extended = validateExtended(pack.content);
+    if (extended) return extended;
     if (pack.content.cues && !validCueRows(pack.content.cues, 80)) return '語言線索模組格式錯誤';
     if (pack.content.categories && (!Array.isArray(pack.content.categories) || pack.content.categories.length > 24 || pack.content.categories.some(function (row) {
       return !row || !validText(row.id, 40) || !validText(row.label, 80) || !Array.isArray(row.cues) || row.cues.length > 60 || row.cues.some(function (cue) { return !cue || !validText(cue.term, 48) || typeof cue.weight !== 'number' || cue.weight < 0 || cue.weight > 2; }) || !validText(row.responseNeed, 240);
     }))) return '情緒分類模組格式錯誤';
     if (pack.content.negationCues && !stringList(pack.content.negationCues, 40, 32)) return '情緒否定線索格式錯誤';
     if (pack.content.intensityCues && (!Array.isArray(pack.content.intensityCues) || pack.content.intensityCues.length > 24 || pack.content.intensityCues.some(function (row) { return !row || !validText(row.term, 32) || typeof row.factor !== 'number' || row.factor < 0 || row.factor > 2; }))) return '情緒強度線索格式錯誤';
-    if (pack.content.policy) {
+    if (pack.content.policy && ['dialogue', 'style'].indexOf(pack.content.module) >= 0) {
+      var lp = pack.content.policy;
+      if (lp.proposalOnly !== true || (lp.gameStateAuthority !== undefined && lp.gameStateAuthority !== 'game-rules-only')) return '擴充模組安全邊界不正確';
+    } else if (pack.content.policy) {
       var policy = pack.content.policy;
       if (policy.proposalOnly !== true || policy.gameStateAuthority !== 'game-rules-only' || typeof policy.clarifyBelowConfidence !== 'number' || policy.clarifyBelowConfidence < 0 || policy.clarifyBelowConfidence > 1 || !stringList(policy.protectedIntents, 24, 48) || !stringList(policy.priority, 16, 120) || !stringList(pack.content.principles, 24, 280)) return '判定守則格式或安全邊界不正確';
       if (policy.neuralMinimumConfidence !== undefined && (typeof policy.neuralMinimumConfidence !== 'number' || policy.neuralMinimumConfidence < 0.5 || policy.neuralMinimumConfidence > 1)) return '神經網路信心門檻不安全';

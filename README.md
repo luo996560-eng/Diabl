@@ -23,8 +23,38 @@ node --check core/niukou-wordbank.js
 
 玩家明確確認的分類回饋與詞庫候選都留在本機，不會上傳。高信心規則、明確威脅與敵意仍有安全優先條件；所有遊戲結果仍由遊戲核心規則驗證。任何雲端模型或 API 整合都需另行評估費用、隱私及授權，本版本未設定也未提交 API secrets。
 
-## 開發檢查
+## 鈕釦擴充模組 v2
+
+在原有認知模組之上新增 9 組能力，全部是本機規則與小型模型，沒有大型語言模型，也不改變遊戲存檔。
+
+| 模組 | 檔案 | 功用 |
+| --- | --- | --- |
+| 語言詞彙 | `core/niukou-text.js`、`packs/niukou-script-*`、`niukou-synonyms-*`、`niukou-lexicon-*` | 簡轉繁（OpenCC 字表）、DAG 動態規劃斷詞、近義詞群、陌生詞偵測 |
+| 情感 | `core/niukou-emotion.js`、`packs/niukou-emotion-*` | 24 種情緒、否定與轉折處理、愉悅／激動／支配三維座標、反諷、心情走勢 |
+| 對話 | `core/niukou-dialogue.js`、`packs/niukou-dialogue-*` | 對話行為與話題偵測、重複與換話題、追問建議 |
+| 共感 | `core/niukou-empathy.js` | 依情緒與人物性格組出簡短共感句；敵意人物、威脅、反諷時不使用，每場最多 3 次 |
+| 神經網絡 | `core/niukou-neural.js` v0.2 | 512 維雜湊特徵（字、詞、近義詞、情緒）＋動量／L2 的 MLP＋kNN 記憶，附 k-fold 交叉驗證；仍須 12 筆人工回饋才會提案 |
+| 詞彙整合 | `core/niukou-vocab-integration.js` | 把網路結果整理成草稿，標註來源與授權，由玩家審核後才進入「我的詞庫」，可匯出 |
+| 詞彙運用 | `core/niukou-vocab-usage.js` | 追蹤玩家與鈕釦用過的詞，避免重複、避開不適合的場合 |
+| 自主學習 | `core/niukou-learning.js` | 好奇清單、主動學習（把握低時問玩家）、把握度校準、間隔複習 |
+| 模仿 | `core/niukou-imitation.js`、`packs/niukou-style-*` | 只統計玩家的說話風格（不存原句），用來微調鈕釦自己的措辭 |
+
+### 自主上網搜尋詞彙
+
+`core/niukou-websearch.js` 提供三個無需金鑰、支援 CORS 的來源：中文維基詞典、中文維基百科、維基數據。設計原則如下：
+
+- 預設關閉，需玩家在練習場自行開啟；也可以只用「現在查詢」手動觸發。
+- 每次只送出一個 2 至 16 字的中文詞語，不送句子、姓名、存檔或識別資料，不帶 cookie。
+- 只允許上述三個網域；有逾時、大小上限、每網域速率限制、連續失敗暫停與 7 天快取；每天上限預設 6 次。
+- 每次請求都記錄在練習場，玩家可隨時檢視與清除。
+- 查到的內容只成為本機草稿，保留來源網址與授權（維基詞典與維基百科為 CC BY-SA，維基數據為 CC0），玩家審核後才採用，且不參與善惡判定。
+
+### 開發檢查
 
 ```sh
-node tests/niukou-pack.test.mjs
+node tools/update-manifest.mjs          # 修改任何資料包後重新計算版本與 SHA-256
+node tools/update-manifest.mjs --check  # 檢查 manifest 是否與檔案一致
+node --test tests/                      # 所有測試
 ```
+
+第三方資料與授權請見 [`NOTICE`](NOTICE)。

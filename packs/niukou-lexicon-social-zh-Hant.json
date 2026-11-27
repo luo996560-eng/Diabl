@@ -1,0 +1,1121 @@
+{
+  "schemaVersion": 1,
+  "id": "niukou-lexicon-social-zh-hant",
+  "version": "1.0.0",
+  "type": "data",
+  "content": {
+    "locale": "zh-Hant",
+    "module": "lexicon",
+    "description": "鈕釦原創人情、策略、情感表達與稱謂語彙；只補充理解，不決定善惡或遊戲狀態。",
+    "provenance": {
+      "kind": "original-game-content",
+      "source": "Diabl project authored entries",
+      "license": "Original content; no third-party corpus incorporated"
+    },
+    "entries": [
+      {
+        "id": "ls-001",
+        "term": "人情世故",
+        "aliases": [
+          "世故",
+          "人情"
+        ],
+        "meaning": "待人接物中的分寸與往來的規矩。",
+        "register": "人情／處世",
+        "useWhen": [
+          "談論分寸與往來"
+        ],
+        "avoidWhen": [
+          "把世故當成虛偽"
+        ]
+      },
+      {
+        "id": "ls-002",
+        "term": "顧全大局",
+        "aliases": [
+          "識大體",
+          "以大局為重"
+        ],
+        "meaning": "為整體利益暫時放下個人得失。",
+        "register": "人情／處世",
+        "useWhen": [
+          "說服對方讓步"
+        ],
+        "avoidWhen": [
+          "用大局壓人要求犧牲"
+        ]
+      },
+      {
+        "id": "ls-003",
+        "term": "識時務",
+        "aliases": [
+          "知進退",
+          "審時度勢"
+        ],
+        "meaning": "看清形勢而作出合宜選擇；有時帶諷刺。",
+        "register": "人情／處世",
+        "useWhen": [
+          "談論取捨"
+        ],
+        "avoidWhen": [
+          "不看語氣就判定褒貶"
+        ]
+      },
+      {
+        "id": "ls-004",
+        "term": "從長計議",
+        "aliases": [
+          "慢慢商量",
+          "再作打算"
+        ],
+        "meaning": "不急著決定，留待詳細考慮；也可能是婉拒。",
+        "register": "人情／談判",
+        "useWhen": [
+          "暫緩決定"
+        ],
+        "avoidWhen": [
+          "當作已同意"
+        ]
+      },
+      {
+        "id": "ls-005",
+        "term": "權宜之計",
+        "aliases": [
+          "暫時辦法"
+        ],
+        "meaning": "為應付眼前局面而採取的臨時辦法。",
+        "register": "人情／策略",
+        "useWhen": [
+          "說明並非長久安排"
+        ],
+        "avoidWhen": [
+          "當作最終承諾"
+        ]
+      },
+      {
+        "id": "ls-006",
+        "term": "兵不厭詐",
+        "aliases": [
+          "兵者詭道"
+        ],
+        "meaning": "作戰時可用計謀欺敵；不代表日常往來可欺騙。",
+        "register": "策略／兵法",
+        "useWhen": [
+          "談論戰術"
+        ],
+        "avoidWhen": [
+          "拿來替背信辯護"
+        ]
+      },
+      {
+        "id": "ls-007",
+        "term": "釜底抽薪",
+        "aliases": [
+          "斷根",
+          "從根解決"
+        ],
+        "meaning": "從根本處解決問題或削弱對手。",
+        "register": "策略／兵法",
+        "useWhen": [
+          "談論根本辦法"
+        ],
+        "avoidWhen": [
+          "當成必須殘酷的理由"
+        ]
+      },
+      {
+        "id": "ls-008",
+        "term": "欲擒故縱",
+        "aliases": [
+          "放長線"
+        ],
+        "meaning": "先放鬆對方警戒，再作掌握。",
+        "register": "策略／兵法",
+        "useWhen": [
+          "分析對方可能的用意"
+        ],
+        "avoidWhen": [
+          "不經查證就說對方在算計"
+        ]
+      },
+      {
+        "id": "ls-009",
+        "term": "聲東擊西",
+        "aliases": [
+          "佯攻",
+          "聲東擊西"
+        ],
+        "meaning": "故意製造假象，實際攻擊另一處。",
+        "register": "策略／兵法",
+        "useWhen": [
+          "分析誘敵或轉移注意"
+        ],
+        "avoidWhen": [
+          "把所有動作都當成佯攻"
+        ]
+      },
+      {
+        "id": "ls-010",
+        "term": "笑裡藏刀",
+        "aliases": [
+          "笑面虎"
+        ],
+        "meaning": "表面和善，內心藏著惡意。",
+        "register": "人情／批評",
+        "useWhen": [
+          "表達提防"
+        ],
+        "avoidWhen": [
+          "僅憑和善態度就如此指控"
+        ]
+      },
+      {
+        "id": "ls-011",
+        "term": "口蜜腹劍",
+        "aliases": [
+          "嘴甜心狠"
+        ],
+        "meaning": "嘴上甜美，內心陰險。",
+        "register": "人情／批評",
+        "useWhen": [
+          "表達警戒"
+        ],
+        "avoidWhen": [
+          "沒有依據就誣指"
+        ]
+      },
+      {
+        "id": "ls-012",
+        "term": "虛與委蛇",
+        "aliases": [
+          "敷衍應付"
+        ],
+        "meaning": "表面客氣周旋，實則不誠心。",
+        "register": "人情／應對",
+        "useWhen": [
+          "描述敷衍態度"
+        ],
+        "avoidWhen": [
+          "把客套都當成敷衍"
+        ]
+      },
+      {
+        "id": "ls-013",
+        "term": "開門見山",
+        "aliases": [
+          "直說",
+          "直言"
+        ],
+        "meaning": "不繞圈子，直接說出重點。",
+        "register": "人情／溝通",
+        "useWhen": [
+          "要求或表示直截了當"
+        ],
+        "avoidWhen": [
+          "把直率當成無禮"
+        ]
+      },
+      {
+        "id": "ls-014",
+        "term": "轉彎抹角",
+        "aliases": [
+          "拐彎抹角",
+          "繞圈子"
+        ],
+        "meaning": "說話不直接，繞很多彎。",
+        "register": "人情／溝通",
+        "useWhen": [
+          "指出對方迴避重點"
+        ],
+        "avoidWhen": [
+          "忽略對方的顧慮"
+        ]
+      },
+      {
+        "id": "ls-015",
+        "term": "話裡有話",
+        "aliases": [
+          "言外之意",
+          "弦外之音"
+        ],
+        "meaning": "表面之外另有含意。",
+        "register": "人情／溝通",
+        "useWhen": [
+          "提醒注意隱含意思"
+        ],
+        "avoidWhen": [
+          "過度解讀字面"
+        ]
+      },
+      {
+        "id": "ls-016",
+        "term": "指桑罵槐",
+        "aliases": [
+          "借題發揮"
+        ],
+        "meaning": "表面說甲，實際在諷刺乙。",
+        "register": "人情／批評",
+        "useWhen": [
+          "點出暗諷"
+        ],
+        "avoidWhen": [
+          "沒有跡象就硬說有暗諷"
+        ]
+      },
+      {
+        "id": "ls-017",
+        "term": "冷嘲熱諷",
+        "aliases": [
+          "挖苦",
+          "譏諷"
+        ],
+        "meaning": "帶刻薄與嘲笑意味的說話。",
+        "register": "人情／批評",
+        "useWhen": [
+          "辨認嘲諷情緒"
+        ],
+        "avoidWhen": [
+          "把玩笑一概當作嘲諷"
+        ]
+      },
+      {
+        "id": "ls-018",
+        "term": "陰陽怪氣",
+        "aliases": [
+          "怪腔怪調"
+        ],
+        "meaning": "語氣曖昧、帶刺而不直說。",
+        "register": "人情／批評",
+        "useWhen": [
+          "表達對語氣的不滿"
+        ],
+        "avoidWhen": [
+          "沒有語氣證據就評斷"
+        ]
+      },
+      {
+        "id": "ls-019",
+        "term": "打圓場",
+        "aliases": [
+          "緩頰",
+          "調停"
+        ],
+        "meaning": "在僵局中出面緩和氣氛。",
+        "register": "人情／調解",
+        "useWhen": [
+          "化解尷尬或爭執"
+        ],
+        "avoidWhen": [
+          "替當事人代為道歉"
+        ]
+      },
+      {
+        "id": "ls-020",
+        "term": "賠不是",
+        "aliases": [
+          "賠罪",
+          "認錯"
+        ],
+        "meaning": "向對方道歉並承認過失。",
+        "register": "人情／修復",
+        "useWhen": [
+          "表達歉意"
+        ],
+        "avoidWhen": [
+          "把賠不是當成事情已了"
+        ]
+      },
+      {
+        "id": "ls-021",
+        "term": "不計前嫌",
+        "aliases": [
+          "既往不咎"
+        ],
+        "meaning": "不再計較過去的過節。",
+        "register": "人情／修復",
+        "useWhen": [
+          "表示放下舊怨"
+        ],
+        "avoidWhen": [
+          "當作已完全信任"
+        ]
+      },
+      {
+        "id": "ls-022",
+        "term": "冰釋前嫌",
+        "aliases": [
+          "和解",
+          "盡釋前嫌"
+        ],
+        "meaning": "過去的隔閡消除。",
+        "register": "人情／修復",
+        "useWhen": [
+          "描述和好"
+        ],
+        "avoidWhen": [
+          "忽略仍未解決的問題"
+        ]
+      },
+      {
+        "id": "ls-023",
+        "term": "化干戈為玉帛",
+        "aliases": [
+          "化敵為友"
+        ],
+        "meaning": "把衝突化為和平。",
+        "register": "人情／修復",
+        "useWhen": [
+          "談論休兵"
+        ],
+        "avoidWhen": [
+          "把停戰當成永久和平"
+        ]
+      },
+      {
+        "id": "ls-024",
+        "term": "義不容辭",
+        "aliases": [
+          "責無旁貸"
+        ],
+        "meaning": "道義上不能推卸的責任。",
+        "register": "人情／承諾",
+        "useWhen": [
+          "表示承擔"
+        ],
+        "avoidWhen": [
+          "把義務當成情感付出"
+        ]
+      },
+      {
+        "id": "ls-025",
+        "term": "恕難從命",
+        "aliases": [
+          "愛莫能助"
+        ],
+        "meaning": "客氣而堅定的拒絕。",
+        "register": "人情／拒絕",
+        "useWhen": [
+          "婉拒請求"
+        ],
+        "avoidWhen": [
+          "把客氣當成可再商量"
+        ]
+      },
+      {
+        "id": "ls-026",
+        "term": "力有未逮",
+        "aliases": [
+          "能力不及"
+        ],
+        "meaning": "想做但能力不夠。",
+        "register": "人情／拒絕",
+        "useWhen": [
+          "說明自己的限制"
+        ],
+        "avoidWhen": [
+          "當成推託的藉口"
+        ]
+      },
+      {
+        "id": "ls-027",
+        "term": "另當別論",
+        "aliases": [
+          "不在此例"
+        ],
+        "meaning": "某件事不適用前面的說法。",
+        "register": "人情／談判",
+        "useWhen": [
+          "劃分情況"
+        ],
+        "avoidWhen": [
+          "忽略對方的區分"
+        ]
+      },
+      {
+        "id": "ls-028",
+        "term": "一碼歸一碼",
+        "aliases": [
+          "分開看待"
+        ],
+        "meaning": "把不同事情分開處理，不混為一談。",
+        "register": "人情／談判",
+        "useWhen": [
+          "劃清界線"
+        ],
+        "avoidWhen": [
+          "把此話當成放棄全部關係"
+        ]
+      },
+      {
+        "id": "ls-029",
+        "term": "事出有因",
+        "aliases": [
+          "有苦衷"
+        ],
+        "meaning": "事情並非無緣無故，有其緣由。",
+        "register": "人情／理解",
+        "useWhen": [
+          "要求說明原因"
+        ],
+        "avoidWhen": [
+          "把原因當成必然免責"
+        ]
+      },
+      {
+        "id": "ls-030",
+        "term": "情非得已",
+        "aliases": [
+          "萬不得已"
+        ],
+        "meaning": "並非出於本意，是被形勢逼迫。",
+        "register": "人情／解釋",
+        "useWhen": [
+          "表達苦衷"
+        ],
+        "avoidWhen": [
+          "不查證就全然採信"
+        ]
+      },
+      {
+        "id": "ls-031",
+        "term": "身不由己",
+        "aliases": [
+          "受制於人"
+        ],
+        "meaning": "因處境所限無法自己決定。",
+        "register": "人情／解釋",
+        "useWhen": [
+          "表達無奈"
+        ],
+        "avoidWhen": [
+          "把無奈當成責任全推給別人"
+        ]
+      },
+      {
+        "id": "ls-032",
+        "term": "進退兩難",
+        "aliases": [
+          "進退維谷",
+          "騎虎難下"
+        ],
+        "meaning": "前進後退都有困難。",
+        "register": "人情／處境",
+        "useWhen": [
+          "說明困境"
+        ],
+        "avoidWhen": [
+          "直接給出不顧後果的建議"
+        ]
+      },
+      {
+        "id": "ls-033",
+        "term": "左右為難",
+        "aliases": [
+          "兩難"
+        ],
+        "meaning": "在兩個選擇之間難以決定。",
+        "register": "人情／處境",
+        "useWhen": [
+          "表示掙扎"
+        ],
+        "avoidWhen": [
+          "催促立刻決定"
+        ]
+      },
+      {
+        "id": "ls-034",
+        "term": "恩將仇報",
+        "aliases": [
+          "忘恩負義"
+        ],
+        "meaning": "受了恩惠反而加害。",
+        "register": "人情／批評",
+        "useWhen": [
+          "指責背恩"
+        ],
+        "avoidWhen": [
+          "未查證就指控"
+        ]
+      },
+      {
+        "id": "ls-035",
+        "term": "知恩圖報",
+        "aliases": [
+          "感恩圖報"
+        ],
+        "meaning": "記得恩情並設法回報。",
+        "register": "人情／價值",
+        "useWhen": [
+          "表達感念"
+        ],
+        "avoidWhen": [
+          "把報恩當成債務逼迫"
+        ]
+      },
+      {
+        "id": "ls-036",
+        "term": "受人之託",
+        "aliases": [
+          "忠人之事"
+        ],
+        "meaning": "接受他人委託就要盡力完成。",
+        "register": "人情／承諾",
+        "useWhen": [
+          "說明自己的責任"
+        ],
+        "avoidWhen": [
+          "拿來拒絕任何質疑"
+        ]
+      },
+      {
+        "id": "ls-037",
+        "term": "言而無信",
+        "aliases": [
+          "食言",
+          "失信"
+        ],
+        "meaning": "說過的話不兌現。",
+        "register": "人情／批評",
+        "useWhen": [
+          "指出失信"
+        ],
+        "avoidWhen": [
+          "忽略情勢改變的原因"
+        ]
+      },
+      {
+        "id": "ls-038",
+        "term": "誠意",
+        "aliases": [
+          "心意",
+          "誠心"
+        ],
+        "meaning": "待人的真誠態度。",
+        "register": "人情／價值",
+        "useWhen": [
+          "表達重視"
+        ],
+        "avoidWhen": [
+          "僅憑言語判斷誠意"
+        ]
+      },
+      {
+        "id": "ls-039",
+        "term": "掛念",
+        "aliases": [
+          "惦記",
+          "牽掛"
+        ],
+        "meaning": "心裡放不下某人或某事。",
+        "register": "情感／關懷",
+        "useWhen": [
+          "表達關心"
+        ],
+        "avoidWhen": [
+          "把關心當成控制"
+        ]
+      },
+      {
+        "id": "ls-040",
+        "term": "思念",
+        "aliases": [
+          "想念",
+          "懷念"
+        ],
+        "meaning": "對遠方或過去的人事的牽掛。",
+        "register": "情感／關懷",
+        "useWhen": [
+          "表達想念"
+        ],
+        "avoidWhen": [
+          "忽略對方的處境"
+        ]
+      },
+      {
+        "id": "ls-041",
+        "term": "傾訴",
+        "aliases": [
+          "訴說",
+          "吐露心事"
+        ],
+        "meaning": "把心中想法或苦惱說給人聽。",
+        "register": "情感／溝通",
+        "useWhen": [
+          "給對方說話空間"
+        ],
+        "avoidWhen": [
+          "急著給建議"
+        ]
+      },
+      {
+        "id": "ls-042",
+        "term": "心結",
+        "aliases": [
+          "疙瘩",
+          "心裡的疙瘩"
+        ],
+        "meaning": "心中長期未解的怨氣或遺憾。",
+        "register": "情感／心理",
+        "useWhen": [
+          "談論舊事"
+        ],
+        "avoidWhen": [
+          "勉強對方立刻放下"
+        ]
+      },
+      {
+        "id": "ls-043",
+        "term": "釋懷",
+        "aliases": [
+          "放下",
+          "想開"
+        ],
+        "meaning": "心中不再糾結。",
+        "register": "情感／心理",
+        "useWhen": [
+          "談論和解"
+        ],
+        "avoidWhen": [
+          "強迫對方釋懷"
+        ]
+      },
+      {
+        "id": "ls-044",
+        "term": "耿耿於懷",
+        "aliases": [
+          "難以忘懷"
+        ],
+        "meaning": "對某事一直放不下。",
+        "register": "情感／心理",
+        "useWhen": [
+          "辨認情緒殘留"
+        ],
+        "avoidWhen": [
+          "說成小題大作"
+        ]
+      },
+      {
+        "id": "ls-045",
+        "term": "心有不甘",
+        "aliases": [
+          "不服氣"
+        ],
+        "meaning": "心中仍覺得不甘願。",
+        "register": "情感／心理",
+        "useWhen": [
+          "辨認不滿"
+        ],
+        "avoidWhen": [
+          "把不甘說成必然報復"
+        ]
+      },
+      {
+        "id": "ls-046",
+        "term": "於心有愧",
+        "aliases": [
+          "問心有愧",
+          "過意不去"
+        ],
+        "meaning": "良心上覺得虧欠。",
+        "register": "情感／心理",
+        "useWhen": [
+          "表達歉疚"
+        ],
+        "avoidWhen": [
+          "把愧疚當成認罪"
+        ]
+      },
+      {
+        "id": "ls-047",
+        "term": "問心無愧",
+        "aliases": [
+          "坦蕩",
+          "不怕人說"
+        ],
+        "meaning": "自覺行事無虧。",
+        "register": "情感／心理",
+        "useWhen": [
+          "表明立場"
+        ],
+        "avoidWhen": [
+          "當成已有證據"
+        ]
+      },
+      {
+        "id": "ls-048",
+        "term": "感同身受",
+        "aliases": [
+          "將心比心"
+        ],
+        "meaning": "像親身經歷般理解對方的感受。",
+        "register": "情感／共感",
+        "useWhen": [
+          "表達共鳴"
+        ],
+        "avoidWhen": [
+          "宣稱完全理解而忽略差異"
+        ]
+      },
+      {
+        "id": "ls-049",
+        "term": "設身處地",
+        "aliases": [
+          "換位思考"
+        ],
+        "meaning": "站在對方的位置思考。",
+        "register": "情感／共感",
+        "useWhen": [
+          "請求理解"
+        ],
+        "avoidWhen": [
+          "把設身處地當成必須認同"
+        ]
+      },
+      {
+        "id": "ls-050",
+        "term": "體諒",
+        "aliases": [
+          "體恤",
+          "諒解"
+        ],
+        "meaning": "理解並寬容對方的難處。",
+        "register": "情感／共感",
+        "useWhen": [
+          "表達理解"
+        ],
+        "avoidWhen": [
+          "當成不再追問"
+        ]
+      },
+      {
+        "id": "ls-051",
+        "term": "逞強",
+        "aliases": [
+          "硬撐",
+          "死撐"
+        ],
+        "meaning": "明明不行卻硬要表現得可以。",
+        "register": "情感／心理",
+        "useWhen": [
+          "關心對方狀況"
+        ],
+        "avoidWhen": [
+          "當面嘲笑"
+        ]
+      },
+      {
+        "id": "ls-052",
+        "term": "示弱",
+        "aliases": [
+          "低頭",
+          "服軟"
+        ],
+        "meaning": "主動表現出退讓或不足。",
+        "register": "情感／心理",
+        "useWhen": [
+          "化解緊張"
+        ],
+        "avoidWhen": [
+          "把示弱當作認輸的承諾"
+        ]
+      },
+      {
+        "id": "ls-053",
+        "term": "口是心非",
+        "aliases": [
+          "表裡不一"
+        ],
+        "meaning": "嘴上說的與心裡想的不同。",
+        "register": "情感／心理",
+        "useWhen": [
+          "辨認矛盾訊號"
+        ],
+        "avoidWhen": [
+          "輕易斷定對方說謊"
+        ]
+      },
+      {
+        "id": "ls-054",
+        "term": "刀子嘴豆腐心",
+        "aliases": [
+          "嘴硬心軟"
+        ],
+        "meaning": "話說得重，心地其實善良。",
+        "register": "情感／性格",
+        "useWhen": [
+          "描述性格"
+        ],
+        "avoidWhen": [
+          "因言辭尖刻就忽略善意"
+        ]
+      },
+      {
+        "id": "ls-055",
+        "term": "患難與共",
+        "aliases": [
+          "同甘共苦"
+        ],
+        "meaning": "不論順逆都共同承擔。",
+        "register": "情感／情誼",
+        "useWhen": [
+          "表達同伴之情"
+        ],
+        "avoidWhen": [
+          "當作無條件的義務"
+        ]
+      },
+      {
+        "id": "ls-056",
+        "term": "生死之交",
+        "aliases": [
+          "莫逆之交"
+        ],
+        "meaning": "可以託付性命的深厚交情。",
+        "register": "情感／情誼",
+        "useWhen": [
+          "表達深厚情誼"
+        ],
+        "avoidWhen": [
+          "隨意要求對方犯險"
+        ]
+      },
+      {
+        "id": "ls-057",
+        "term": "知己",
+        "aliases": [
+          "知音",
+          "知心人"
+        ],
+        "meaning": "真正理解自己的人。",
+        "register": "情感／情誼",
+        "useWhen": [
+          "表達被理解"
+        ],
+        "avoidWhen": [
+          "把知己當成不能有歧見"
+        ]
+      },
+      {
+        "id": "ls-058",
+        "term": "點頭之交",
+        "aliases": [
+          "泛泛之交"
+        ],
+        "meaning": "只有基本認識，交情不深。",
+        "register": "情感／情誼",
+        "useWhen": [
+          "描述關係遠近"
+        ],
+        "avoidWhen": [
+          "輕視對方的善意"
+        ]
+      },
+      {
+        "id": "ls-059",
+        "term": "久別重逢",
+        "aliases": [
+          "重逢",
+          "故人相見"
+        ],
+        "meaning": "長久分離後再次見面。",
+        "register": "情感／情境",
+        "useWhen": [
+          "談論重聚"
+        ],
+        "avoidWhen": [
+          "忽略彼此的變化"
+        ]
+      },
+      {
+        "id": "ls-060",
+        "term": "物是人非",
+        "aliases": [
+          "時過境遷"
+        ],
+        "meaning": "景物依舊，人事已變。",
+        "register": "情感／感嘆",
+        "useWhen": [
+          "表達惆悵"
+        ],
+        "avoidWhen": [
+          "直接給積極建議"
+        ]
+      },
+      {
+        "id": "ls-061",
+        "term": "世事無常",
+        "aliases": [
+          "人生無常"
+        ],
+        "meaning": "世間事變化難測。",
+        "register": "情感／感嘆",
+        "useWhen": [
+          "表達感慨"
+        ],
+        "avoidWhen": [
+          "當成不努力的理由"
+        ]
+      },
+      {
+        "id": "ls-062",
+        "term": "緣分",
+        "aliases": [
+          "機緣",
+          "際遇"
+        ],
+        "meaning": "人與人或事物之間的因緣際會。",
+        "register": "情感／感嘆",
+        "useWhen": [
+          "談論相遇"
+        ],
+        "avoidWhen": [
+          "當成一切理由"
+        ]
+      },
+      {
+        "id": "ls-063",
+        "term": "在下",
+        "aliases": [
+          "小的",
+          "區區"
+        ],
+        "meaning": "自稱的謙詞。",
+        "register": "稱謂／自稱",
+        "useWhen": [
+          "自我介紹"
+        ],
+        "avoidWhen": [
+          "忽略可能的反諷"
+        ]
+      },
+      {
+        "id": "ls-064",
+        "term": "閣下",
+        "aliases": [
+          "足下",
+          "尊駕"
+        ],
+        "meaning": "對對方的敬稱，也可冷淡有距離。",
+        "register": "稱謂／敬稱",
+        "useWhen": [
+          "稱呼不熟的人"
+        ],
+        "avoidWhen": [
+          "當作親近"
+        ]
+      },
+      {
+        "id": "ls-065",
+        "term": "晚輩",
+        "aliases": [
+          "後生",
+          "小輩"
+        ],
+        "meaning": "對長者的謙稱。",
+        "register": "稱謂／自稱",
+        "useWhen": [
+          "面對前輩"
+        ],
+        "avoidWhen": [
+          "把自稱當成服從"
+        ]
+      },
+      {
+        "id": "ls-066",
+        "term": "老夫",
+        "aliases": [
+          "老朽",
+          "老身"
+        ],
+        "meaning": "年長者的自稱。",
+        "register": "稱謂／自稱",
+        "useWhen": [
+          "辨認說話者的輩分"
+        ],
+        "avoidWhen": [
+          "當作貶低"
+        ]
+      },
+      {
+        "id": "ls-067",
+        "term": "姑娘",
+        "aliases": [
+          "小姐",
+          "女俠"
+        ],
+        "meaning": "對年輕女子的稱呼。",
+        "register": "稱謂／敬稱",
+        "useWhen": [
+          "稱呼女子"
+        ],
+        "avoidWhen": [
+          "忽略對方偏好"
+        ]
+      },
+      {
+        "id": "ls-068",
+        "term": "公子",
+        "aliases": [
+          "少俠",
+          "少爺"
+        ],
+        "meaning": "對年輕男子或名門子弟的稱呼。",
+        "register": "稱謂／敬稱",
+        "useWhen": [
+          "稱呼男子"
+        ],
+        "avoidWhen": [
+          "忽略可能的諷刺"
+        ]
+      },
+      {
+        "id": "ls-069",
+        "term": "令師",
+        "aliases": [
+          "令尊",
+          "令堂"
+        ],
+        "meaning": "對他人師父、父親、母親的敬稱。",
+        "register": "稱謂／敬稱",
+        "useWhen": [
+          "談論對方親長"
+        ],
+        "avoidWhen": [
+          "用於自己的親長"
+        ]
+      },
+      {
+        "id": "ls-070",
+        "term": "敝派",
+        "aliases": [
+          "敝人",
+          "敝處"
+        ],
+        "meaning": "對自己門派或自己的謙稱。",
+        "register": "稱謂／自稱",
+        "useWhen": [
+          "談論自己門派"
+        ],
+        "avoidWhen": [
+          "用於他人"
+        ]
+      },
+      {
+        "id": "ls-071",
+        "term": "我輩",
+        "aliases": [
+          "咱們",
+          "我等"
+        ],
+        "meaning": "我們這類人；常帶共同身分的口吻。",
+        "register": "稱謂／群體",
+        "useWhen": [
+          "凝聚同夥"
+        ],
+        "avoidWhen": [
+          "把話說成已獲全體同意"
+        ]
+      }
+    ]
+  }
+}
